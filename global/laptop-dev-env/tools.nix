@@ -2,8 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [ # User Tools
-    firefox
-    vscode
     axel
     nano
     git
