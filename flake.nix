@@ -19,7 +19,13 @@
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
             home-manager.nixosModules.home-manager
-            ./users/laptop/rikki
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = inputs;
+              home-manager.users.rikki = import ./users/laptop/rikki;
+              home-manager.users.HenryZeng = import ./users/laptop/henryzeng;
+            }
           ];
       };
     };
