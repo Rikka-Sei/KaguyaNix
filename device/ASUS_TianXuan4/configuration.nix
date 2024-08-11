@@ -81,12 +81,6 @@
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.rikki = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
-  };
-
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

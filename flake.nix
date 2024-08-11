@@ -16,15 +16,14 @@
           system = "x86_64-linux";
           specialArgs = { inherit inputs; }; # this is the important part
           modules = [
+            # base env
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
+
+            # user env
             home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = inputs;
-              home-manager.users.rikki = import ./users/laptop/rikki;
-            }
+            ./library/home-manager
+            ./users/laptop/rikki
           ];
       };
     };
