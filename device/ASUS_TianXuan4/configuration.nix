@@ -30,7 +30,7 @@
   };
   
   networking = {
-    # hostName = ""; # please config in user configurations
+    hostName = "ASUS_TianXuan4-NixOS"; # please config in user configurations
     networkmanager.enable = true;
   };
 
