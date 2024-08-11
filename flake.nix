@@ -17,15 +17,9 @@
           specialArgs = { inherit inputs; }; # this is the important part
           modules = [
             ./device/ASUS_TianXuan4
-            ./global/laptop-dev-env/default.nix
-            # ./input/language.nix
-            # home-manager.nixosModules.home-manager
-            # {
-            #   home-manager.useGlobalPkgs = true;
-            #   home-manager.useUserPackages = true;
-            #   home-manager.users.HenryZeng = import ./users/henryzeng.nix;
-            #   home-manager.extraSpecialArgs = inputs;
-            # }
+            ./global/laptop-dev-env
+            home-manager.nixosModules.home-manager
+            ./users/laptop/rikki
           ];
       };
     };
