@@ -58,6 +58,7 @@
   environment.systemPackages = with pkgs; [ 
     gnomeExtensions.appindicator
     gnomeExtensions.gtile
+    gnomeExtensions.kimpanel
     gnome.adwaita-icon-theme
   ];
 
