@@ -23,8 +23,8 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = inputs;
-              home-manager.users.rikki = import ./users/laptop/rikki;
-              home-manager.users.HenryZeng = import ./users/laptop/henryzeng;
+              #home-manager.users.rikki = import ./users/laptop/rikki;
+              home-manager.users.henryzeng = import ./users/laptop/henryzeng;
             }
           ];
       };
