@@ -20,6 +20,9 @@
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
 
+            # desktop env
+            ./library/desktop-env/gnome
+
             # user env
             home-manager.nixosModules.home-manager
             ./library/home-manager
