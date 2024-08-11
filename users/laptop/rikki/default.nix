@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   home.username = "rikki";
@@ -46,6 +46,8 @@
     typora
   ]++[                        # Games
     hmcl
+  ]++[                        # Web Browser
+    firefox
   ]++[                        # editor
     vscode
   ];
