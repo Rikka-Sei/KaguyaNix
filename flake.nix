@@ -21,7 +21,7 @@
             ./global/laptop-dev-env
 
             # extra services
-            
+            ./library/services/tailscale
 
             # desktop env
             ./library/desktop-env/gnome
