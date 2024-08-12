@@ -20,6 +20,9 @@
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
 
+            # extra services
+            
+
             # desktop env
             ./library/desktop-env/gnome
 
