@@ -50,7 +50,7 @@
     firefox
   ]++[                        # editor
     vscode
-  ];
+  ]
 
   # 启用 starship，这是一个漂亮的 shell 提示符
   programs.starship = {
@@ -76,6 +76,11 @@
     shellAliases = {
       
     };
+  };
+
+  services.tailscale = {
+    enable = true;
+    useRoutingFeatures = "both";
   };
 
   home.stateVersion = "24.05";
