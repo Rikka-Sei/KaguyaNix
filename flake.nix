@@ -12,7 +12,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... }@inputs: {
     nixosConfigurations = {
         "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
