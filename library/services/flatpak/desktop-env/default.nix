@@ -29,5 +29,6 @@
     "org.telegram.desktop"
     "org.telegram.desktop.webview"
     "re.sonny.Workbench"
+    "org.gnome.Fractal"
   ];
 }
