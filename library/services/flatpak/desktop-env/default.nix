@@ -30,5 +30,6 @@
     "org.telegram.desktop.webview"
     "re.sonny.Workbench"
     "org.gnome.Fractal"
+    "org.gnome.World.Secrets"
   ];
 }
