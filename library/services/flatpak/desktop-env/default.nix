@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   services.flatpak.enable = true;
   services.flatpak.remotes = lib.mkOptionDefault [
