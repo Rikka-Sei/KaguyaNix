@@ -4,6 +4,8 @@
   inputs = {
     nixpkgs.url = "https://mirrors.ustc.edu.cn/nix-channels/nixos-24.05/nixexprs.tar.xz";
 
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +27,10 @@
 
             # desktop env
             ./library/desktop-env/gnome
+
+            # flatpak desktop env
+            nix-flatpak.nixosModules.nix-flatpak
+            ./library/services/flatpak/desktop-env
 
             # user env
             home-manager.nixosModules.home-manager
