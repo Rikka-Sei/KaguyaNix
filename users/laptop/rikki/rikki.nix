@@ -74,7 +74,10 @@
     '';
 
     shellAliases = {
-      
+      nixos-update = ''
+        sudo systemctl stop nixos-rebuild-switch-to-configuration.service
+        sudo nixos-rebuild switch --flake /home/rikki/Dev/NixOS-Config/#ASUS_TianXuan4_Rikki
+      '';
     };
   };
 
