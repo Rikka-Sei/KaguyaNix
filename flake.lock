@@ -48,11 +48,27 @@
         "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-24.05/nixexprs.tar.xz"
       }
     },
+    "nur": {
+      "locked": {
+        "lastModified": 1723795854,
+        "narHash": "sha256-88XKPl6yaFBq4kq9PH9UxM+6AWivE/uz166Et9KWuMw=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "54276aa4ce9596362520ba1f6dc13c4663850e91",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "nur": "nur"
       }
     }
   },
