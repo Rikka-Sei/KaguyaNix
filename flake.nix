@@ -6,13 +6,15 @@
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
+    nur.url = github:nix-community/NUR;
+
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nur, nix-flatpak, ... }@inputs: {
     nixosConfigurations = {
         "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -21,7 +23,7 @@
             # base env
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
-            ./library/NUR
+            nur.nixosModules.nur
 
             # extra services
             ./library/services/tailscale
