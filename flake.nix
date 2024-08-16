@@ -21,7 +21,6 @@
             # base env
             ./device/ASUS_TianXuan4
             ./global/laptop-dev-env
-            ./library/NUR
 
             # extra services
             ./library/services/tailscale
