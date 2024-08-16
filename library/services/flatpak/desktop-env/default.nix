@@ -16,7 +16,6 @@
     "com.usebottles.bottles"
     "com.valvesoftware.Steam"
     "dev.geopjr.Calligraphy"
-    "io.missioncenter.MissionCenter"
     "org.gnome.Boxes"
     "org.gnome.Builder"
     "org.gnome.GHex"

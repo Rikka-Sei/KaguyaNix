@@ -66,6 +66,8 @@
     ethtool
     pciutils # lspci
     usbutils # lsusb
+  ]++[                                      # Monitor tools
+    mission-center
   ];
 
   programs.direnv.enable = true;
