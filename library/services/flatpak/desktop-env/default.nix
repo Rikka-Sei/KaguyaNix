@@ -30,5 +30,6 @@
     "re.sonny.Workbench"
     "org.gnome.Fractal"
     "org.gnome.World.Secrets"
+    "net.ankiweb.Anki"
   ];
 }
