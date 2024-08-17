@@ -5,6 +5,6 @@
   ];
 
   services.asusd = {
-    enable = true
+    enable = true;
   };
 }
