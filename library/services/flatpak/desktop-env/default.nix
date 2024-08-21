@@ -29,5 +29,7 @@
     "re.sonny.Workbench"
     "org.gnome.Fractal"
     "org.gnome.World.Secrets"
+    "org.blender.Blender"
+    "com.tencent.wemeet"
   ];
 }
