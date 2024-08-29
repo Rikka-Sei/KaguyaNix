@@ -9,7 +9,7 @@
     curl
     vlc
     emacs
-    make
+    gnumake
   ] ++ [                                    # Gnome
     # gnomeApps
     gnome.gnome-tweaks
