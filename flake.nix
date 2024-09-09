@@ -24,6 +24,7 @@
 
             # extra services
             ./library/services/tailscale
+            ./library/services/virtualbox
 
             # desktop env
             ./library/desktop-env/gnome
