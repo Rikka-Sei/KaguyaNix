@@ -14,13 +14,13 @@
       default = "1";
       efiSupport = true;
       extraEntries = ''
-        menuentry "Windows" {
+        menuentry "Windows" --class windows {
           search --file --no-floppy --set=root /EFI/Microsoft/Boot/bootmgfw.efi
           chainloader (''${root})/EFI/Microsoft/Boot/bootmgfw.efi
         }
       '';
       extraConfig = ''
-        set theme=/grub/Huohuo_cn/theme.txt;
+        set theme=/grub/Arknights_Shu_5806/theme.txt;
       '';
     };
     efi = {
@@ -70,7 +70,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
