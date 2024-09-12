@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.fontSize": 16,
+		"editor.fontFamily": "'FiraCode Nerd Font','Droid Sans Mono', 'monospace', monospace",
+	}
+}
