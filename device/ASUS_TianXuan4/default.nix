@@ -5,5 +5,6 @@
     ./nvidia.nix
     ./sound.nix
     ./software.nix
+    ./variables.nix
   ];
 }
