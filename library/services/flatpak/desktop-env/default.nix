@@ -31,5 +31,6 @@
     "org.gnome.World.Secrets"
     "org.blender.Blender"
     "com.tencent.wemeet"
+    "com.baidu.NetDisk"
   ];
 }
