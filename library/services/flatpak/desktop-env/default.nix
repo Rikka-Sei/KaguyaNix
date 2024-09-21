@@ -32,5 +32,6 @@
     "org.blender.Blender"
     "com.tencent.wemeet"
     "com.baidu.NetDisk"
+    "io.github.Foldex.AdwSteamGtk"
   ];
 }
