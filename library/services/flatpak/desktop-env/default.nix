@@ -33,5 +33,6 @@
     "com.tencent.wemeet"
     "com.baidu.NetDisk"
     "io.github.Foldex.AdwSteamGtk"
+    "flathub org.gabmus.gfeeds"
   ];
 }
