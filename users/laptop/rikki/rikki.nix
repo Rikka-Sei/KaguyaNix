@@ -1,10 +1,13 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   home.username = "rikki";
   home.homeDirectory = "/home/rikki";
   nixpkgs.config.allowUnfree = true;
-  
+
   # 直接将当前文件夹的配置文件，链接到 Home 目录下的指定位置
   # home.file.".config/i3/wallpaper.jpg".source = ./wallpaper.jpg;
 
@@ -37,26 +40,44 @@
   # 通过 home.packages 安装一些常用的软件
   # 这些软件将仅在当前用户下可用，不会影响系统级别的配置
   # 建议将所有 GUI 软件，以及与 OS 关系不大的 CLI 软件，都通过 home.packages 安装
-  home.packages = with pkgs;[ # User Cli Tools
-    neofetch
-  ]++[                        # Gnome pkgs
-    gnome.gnome-software
-  ]++[                        # User GUI Tools
-    gimp
-    typora
-  ]++[                        # Games
-    hmcl
-  ]++[                        # Web Browser
-    firefox
-  ]++[                        # editor
-    vscode
-  ]++[                        # Learn
-    anki
-  ]++[
-    filezilla
-  ]++[                        # Generater
-    typst
-  ];
+  home.packages = with pkgs;
+    [
+      # User Cli Tools
+      neofetch
+    ]
+    ++ [
+      # Gnome pkgs
+      gnome.gnome-software
+    ]
+    ++ [
+      # User GUI Tools
+      gimp
+      typora
+    ]
+    ++ [
+      # Games
+      hmcl
+    ]
+    ++ [
+      # Web Browser
+      firefox
+    ]
+    ++ [
+      # editor
+      vscode
+    ]
+    ++ [
+      # Learn
+      anki
+    ]
+    ++ [
+      # File Transfer
+      filezilla
+    ]
+    ++ [
+      # Generater
+      typst
+    ];
 
   # 启用 starship，这是一个漂亮的 shell 提示符
   programs.starship = {
