@@ -98,6 +98,10 @@
     enableCompletion = true;
     bashrcExtra = ''
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
+      
+      # ble.sh loader
+      source "$(blesh-share)"/ble.sh --attach=none # does not work currently
+      [[ ! $\{BLE_VERSION-\} ]] || ble-attach
     '';
 
     shellAliases = {
