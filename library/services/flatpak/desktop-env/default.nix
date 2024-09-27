@@ -34,5 +34,6 @@
     "com.baidu.NetDisk"
     "io.github.Foldex.AdwSteamGtk"
     "org.gabmus.gfeeds"
+    "re.sonny.Playhouse"
   ];
 }
