@@ -57,6 +57,7 @@
     ++ [
       # Games
       hmcl
+      mindustry
     ]
     ++ [
       # Web Browser
