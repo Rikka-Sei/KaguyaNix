@@ -12,33 +12,39 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... }@inputs: {
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    nix-flatpak,
+    ...
+  } @ inputs: {
     nixosConfigurations = {
-        "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs; }; # this is the important part
-          modules = [
-            # base env
-            ./device/ASUS_TianXuan4
-            ./global/laptop-dev-env
+      "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {inherit inputs;}; # this is the important part
+        modules = [
+          # base env
+          ./device/ASUS_TianXuan4
+          ./global/laptop-dev-env
 
-            # extra services
-            ./library/services/tailscale
-            ./library/services/virtualbox
-            ./library/services/vm
+          # extra services
+          ./library/services/tailscale
+          ./library/services/virtualbox
+          ./library/services/vm
 
-            # desktop env
-            ./library/desktop-env/gnome
+          # desktop env
+          ./library/desktop-env/gnome
 
-            # flatpak desktop env
-            nix-flatpak.nixosModules.nix-flatpak
-            ./library/services/flatpak/desktop-env
+          # flatpak desktop env
+          nix-flatpak.nixosModules.nix-flatpak
+          ./library/services/flatpak/desktop-env
 
-            # user env
-            home-manager.nixosModules.home-manager
-            ./library/home-manager
-            ./users/laptop/rikki
-          ];
+          # user env
+          home-manager.nixosModules.home-manager
+          ./library/home-manager
+          ./users/laptop/rikki
+        ];
       };
     };
   };
