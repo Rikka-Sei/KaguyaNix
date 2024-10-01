@@ -57,7 +57,7 @@
     ++ [
       # Games
       hmcl
-      mindustry
+      mindustry-wayland
     ]
     ++ [
       # Web Browser
