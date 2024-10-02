@@ -34,5 +34,7 @@
     "com.baidu.NetDisk"
     "io.github.Foldex.AdwSteamGtk"
     "org.gabmus.gfeeds"
+    "com.belmoussaoui.Authenticator" # Authenticator 身份验证器
+    "com.usebottles.bottles"
   ];
 }
