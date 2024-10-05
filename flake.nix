@@ -28,7 +28,7 @@
     nixosConfigurations = {
       "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = {inherit inputs;}; # this is the important part
+        specialArgs = {inherit inputs;};
         modules = [
           # base env
           ./device/ASUS_TianXuan4
