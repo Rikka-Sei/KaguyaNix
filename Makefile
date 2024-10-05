@@ -6,3 +6,6 @@ update:
 
 format:
 	alejandra ./
+
+clean-garbage:
+	nix-collect-garbage
