@@ -1,7 +1,9 @@
 {
   alejandra,
+  pkgs,
   ...
-}:
-{
-  environment.systemPackages = [alejandra.defaultPackage.${system}];
+}: {
+  home.packages = [
+    alejandra.defaultPackage.${pkgs.stdenv.hostPlatform.system}
+  ];
 }
