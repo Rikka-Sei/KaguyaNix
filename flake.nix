@@ -2,7 +2,7 @@
   description = "HenryZeng 's NixOS Flake";
 
   inputs = {
-    nixpkgs.url = "https://mirrors.ustc.edu.cn/nix-channels/nixos-24.05/nixexprs.tar.xz";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
