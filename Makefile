@@ -3,3 +3,6 @@ ASUS_TianXuan4_Rikki:
 	
 update:
 	nix flake update
+
+format:
+	alejandra ./
