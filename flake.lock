@@ -99,14 +99,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1724868516,
-        "narHash": "sha256-KKKoMT3B+E+yet4DEZ9UDcq2Mbt8ep55zKYzKtlLB5E=",
-        "type": "tarball",
-        "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-24.05/nixexprs.tar.xz"
+        "lastModified": 1727907660,
+        "narHash": "sha256-QftbyPoieM5M50WKUMzQmWtBWib/ZJbHo7mhj5riQec=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "5966581aa04be7eff830b9e1457d56dc70a0b798",
+        "type": "github"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://mirrors.ustc.edu.cn/nix-channels/nixos-24.05/nixexprs.tar.xz"
+        "owner": "NixOS",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "root": {
