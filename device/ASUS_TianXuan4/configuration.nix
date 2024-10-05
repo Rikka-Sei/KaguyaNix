@@ -1,10 +1,13 @@
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, inputs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: {
   nixpkgs.config.allowUnfree = true;
 
   boot.loader = {
@@ -28,13 +31,13 @@
       efiSysMountPoint = "/boot";
     };
   };
-  
+
   networking = {
     hostName = "ASUS_TianXuan4-NixOS"; # please config in user configurations
     networkmanager.enable = true;
   };
 
-  networking.nameservers = [ "119.29.29.29" "2402:4e00::" ];
+  networking.nameservers = ["119.29.29.29" "2402:4e00::"];
 
   time.timeZone = "Asia/Shanghai";
 
@@ -77,7 +80,7 @@
   # system.copySystemConfiguration = true;
 
   # Nix Flakes 通过 git 命令从数据源拉取依赖，所以必须先安装好 git -> See programs.nix
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   nix.settings = {
     substituters = [
@@ -89,4 +92,3 @@
 
   system.stateVersion = "24.05";
 }
-

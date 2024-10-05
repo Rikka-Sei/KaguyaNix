@@ -1,13 +1,9 @@
-{
-  pkgs,
-  ...
-}: {
-  home.packages = with pkgs;
-    [ 
-      # TODO : waiting for new merge
-      blesh
-    ];
-    
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    # TODO : waiting for new merge
+    blesh
+  ];
+
   # 启用 starship，这是一个漂亮的 shell 提示符
   programs.starship = {
     enable = true;
@@ -27,7 +23,7 @@
     enableCompletion = true;
     bashrcExtra = ''
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
-      
+
       # ble.sh loader
       source "$(blesh-share)"/ble.sh --attach=none # does not work currently
       [[ ! $\{BLE_VERSION-\} ]] || ble-attach

@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
@@ -16,12 +15,12 @@
     package = pkgs.gnomeExtensions.gsconnect;
   };
 
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
     gnomeExtensions.appindicator
     gnomeExtensions.gtile
     gnomeExtensions.kimpanel
     gnome.adwaita-icon-theme
   ];
 
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
 }

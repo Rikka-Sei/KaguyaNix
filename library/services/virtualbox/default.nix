@@ -1,6 +1,5 @@
 # if you want to enable this config
 # you need to add "vboxusers" to users.users.<name>.extraGroups
-
 {
   virtualisation.virtualbox = {
     host = {
