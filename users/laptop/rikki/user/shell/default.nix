@@ -1,4 +1,6 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  tracker-list = import ./aria2-tracker
+in {
   home.packages = with pkgs; [
     # TODO : waiting for new merge
     blesh
@@ -23,6 +25,7 @@
     enableCompletion = true;
     bashrcExtra = ''
       export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
+      export TL=${tracker-list}
 
       # ble.sh loader
       source "$(blesh-share)"/ble.sh --attach=none # does not work currently
