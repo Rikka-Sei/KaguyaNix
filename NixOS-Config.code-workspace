@@ -7,5 +7,12 @@
 	"settings": {
 		"editor.fontSize": 16,
 		"editor.fontFamily": "'FiraCode Nerd Font','Droid Sans Mono', 'monospace', monospace",
+		"[nix]": {
+			"editor.defaultFormatter": "kamadorueda.alejandra",
+			"editor.formatOnPaste": true,
+			"editor.formatOnSave": true,
+			"editor.formatOnType": false
+		},
+		"alejandra.program": "alejandra"
 	}
 }

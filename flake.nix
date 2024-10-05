@@ -10,6 +10,11 @@
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    alejandra = {
+      url = "github:kamadorueda/alejandra/3.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -17,6 +22,7 @@
     nixpkgs,
     home-manager,
     nix-flatpak,
+    alejandra,
     ...
   } @ inputs: {
     nixosConfigurations = {
