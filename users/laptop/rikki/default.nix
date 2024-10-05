@@ -1,4 +1,10 @@
-let
+{
+  config,
+  pkgs,
+  lib,
+  alejandra,
+  ...
+}: let
   userName = "rikki";
   stateVersion = "24.05";
 in {
@@ -11,9 +17,7 @@ in {
     extraGroups = [ "wheel" "vboxusers" ];
   };
 
-  home-manager.users.${userName} = 
-    import ./user.nix //
-    {
+  home-manager.users.${userName} = (import ./user.nix) // {
       home.username = "${userName}";
       home.homeDirectory = "/home/${userName}";
 
