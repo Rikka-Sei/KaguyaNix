@@ -11,7 +11,7 @@
     grub = {
       enable = true;
       device = "nodev";
-      default = "1";
+      default = "0";
       efiSupport = true;
       extraEntries = ''
         menuentry "Windows" --class windows {
