@@ -71,6 +71,8 @@
       ethtool
       pciutils # lspci
       usbutils # lsusb
+
+      netcat-openbsd
     ]
     ++ [
       # Monitor tools
