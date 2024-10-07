@@ -5,7 +5,7 @@
   home.packages = with pkgs;
     [
       # User Cli Tools
-      neofetch
+      fastfetch
     ]
     ++ [
       # Gnome pkgs
