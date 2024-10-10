@@ -1,10 +1,4 @@
 {pkgs, ...}: {
-  imports = [
-    # from library
-    ../../library/font/laptop.nix
-    ../../library/input/fcitx5-cn.nix
-  ];
-
   environment.systemPackages = with pkgs;
     [
       # User Tools
