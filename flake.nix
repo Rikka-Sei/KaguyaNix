@@ -32,7 +32,7 @@
         modules = [
           # base env
           ./device/ASUS_TianXuan4
-          ./global/laptop-dev-env
+          ./layer/laptop-dev-env
 
           # extra services
           ./library/services/tailscale

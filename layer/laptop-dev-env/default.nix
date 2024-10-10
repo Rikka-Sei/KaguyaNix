@@ -1,4 +1,10 @@
 {pkgs, ...}: {
+  imports = [
+    # from library
+    ../../library/font/laptop.nix
+    ../../library/input/fcitx5-cn.nix
+  ];
+
   environment.systemPackages = with pkgs;
     [
       # User Tools
@@ -84,4 +90,6 @@
   nixpkgs.config.permittedInsecurePackages = [
     "electron-25.9.0"
   ];
+
+  services.v2raya.enable = true;
 }
