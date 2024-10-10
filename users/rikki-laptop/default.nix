@@ -8,9 +8,6 @@
   userName = "rikki";
   stateVersion = "24.05";
 in {
-  imports = [
-  ];
-
   users.users.${userName} = {
     isNormalUser = true;
     extraGroups = ["wheel" "vboxusers"];
@@ -30,15 +27,13 @@ in {
     };
 
     imports = [
-      # single-software
-      ./user/plugin/single-software
+      # layers
+      ./layer/software
+      ./layer/blesh
+      ./layer/shell
 
-      # shell
-      ./user/plugin/blesh
-      ./user/shell
-
-      # lsp
-      ./user/plugin/alejandra
+      # plugin
+      ./plugin/alejandra
     ];
 
     home.stateVersion = "${stateVersion}";

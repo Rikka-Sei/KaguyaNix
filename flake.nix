@@ -30,26 +30,25 @@
         system = "x86_64-linux";
         specialArgs = {inherit inputs;};
         modules = [
-          # base env
+          # device
           ./device/ASUS_TianXuan4
-          ./layer/laptop-dev-env
+
+          # layers
+          ./layer/develop
+          ./layer/gnome
+          ./layer/flatpak
+
+          # plugin
+          ./plugin/font/laptop
+          ./plugin/input/fcitx5
 
           # extra services
-          ./library/services/tailscale
-          ./library/services/virtualbox
-          ./library/services/vm
+          ./plugin/services/tailscale
+          ./plugin/services/virtualbox
+          ./plugin/services/vm
 
-          # desktop env
-          ./library/desktop-env/gnome
-
-          # flatpak desktop env
-          nix-flatpak.nixosModules.nix-flatpak
-          ./library/services/flatpak/desktop-env
-
-          # user env
-          home-manager.nixosModules.home-manager
-          ./library/home-manager
-          ./users/laptop/rikki
+          # users
+          ./users/rikki-laptop
         ];
       };
     };

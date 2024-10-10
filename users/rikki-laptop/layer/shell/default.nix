@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  trackerList = import ../plugin/aria2-tracker;
+  trackerList = import ./aria2-tracker;
 in {
   home.packages = with pkgs; [
     # TODO : waiting for new merge

@@ -1,6 +1,18 @@
-{lib, ...}: {
+{
+  lib,
+  nix-flatpak,
+  ...
+}: {
   imports = [
-    ../support.nix
+    nix-flatpak.nixosModules.nix-flatpak
+  ];
+
+  services.flatpak.enable = true;
+  services.flatpak.remotes = lib.mkOptionDefault [
+    {
+      name = "flathub";
+      location = "https://mirror.sjtu.edu.cn/flathub";
+    }
   ];
 
   services.flatpak.packages = [
