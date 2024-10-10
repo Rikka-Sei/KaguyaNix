@@ -1,12 +1,4 @@
-{
-  lib,
-  nix-flatpak,
-  ...
-}: {
-  imports = [
-    nix-flatpak.nixosModules.nix-flatpak
-  ];
-
+{lib, ...}: {
   services.flatpak.enable = true;
   services.flatpak.remotes = lib.mkOptionDefault [
     {
