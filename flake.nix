@@ -37,6 +37,7 @@
           ./layer/develop
           ./layer/gnome
           ./layer/flatpak
+          ./layer/home-manager
 
           # plugin
           ./plugin/font/laptop
