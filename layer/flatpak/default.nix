@@ -39,5 +39,6 @@
     "org.gabmus.gfeeds"
     "com.belmoussaoui.Authenticator" # Authenticator 身份验证器
     "com.usebottles.bottles"
+    "com.github.tchx84.Flatseal"
   ];
 }
