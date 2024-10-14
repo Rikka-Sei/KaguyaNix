@@ -1,11 +1,14 @@
 {pkgs, ...}: let
   trackerList = import ./aria2-tracker;
 in {
+  users.users.rikki.shell = pkgs.fish;
+
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
-
+    '';
+    shellInit = ''
       export TL=${trackerList}
       0file() { curl -F"file=@$1" https://envs.sh ; }
       0pb() { curl -F"file=@-;" https://envs.sh ; }
