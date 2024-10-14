@@ -29,7 +29,6 @@ in {
     imports = [
       # layers
       ./layer/software
-      ./layer/blesh
       ./layer/shell
 
       # plugin
