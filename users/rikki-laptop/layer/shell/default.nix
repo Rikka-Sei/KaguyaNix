@@ -1,8 +1,6 @@
 {pkgs, ...}: let
   trackerList = import ./aria2-tracker;
 in {
-  users.users.rikki.shell = pkgs.fish;
-
   programs.fish = {
     enable = true;
     interactiveShellInit = ''

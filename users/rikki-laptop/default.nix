@@ -13,6 +13,8 @@ in {
     extraGroups = ["wheel" "vboxusers"];
   };
 
+  users.users.${userName}.shell = pkgs.fish;
+
   home-manager.users.${userName} = {
     home.username = "${userName}";
     home.homeDirectory = "/home/${userName}";
