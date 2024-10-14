@@ -11,9 +11,8 @@ in {
   users.users.${userName} = {
     isNormalUser = true;
     extraGroups = ["wheel" "vboxusers"];
+    shell = pkgs.fish;
   };
-
-  users.users.${userName}.shell = pkgs.fish;
 
   home-manager.users.${userName} = {
     home.username = "${userName}";
