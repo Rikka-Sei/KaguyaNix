@@ -11,6 +11,8 @@ in {
   users.users.${userName} = {
     isNormalUser = true;
     extraGroups = ["wheel" "vboxusers"];
+
+    ignoreShellProgramCheck = true;
     shell = pkgs.fish;
   };
 
