@@ -8,12 +8,16 @@
   userName = "rikki";
   stateVersion = "24.05";
 in {
+  imports = [
+    {
+      programs.fish.enable = true;
+      users.users.${userName}.shell = pkgs.fish;
+    }
+  ];
+
   users.users.${userName} = {
     isNormalUser = true;
     extraGroups = ["wheel" "vboxusers"];
-
-    ignoreShellProgramCheck = true;
-    shell = pkgs.fish;
   };
 
   home-manager.users.${userName} = {
