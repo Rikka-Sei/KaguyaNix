@@ -1,17 +1,15 @@
 # NixOS-Config
-LANG: EN -> [CN](README.cn.md)
+语言: CN -> [EN](README.md)
 
-Rikki's NixOS Config
+Rikki 的 NixOS 配置
 
+# Nix 语言学习
+## 如何在不同的模块之间共享 集合/变量
+你可以将 `_module.args` 或 `specialArgs` 视作一种不错的解决方案。  
 
+两者的不同之处:  
 
-# NixLang Learning
-## How to share set / variable between modules
-You can seen `_module.args` or `specialArgs` as your best solution. 
-
-The differents between above is here:  
-
-- `specialArgs` just used in `flake.nix`
+- `specialArgs` 仅在 `flake.nix` 中使用
 
     ```nix
     {
@@ -39,10 +37,9 @@ The differents between above is here:
     }
     ```
 
-    In this example, you inherit inputs set as your extra arguments, then
-    all the modules can get variables which in your inputs set.
+    在本例中，将输入集作为额外参数继承，那么所有模块都能获取输入集中的变量。
 
-    You can use below to help your module to get variables:
+    可以使用以下方法使模块获取变量：
 
     ```nix
     {
@@ -54,9 +51,9 @@ The differents between above is here:
     }
     ```
 
-    Just list variables in the header of file, then your module got it.
+    只需在文件头部列出变量，模块就可以获取。
 
-- `_module.args` must be used in an module
+- `_module.args` 必须在模块中使用
 
     ```nix
     {...} @ upstream: let
@@ -68,17 +65,17 @@ The differents between above is here:
     }
     ```
 
-    In this example, we created a variable named `trackerList`.
+    在这个例子中，我们创建了一个名为 `trackerList` 的变量。
 
-    We use `_module.args = {inherit trackerList;};` which equal to 
-    `_module.args.trackerList = trackerList;` to expose the variable
-    `trackerList` to another module.
+    我们使用 `_module.args = {inherit trackerList;};` (等价于
+    `_module.args.trackerList = trackerList;`) 来将变量
+    `trackerList` 暴露给其他模块。
 
-    If we want to import `trackerList`, we can simply use the same code in paragraph one.
+    如果我们想要引入 `trackerList`, 可以使用和第一段一致的代码.
 
-    extra: If you want to replace `specialArgs` to `_module.args`
+    附: 如果你想要用 `_module.args` 来代替 `specialArgs`
 
-    You can just use below to achieve your goal.
+    你可以使用下面的代码来达成目的
 
     ```nix
     {
@@ -107,8 +104,7 @@ The differents between above is here:
     }
     ```
 
-    You can easily find that we created an inline module, and it not against the rules.
-
+    你会不难发现，我们创建了一个内联(行内)模块，而这并不违反规则。
 
 - [nixos-module-imports-with-arguments](https://stackoverflow.com/questions/47650857/nixos-module-imports-with-arguments)
 - [nixos-flake-and-module-system](https://nixos-and-flakes.thiscute.world/zh/nixos-with-flakes/nixos-flake-and-module-system)
