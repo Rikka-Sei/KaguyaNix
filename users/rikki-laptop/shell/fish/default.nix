@@ -1,6 +1,19 @@
-{pkgs, ...}: let
-  trackerList = import ./aria2-tracker;
-in {
+{
+  pkgs,
+  trackerList,
+  ...
+}: {
+  options.userShell = {
+    fish = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "enable bash";
+      };
+    };
+  };
+
+  programs.fish.enable = true;
   programs.fish = {
     enable = true;
     interactiveShellInit = ''

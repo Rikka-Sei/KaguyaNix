@@ -4,15 +4,12 @@
   lib,
   alejandra,
   ...
-}: let
+} @ upstream: let
   userName = "rikki";
   stateVersion = "24.05";
+  # userShell = import ./shell {inherit upstream;} // {userName = userName;};
 in {
   imports = [
-    {
-      programs.fish.enable = true;
-      users.users.${userName}.shell = pkgs.fish;
-    }
   ];
 
   users.users.${userName} = {
@@ -35,8 +32,7 @@ in {
 
     imports = [
       # layers
-      ./layer/software
-      ./layer/shell
+      ./software
 
       # plugin
       ./plugin/alejandra
