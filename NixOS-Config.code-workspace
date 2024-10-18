@@ -13,6 +13,7 @@
 			"editor.formatOnSave": true,
 			"editor.formatOnType": false
 		},
-		"alejandra.program": "alejandra"
+		"alejandra.program": "alejandra",
+		"nix.enableLanguageServer": true
 	}
 }
