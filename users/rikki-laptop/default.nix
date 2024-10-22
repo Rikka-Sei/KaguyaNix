@@ -4,13 +4,15 @@
   lib,
   alejandra,
   ...
-} @ upstream: let
+}: let
   userName = "rikki";
   stateVersion = "24.05";
-  # userShell = import ./shell {inherit upstream;} // {userName = userName;};
 in {
   imports = [
+    ./shell
   ];
+
+  user-shell.users.${userName}.defaultShell = "fish";
 
   users.users.${userName} = {
     isNormalUser = true;

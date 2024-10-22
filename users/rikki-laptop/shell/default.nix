@@ -1,47 +1,72 @@
 {
   pkgs,
-  userName,
+  config,
+  lib,
+  home-manager,
   ...
-}: let
+}:
+with lib; let
+  cfg = config.user-shell;
+
   trackerList = import ./aria2-tracker;
-in {
-  _module.args = {inherit trackerList;};
 
-  imports = [
-    ./fish
-    ./bash
-  ];
+  usModule = types.submoduleWith {
+    description = "User Shell Module";
+    class = "userShell";
+    specialArgs =
+      {
+        inherit trackerList;
+        inherit lib;
+        inherit home-manager;
+        # inherit programs;
+        # set an alias for "config"
+        # prevent system "config" to overide submodule's inner "config" data
+        osConfig = config;
+      }
+      // cfg.extraSpecialArgs;
+    modules = [
+      {
+        # export option "defaultShell" to imported modules
+        options.defaultShell = mkOption {
+          type = types.str;
+          default = "bash";
+          example = literalExpression "bash";
+          description = ''
+            Set default shell for users.
+            available: bash,fish
+          '';
+        };
+      }
+      ({name, ...}: {
+        imports = [
+          ./fish
+          ./bash
+        ];
 
-  options.userShell = {
-    bash = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "enable bash";
-      };
-    };
-
-    fish = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "enable bash";
-      };
-    };
-
-    choose = mkOption {
-      type = types.package;
-      default = pkgs.bash;
-      description = "to switch configs";
-    };
+        config = {
+        };
+      })
+    ];
   };
+in {
+  options.user-shell = {
+    extraSpecialArgs = mkOption {
+      type = types.attrs;
+      default = {};
+      example = literalExpression "{ inherit userName; }";
+      description = ''
+        Extra `specialArgs` passed to User Shell. This
+        option can be used to pass additional arguments to all modules.
+      '';
+    };
 
-  config = mkIf config.myModule.enable {
-    systemd.services.myService = {
-      # 创建新的 systemd 服务
-      wantedBy = ["multi-user.target"]; # 此服务希望在多用户目标下启动
-      script = ''        # 服务启动时运行此脚本
-                      echo "Hello, NixOS!"
+    users = mkOption {
+      type = types.attrsOf usModule;
+      default = {};
+      # Prevent the entire submodule being included in the documentation.
+      visible = "shallow";
+      description = ''
+        Per-user User Shell configuration.
       '';
     };
   };
