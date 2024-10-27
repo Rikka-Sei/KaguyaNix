@@ -2,13 +2,25 @@
   name,
   config,
   home-manager,
+  osConfig,s
   ...
 }: let
+  # inherit
+  #   (lib)
+  #   mkRenamedOptionModule
+  #   ;
   cfg = config.defaultShell;
 in {
+  # https://noogle.dev/f/lib/modules/mkRenamedOptionModule
+  # bugfix: modules from OS doesn't working in sub modules
+  imports = [
+    # (mkRenamedOptionModule ["programs"] ["programs"])
+    # (mkRenamedOptionModule ["users"] ["users"])
+  ];
+
   config = mkIf (cfg == "fish") {
-    programs.fish.enable = true;
-    users.users.${userName}.shell = pkgs.fish;
+    osConfig.programs.fish.enable = true;
+    osConfig.users.users.${userName}.shell = pkgs.fish;
 
     home-manager.users.${name} = {
       programs.fish = {

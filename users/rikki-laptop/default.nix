@@ -9,7 +9,6 @@
   stateVersion = "24.05";
 in {
   imports = [
-    ./shell
   ];
 
   user-shell.users.${userName}.defaultShell = "fish";

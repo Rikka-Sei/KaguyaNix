@@ -4,8 +4,16 @@
   lib,
   home-manager,
   ...
-}:
-with lib; let
+}: let
+  inherit
+    (lib)
+    mkOption
+    types
+    mkIf
+    literalExpression
+    mkMerge
+    ;
+
   cfg = config.user-shell;
 
   trackerList = import ./aria2-tracker;
@@ -16,34 +24,30 @@ with lib; let
     specialArgs =
       {
         inherit trackerList;
-        inherit lib;
-        inherit home-manager;
-        # inherit programs;
         # set an alias for "config"
         # prevent system "config" to overide submodule's inner "config" data
         osConfig = config;
       }
       // cfg.extraSpecialArgs;
     modules = [
-      {
+      ({...}: {
+        imports =
+          import ./fish {
+          };
+        # [
+        #   ./fish
+        #   ./bash
+        # ];
+
         # export option "defaultShell" to imported modules
         options.defaultShell = mkOption {
           type = types.str;
-          default = "bash";
-          example = literalExpression "bash";
+          default = "fish";
+          example = "bash";
           description = ''
             Set default shell for users.
             available: bash,fish
           '';
-        };
-      }
-      ({name, ...}: {
-        imports = [
-          ./fish
-          ./bash
-        ];
-
-        config = {
         };
       })
     ];
