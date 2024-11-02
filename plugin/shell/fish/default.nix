@@ -9,11 +9,11 @@ with lib; let
 in {
   config = {
     home-manager.users =
-      mapAttrs'
+      mapAttrs
       (
-        user: _:
-          mkIf (cfg.${user}.defaultShell == "fish") {
-            ${user}.programs.fish = {
+        _: v:
+          mkIf (v.defaultShell == "fish") {
+            programs.fish = {
               enable = true;
               interactiveShellInit = ''
                 set fish_greeting # Disable greeting
@@ -55,17 +55,18 @@ in {
       cfg;
 
     users.users =
-      mapAttrs'
+      mapAttrs
       (
-        user: _:
-          mkIf (cfg.${user}.defaultShell == "fish") {
-            ${user}.shell = pkgs.fish;
+        _: v:
+          mkIf (v.defaultShell == "fish") {
+            shell = pkgs.fish;
           }
       )
       cfg;
 
     programs.fish.enable =
-      mkIf (filter (value: value == "fish") (mapAttrsToList (name: value: value) cfg) == "fish")
-      true;
+      any
+      (v: v == "fish")
+      (mapAttrsToList (_: v: v.defaultShell) cfg);
   };
 }
