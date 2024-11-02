@@ -13,27 +13,18 @@ with lib; let
     options = {
       defaultShell = mkOption {
         type = types.str;
-        default = "fish";
+        default = "bash";
       };
-    };
-    config = {
-      programs.fish.enable = true;
     };
   };
 in {
-  # imports = [
-  #   ./fish
-  # ];
-
+  imports = [
+    ./fish
+  ];
   options = {
     user-shell = mkOption {
       type = with types; attrsOf (submodule userOpts);
       default = {};
-    };
-
-    test = mkOption {
-      type = types.number;
-      default = 0;
     };
   };
 }

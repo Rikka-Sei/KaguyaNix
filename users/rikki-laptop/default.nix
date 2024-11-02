@@ -8,11 +8,7 @@
   userName = "rikki";
   stateVersion = "24.05";
 in {
-  imports = [
-  ];
-
-  user-shell.rikki.defaultShell = 2;
-  test = "ss";
+  user-shell.${userName}.defaultShell = "fish";
 
   users.users.${userName} = {
     isNormalUser = true;
