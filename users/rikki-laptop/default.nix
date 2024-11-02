@@ -11,7 +11,8 @@ in {
   imports = [
   ];
 
-  user-shell.users.${userName}.defaultShell = "fish";
+  user-shell.rikki.defaultShell = 2;
+  test = "ss";
 
   users.users.${userName} = {
     isNormalUser = true;

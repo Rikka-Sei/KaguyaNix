@@ -2,7 +2,7 @@
   name,
   config,
   home-manager,
-  osConfig,s
+  osConfig,
   ...
 }: let
   # inherit
