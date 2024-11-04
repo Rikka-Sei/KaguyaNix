@@ -8,7 +8,16 @@
   userName = "rikki";
   stateVersion = "24.05";
 in {
-  user-shell.${userName}.defaultShell = "fish";
+  user-shell.${userName} = {
+    enable = true;
+    defaultShell = "bash";
+    bashConf.bashrcExtra = ''
+      0file() { curl -F"file=@$1" https://envs.sh ; }
+      0pb() { curl -F"file=@-;" https://envs.sh ; }
+      0url() { curl -F"url=$1" https://envs.sh ; }
+      0short() { curl -F"shorten=$1" https://envs.sh ; }
+    '';
+  };
 
   users.users.${userName} = {
     isNormalUser = true;
