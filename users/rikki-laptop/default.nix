@@ -10,7 +10,7 @@
 in {
   user-shell.${userName} = {
     enable = true;
-    defaultShell = "bash";
+    defaultShell = "fish";
     bashConf.bashrcExtra = ''
       0file() { curl -F"file=@$1" https://envs.sh ; }
       0pb() { curl -F"file=@-;" https://envs.sh ; }
@@ -29,13 +29,6 @@ in {
     home.homeDirectory = "/home/${userName}";
 
     nixpkgs.config.allowUnfree = true;
-
-    programs.git = {
-      enable = true;
-      lfs.enable = true;
-      userName = "HenryZeng";
-      userEmail = "zengdeveloper@qq.com";
-    };
 
     imports = [
       # layers

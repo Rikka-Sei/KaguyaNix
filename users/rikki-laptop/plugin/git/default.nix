@@ -3,6 +3,6 @@
     enable = true;
     lfs.enable = true;
     userName = "HenryZeng";
-    userEmail = "zengdeveloper@qq.com";
+    userEmail = "Rikki@member.fsf.org";
   };
 }
