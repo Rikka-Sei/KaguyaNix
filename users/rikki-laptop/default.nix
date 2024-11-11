@@ -36,6 +36,7 @@ in {
 
       # plugin
       ./plugin/alejandra
+      ./plugin/nil
       ./plugin/git
     ];
 
