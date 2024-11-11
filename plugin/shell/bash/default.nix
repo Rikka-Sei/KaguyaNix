@@ -16,13 +16,13 @@ with lib; let
     home.packages = with pkgs; [
       # TODO : waiting for new merge
       (mkIf
-        (bashConf.blesh)
+        (bashConf.blesh.enable)
         blesh)
     ];
 
     # 启用 starship，这是一个漂亮的 shell 提示符
     programs.starship = {
-      enable = bashConf.starship;
+      enable = bashConf.starship.enable;
       # 自定义配置
       settings = {
         add_newline = true;
@@ -37,17 +37,22 @@ with lib; let
     programs.bash = {
       enable = true;
       enableCompletion = true;
-      bashrcExtra =
+      bashrcExtra = concatLines [
         ''
           export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
           export TL=${trackerList}
         ''
-        + mkIf bashConf.blesh ''
-          # ble.sh loader
-          source "$(blesh-share)"/ble.sh --attach=none # does not work currently
-          [[ ! $\{BLE_VERSION-\} ]] || ble-attach
-        ''
-        + bashConf.bashrcExtra;
+        (
+          if bashConf.blesh.enable
+          then ''
+            # ble.sh loader
+            source "$(blesh-share)"/ble.sh --attach=none # does not work currently
+            [[ ! $\{BLE_VERSION-\} ]] || ble-attach
+          ''
+          else ""
+        )
+        bashConf.bashrcExtra
+      ];
 
       shellAliases = {
         nixos-update = ''
