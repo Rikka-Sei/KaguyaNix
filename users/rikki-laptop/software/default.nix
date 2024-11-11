@@ -6,6 +6,7 @@
     [
       # User Cli Tools
       fastfetch
+      treefmt
     ]
     ++ [
       # Gnome pkgs
