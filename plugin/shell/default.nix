@@ -7,27 +7,6 @@
 with lib; let
   cfg = config.user-shell;
 
-  bashConf = {
-    bashrcExtra = mkOption {
-      type = types.lines;
-      default = "";
-    };
-
-    blesh = {
-      enable = mkOption {
-        type = with types; bool;
-        default = true;
-      };
-    };
-
-    starship = {
-      enable = mkOption {
-        type = with types; bool;
-        default = true;
-      };
-    };
-  };
-
   userOpts = {name, ...}: {
     options = {
       enable = mkOption {
@@ -40,7 +19,26 @@ with lib; let
         default = "bash";
       };
 
-      bashConf = bashConf;
+      bashConf = {
+        bashrcExtra = mkOption {
+          type = types.lines;
+          default = "";
+        };
+
+        blesh = {
+          enable = mkOption {
+            type = with types; bool;
+            default = true;
+          };
+        };
+
+        starship = {
+          enable = mkOption {
+            type = with types; bool;
+            default = true;
+          };
+        };
+      };
     };
   };
 in {
