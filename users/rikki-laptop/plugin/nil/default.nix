@@ -4,6 +4,6 @@
   ...
 }: {
   home.packages = [
-    nil.packages.${pkgs.stdenv.hostPlatform.system}
+    nil.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
