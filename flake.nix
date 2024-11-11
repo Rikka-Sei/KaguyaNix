@@ -33,7 +33,7 @@
           [
             nix-flatpak.nixosModules.nix-flatpak
             home-manager.nixosModules.home-manager
-            ./plugin/shell
+            ./plugin
           ]
           ++ [
             # device

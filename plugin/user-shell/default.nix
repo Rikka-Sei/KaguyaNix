@@ -19,7 +19,7 @@ with lib; let
         default = "bash";
       };
 
-      bashConf = {
+      bash = {
         bashrcExtra = mkOption {
           type = types.lines;
           default = "";
@@ -28,23 +28,29 @@ with lib; let
         blesh = {
           enable = mkOption {
             type = with types; bool;
-            default = true;
+            default = false;
           };
         };
 
         starship = {
           enable = mkOption {
             type = with types; bool;
-            default = true;
+            default = false;
           };
+        };
+      };
+
+      gnupg = {
+        enable = mkOption {
+          type = with types; bool;
+          default = false;
         };
       };
     };
   };
 in {
   imports = [
-    ./fish
-    ./bash
+    ./envs
   ];
   options = {
     user-shell = mkOption {

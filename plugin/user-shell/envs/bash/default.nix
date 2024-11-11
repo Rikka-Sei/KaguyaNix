@@ -6,23 +6,23 @@
 }:
 with lib; let
   cfg = config.user-shell;
-  users-cfg = config.user-shell;
 
   shell-conf = name: value: let
     trackerList = import ../aria2-tracker;
 
-    bashConf = value.bashConf;
+    # inner cfg, helps function to locate specific configs
+    icfg = value.bash;
   in {
     home.packages = with pkgs; [
       # TODO : waiting for new merge
       (mkIf
-        (bashConf.blesh.enable)
+        (icfg.blesh.enable)
         blesh)
     ];
 
     # 启用 starship，这是一个漂亮的 shell 提示符
     programs.starship = {
-      enable = bashConf.starship.enable;
+      enable = icfg.starship.enable;
       # 自定义配置
       settings = {
         add_newline = true;
@@ -43,7 +43,7 @@ with lib; let
           export TL=${trackerList}
         ''
         (
-          if bashConf.blesh.enable
+          if icfg.blesh.enable
           then ''
             # ble.sh loader
             source "$(blesh-share)"/ble.sh --attach=none # does not work currently
@@ -51,7 +51,7 @@ with lib; let
           ''
           else ""
         )
-        bashConf.bashrcExtra
+        icfg.bashrcExtra
       ];
 
       shellAliases = {

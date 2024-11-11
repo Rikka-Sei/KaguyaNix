@@ -11,7 +11,7 @@ in {
   user-shell.${userName} = {
     enable = true;
     defaultShell = "fish";
-    bashConf.bashrcExtra = ''
+    bash.bashrcExtra = ''
       0file() { curl -F"file=@$1" https://envs.sh ; }
       0pb() { curl -F"file=@-;" https://envs.sh ; }
       0url() { curl -F"url=$1" https://envs.sh ; }
@@ -37,7 +37,6 @@ in {
       # plugin
       ./plugin/alejandra
       ./plugin/git
-      ./plugin/gpg
     ];
 
     home.stateVersion = "${stateVersion}";

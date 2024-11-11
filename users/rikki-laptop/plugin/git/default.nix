@@ -2,7 +2,7 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
-    userName = "HenryZeng";
+    userName = "Rikki";
     userEmail = "rikki@member.fsf.org";
   };
 }
