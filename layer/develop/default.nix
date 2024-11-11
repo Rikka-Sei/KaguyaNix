@@ -54,6 +54,7 @@
       # it provides the command `nom` works just like `nix`
       # with more details log output
       nix-output-monitor
+      nixfmt-rfc-style
 
       btop # replacement of htop/nmon
       iotop # io monitoring
