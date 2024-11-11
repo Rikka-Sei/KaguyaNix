@@ -1,5 +1,7 @@
-{pkgs, ...}: {
-  environment.systemPackages = with pkgs;
+{ pkgs, ... }:
+{
+  environment.systemPackages =
+    with pkgs;
     [
       # User Tools
       axel
@@ -81,9 +83,7 @@
 
   programs.direnv.enable = true;
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-25.9.0"
-  ];
+  nixpkgs.config.permittedInsecurePackages = [ "electron-25.9.0" ];
 
   services.v2raya.enable = true;
 }

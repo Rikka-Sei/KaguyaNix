@@ -1,4 +1,1 @@
-{
-  environment.variables = {
-  };
-}
+{ environment.variables = { }; }

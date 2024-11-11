@@ -1,8 +1,5 @@
+{ config, pkgs, ... }:
 {
-  config,
-  pkgs,
-  ...
-}: {
   i18n.defaultLocale = "zh_CN.UTF-8";
   fonts = {
     fontDir.enable = true;
@@ -13,7 +10,7 @@
       noto-fonts-cjk-serif
       source-han-sans
       source-han-serif
-      sarasa-gothic #更纱黑体
+      sarasa-gothic # 更纱黑体
       source-code-pro
       hack-font
       jetbrains-mono
@@ -23,7 +20,7 @@
     # 简单配置一下 fontconfig 字体顺序，以免 fallback 到不想要的字体
     fontconfig = {
       defaultFonts = {
-        emoji = ["Noto Color Emoji"];
+        emoji = [ "Noto Color Emoji" ];
         monospace = [
           "Ubuntu Mono"
           "Noto Sans Mono CJK SC"
@@ -44,28 +41,34 @@
     };
   };
 
-  system.fsPackages = [pkgs.bindfs];
-  fileSystems = let
-    mkRoSymBind = path: {
-      device = path;
-      fsType = "fuse.bindfs";
-      options = ["ro" "resolve-symlinks" "x-gvfs-hide"];
+  system.fsPackages = [ pkgs.bindfs ];
+  fileSystems =
+    let
+      mkRoSymBind = path: {
+        device = path;
+        fsType = "fuse.bindfs";
+        options = [
+          "ro"
+          "resolve-symlinks"
+          "x-gvfs-hide"
+        ];
+      };
+      aggregatedIcons = pkgs.buildEnv {
+        name = "system-icons";
+        paths = with pkgs; [
+          #libsForQt5.breeze-qt5  # for plasma
+          gnome.gnome-themes-extra
+        ];
+        pathsToLink = [ "/share/icons" ];
+      };
+      aggregatedFonts = pkgs.buildEnv {
+        name = "system-fonts";
+        paths = config.fonts.packages;
+        pathsToLink = [ "/share/fonts" ];
+      };
+    in
+    {
+      "/usr/share/icons" = mkRoSymBind "${aggregatedIcons}/share/icons";
+      "/usr/local/share/fonts" = mkRoSymBind "${aggregatedFonts}/share/fonts";
     };
-    aggregatedIcons = pkgs.buildEnv {
-      name = "system-icons";
-      paths = with pkgs; [
-        #libsForQt5.breeze-qt5  # for plasma
-        gnome.gnome-themes-extra
-      ];
-      pathsToLink = ["/share/icons"];
-    };
-    aggregatedFonts = pkgs.buildEnv {
-      name = "system-fonts";
-      paths = config.fonts.packages;
-      pathsToLink = ["/share/fonts"];
-    };
-  in {
-    "/usr/share/icons" = mkRoSymBind "${aggregatedIcons}/share/icons";
-    "/usr/local/share/fonts" = mkRoSymBind "${aggregatedFonts}/share/fonts";
-  };
 }

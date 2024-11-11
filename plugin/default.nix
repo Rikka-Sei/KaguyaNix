@@ -1,5 +1,1 @@
-{
-  imports = [
-    ./user-shell
-  ];
-}
+{ imports = [ ./user-shell ]; }

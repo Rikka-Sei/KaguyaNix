@@ -4,10 +4,12 @@
   lib,
   alejandra,
   ...
-}: let
+}:
+let
   userName = "rikki";
   stateVersion = "24.05";
-in {
+in
+{
   user-shell.${userName} = {
     enable = true;
     defaultShell = "fish";
@@ -21,7 +23,10 @@ in {
 
   users.users.${userName} = {
     isNormalUser = true;
-    extraGroups = ["wheel" "vboxusers"];
+    extraGroups = [
+      "wheel"
+      "vboxusers"
+    ];
   };
 
   home-manager.users.${userName} = {

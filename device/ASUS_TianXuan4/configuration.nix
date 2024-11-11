@@ -4,7 +4,8 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   nixpkgs.config.allowUnfree = true;
 
   boot.loader = {
@@ -36,16 +37,20 @@
     networkmanager.enable = true;
   };
 
-  networking.nameservers = ["119.29.29.29" "2402:4e00::"];
+  networking.nameservers = [
+    "119.29.29.29"
+    "2402:4e00::"
+  ];
 
   time.timeZone = "Asia/Shanghai";
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   nix.settings = {
-    substituters = [
-      "https://cache.nixos.org"
-    ];
+    substituters = [ "https://cache.nixos.org" ];
   };
 
   system.stateVersion = "24.05";

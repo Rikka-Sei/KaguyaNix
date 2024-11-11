@@ -4,7 +4,8 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.user-shell;
 
   shell-conf = name: value: {
@@ -49,26 +50,13 @@ with lib; let
 
   isType = t: t == "fish";
   isSelected = v: v.enable && isType v.defaultShell;
-in {
+in
+{
   config = {
-    home-manager.users =
-      mapAttrs
-      (name: v: mkIf (isSelected v) (shell-conf name v))
-      cfg;
+    home-manager.users = mapAttrs (name: v: mkIf (isSelected v) (shell-conf name v)) cfg;
 
-    users.users =
-      mapAttrs
-      (
-        _: v:
-          mkIf (isSelected v) {
-            shell = pkgs.fish;
-          }
-      )
-      cfg;
+    users.users = mapAttrs (_: v: mkIf (isSelected v) { shell = pkgs.fish; }) cfg;
 
-    programs.fish.enable =
-      any
-      isType
-      (mapAttrsToList (_: v: v.defaultShell) cfg);
+    programs.fish.enable = any isType (mapAttrsToList (_: v: v.defaultShell) cfg);
   };
 }

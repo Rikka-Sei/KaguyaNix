@@ -1,5 +1,1 @@
-{
-  imports = [
-    ./gnupg
-  ];
-}
+{ imports = [ ./gnupg ]; }

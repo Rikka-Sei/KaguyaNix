@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
@@ -23,5 +24,5 @@
     gnome.adwaita-icon-theme
   ];
 
-  services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
 }

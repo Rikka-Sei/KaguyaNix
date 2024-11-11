@@ -22,48 +22,52 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    nix-flatpak,
-    alejandra,
-    nil,
-    ...
-  } @ inputs: {
-    nixosConfigurations = {
-      "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
-        modules =
-          [
-            nix-flatpak.nixosModules.nix-flatpak
-            home-manager.nixosModules.home-manager
-            ./plugin
-          ]
-          ++ [
-            # device
-            ./device/ASUS_TianXuan4
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nix-flatpak,
+      alejandra,
+      nil,
+      ...
+    }@inputs:
+    {
+      nixosConfigurations = {
+        "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit inputs;
+          };
+          modules =
+            [
+              nix-flatpak.nixosModules.nix-flatpak
+              home-manager.nixosModules.home-manager
+              ./plugin
+            ]
+            ++ [
+              # device
+              ./device/ASUS_TianXuan4
 
-            # layers
-            ./layer/develop
-            ./layer/gnome
-            ./layer/flatpak
-            ./layer/home-manager
+              # layers
+              ./layer/develop
+              ./layer/gnome
+              ./layer/flatpak
+              ./layer/home-manager
 
-            # plugin
-            ./plugin/font/laptop
-            ./plugin/input/fcitx5
+              # plugin
+              ./plugin/font/laptop
+              ./plugin/input/fcitx5
 
-            # extra services
-            ./plugin/services/tailscale
-            ./plugin/services/virtualbox
-            ./plugin/services/vm
+              # extra services
+              ./plugin/services/tailscale
+              ./plugin/services/virtualbox
+              ./plugin/services/vm
 
-            # users
-            ./users/rikki-laptop
-          ];
+              # users
+              ./users/rikki-laptop
+            ];
+        };
       };
     };
-  };
 }
