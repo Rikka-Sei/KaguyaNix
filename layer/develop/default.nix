@@ -48,8 +48,6 @@
       gnutar
       gawk
       zstd
-      gnupg
-      pinentry-gnome3
 
       # nix related
       #

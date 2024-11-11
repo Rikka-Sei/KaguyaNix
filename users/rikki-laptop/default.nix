@@ -37,6 +37,7 @@ in {
       # plugin
       ./plugin/alejandra
       ./plugin/git
+      ./plugin/gpg
     ];
 
     home.stateVersion = "${stateVersion}";
