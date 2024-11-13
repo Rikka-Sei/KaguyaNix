@@ -1,12 +1,35 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ config, lib, ... }:
 with lib;
 let
   cfg = config.user-shell;
+
+  bash = {
+    bashrcExtra = mkOption {
+      type = types.lines;
+      default = "";
+    };
+
+    blesh = {
+      enable = mkOption {
+        type = with types; bool;
+        default = false;
+      };
+    };
+
+    starship = {
+      enable = mkOption {
+        type = with types; bool;
+        default = false;
+      };
+    };
+  };
+
+  gnupg = {
+    enable = mkOption {
+      type = with types; bool;
+      default = false;
+    };
+  };
 
   userOpts =
     { name, ... }:
@@ -22,39 +45,28 @@ let
           default = "bash";
         };
 
-        bash = {
-          bashrcExtra = mkOption {
-            type = types.lines;
-            default = "";
-          };
+        # load shell options
+        inherit bash;
 
-          blesh = {
-            enable = mkOption {
-              type = with types; bool;
-              default = false;
-            };
-          };
-
-          starship = {
-            enable = mkOption {
-              type = with types; bool;
-              default = false;
-            };
-          };
-        };
-
-        gnupg = {
-          enable = mkOption {
-            type = with types; bool;
-            default = false;
-          };
-        };
+        # load plugin options
+        inherit gnupg;
       };
     };
 in
 {
   imports = [ ./envs ];
   options = {
-    user-shell = mkOption { type = with types; attrsOf (submodule userOpts); };
+    user-shell = mkOption {
+      type = with types; attrsOf (submodule userOpts);
+      example = {
+        rikki = {
+          enable = true;
+          defaultShell = "fish";
+        };
+      };
+      description = ''
+        simplify user's shell config  
+      '';
+    };
   };
 }
