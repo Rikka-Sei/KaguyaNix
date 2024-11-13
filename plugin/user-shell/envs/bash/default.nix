@@ -73,6 +73,7 @@ in
   config = {
     home-manager.users = mapAttrs (name: v: mkIf (isSelected v) (shell-conf name v)) cfg;
 
+    # users.users.<name>.shell = pkgs.bash;
     users.users = mapAttrs (_: v: mkIf (isSelected v) { shell = pkgs.bash; }) cfg;
   };
 }
