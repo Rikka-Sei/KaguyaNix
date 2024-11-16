@@ -24,13 +24,6 @@ let
     };
   };
 
-  gnupg = {
-    enable = mkOption {
-      type = with types; bool;
-      default = false;
-    };
-  };
-
   userOpts =
     { name, ... }:
     {
@@ -54,19 +47,35 @@ let
     };
 in
 {
-  imports = [ ./envs ];
+  imports = [
+    ./envs
+    ./variables
+  ];
+
   options = {
-    user-shell = mkOption {
-      type = with types; attrsOf (submodule userOpts);
-      example = {
-        rikki = {
-          enable = true;
-          defaultShell = "fish";
+    user-shell = {
+      users = mkOption {
+        type = with types; attrsOf (submodule userOpts);
+        example = {
+          rikki = {
+            enable = true;
+            defaultShell = "fish";
+          };
         };
+        description = ''
+          Simplify the user's shell configuration.
+        '';
       };
-      description = ''
-        simplify user's shell config  
-      '';
+    };
+
+    variables = {
+      tracker-aria2 = mkOption {
+        type = with types; str;
+        example = "udp://a:1337/announce,udp://b:1337/announce,...";
+        description = ''
+          A string of tracker URLs separated by commas.
+        '';
+      };
     };
   };
 }
