@@ -6,7 +6,7 @@
 }:
 with lib;
 let
-  cfg = config.user-shell;
+  cfg = config.user-shell.users;
 
   shell-conf = name: value: {
     programs.fish = {
