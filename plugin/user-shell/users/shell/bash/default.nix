@@ -6,13 +6,13 @@
 }:
 with lib;
 let
-  cfg = config.user-shell.users;
+  root = config.user-shell;
+  cfg = root.users;
+  vars = root.variables;
 
   shell-conf =
     name: value:
     let
-      trackerList = import ../aria2-tracker;
-
       # inner cfg, helps function to locate specific configs
       icfg = value.bash;
     in
@@ -42,7 +42,7 @@ let
         bashrcExtra = concatLines [
           ''
             export PATH="$PATH:$HOME/bin:$HOME/.local/bin"
-            export TL=${trackerList}
+            export TL=${vars.tracker-aria2}
           ''
           (
             if icfg.blesh.enable then
