@@ -1,11 +1,19 @@
-{ config, lib, ... }:
-with lib;
+{ lib, ... }:
 let
-  cfg = config.user-shell;
+  inherit (lib) mkOption types;
+
+  inherit (types)
+    lines
+    bool
+    str
+    attrsOf
+    listOf
+    submodule
+    ;
 
   bash = {
     bashrcExtra = mkOption {
-      type = types.lines;
+      type = lines;
       default = "";
       example = ''
         export username=rikki
@@ -19,7 +27,7 @@ let
 
     blesh = {
       enable = mkOption {
-        type = with types; bool;
+        type = bool;
         default = false;
         example = false;
         description = ''
@@ -30,7 +38,7 @@ let
 
     starship = {
       enable = mkOption {
-        type = with types; bool;
+        type = bool;
         default = false;
         example = false;
         description = ''
@@ -45,7 +53,7 @@ let
     {
       options = {
         enable = mkOption {
-          type = with types; bool;
+          type = bool;
           default = false;
           example = false;
           description = ''
@@ -54,7 +62,7 @@ let
         };
 
         defaultShell = mkOption {
-          type = types.str;
+          type = str;
           default = "bash";
           example = "fish";
           description = ''
@@ -64,22 +72,19 @@ let
 
         # load shell options
         inherit bash;
-
-        # load plugin options
-        inherit gnupg;
       };
     };
 in
 {
   imports = [
-    ./envs
+    ./users
     ./variables
   ];
 
   options = {
     user-shell = {
       users = mkOption {
-        type = with types; attrsOf (submodule userOpts);
+        type = attrsOf (submodule userOpts);
         example = {
           rikki = {
             enable = true;
@@ -90,16 +95,28 @@ in
           Simplify the user's shell configuration.
         '';
       };
-    };
 
-    variables = {
-      tracker-aria2 = mkOption {
-        type = with types; str;
-        default = "";
-        example = "udp://a:1337/announce,udp://b:1337/announce,...";
-        description = ''
-          A string of tracker URLs separated by commas.
-        '';
+      variables = {
+        tracker-raw = mkOption {
+          type = listOf str;
+          default = "";
+          example = [
+            "udp://a:1337/announce"
+            "udp://b:1337/announce"
+          ];
+          description = ''
+            A string of tracker URLs separated by commas.
+          '';
+        };
+
+        tracker-aria2 = mkOption {
+          type = str;
+          default = "";
+          example = "udp://a:1337/announce,udp://b:1337/announce,...";
+          description = ''
+            A string of tracker URLs separated by commas.
+          '';
+        };
       };
     };
   };
