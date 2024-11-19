@@ -4,7 +4,7 @@ let
 
 in
 {
-  configs = {
+  config = {
     user-shell.variables.tracker-aria2 = "s";
   };
 }
