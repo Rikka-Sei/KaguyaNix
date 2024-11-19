@@ -6,6 +6,7 @@ let
     lines
     bool
     str
+    enum
     attrsOf
     listOf
     submodule
@@ -67,6 +68,18 @@ let
           example = "fish";
           description = ''
             Select the default shell environment for a specific user.
+          '';
+        };
+
+        languageServer = mkOption {
+          type = listOf enum [
+            "nil"
+            "alejandra"
+          ];
+          default = [ ];
+          example = [ "nil" ];
+          description = ''
+            Select supported languageServer for a specific user.
           '';
         };
 
