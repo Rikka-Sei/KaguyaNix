@@ -1,10 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  alejandra,
-  ...
-}:
+{ ... }:
 let
   userName = "rikki";
   stateVersion = "24.05";
@@ -42,8 +36,6 @@ in
       ./software
 
       # plugin
-      ./plugin/alejandra
-      ./plugin/nil
       ./plugin/git
     ];
 
