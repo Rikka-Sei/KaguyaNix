@@ -4,8 +4,9 @@
   lib,
   ...
 }:
-with lib;
 let
+  inherit (lib) concatLines mapAttrs mkIf;
+
   root = config.user-shell;
   cfg = root.users;
   vars = root.variables;
