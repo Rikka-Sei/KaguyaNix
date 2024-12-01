@@ -30,8 +30,6 @@
     };
   };
 
-  boot.crashDump.enable = true;
-
   networking = {
     hostName = "ASUS_TianXuan4-NixOS"; # please config in user configurations
     networkmanager.enable = true;
