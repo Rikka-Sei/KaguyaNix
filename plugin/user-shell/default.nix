@@ -72,10 +72,10 @@ let
         };
 
         languageServer = mkOption {
-          type = listOf enum [
+          type = listOf (enum [
             "nil"
             "alejandra"
-          ];
+          ]);
           default = [ ];
           example = [ "nil" ];
           description = ''
