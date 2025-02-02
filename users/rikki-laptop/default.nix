@@ -4,17 +4,16 @@ let
   stateVersion = "24.05";
 in
 {
-  user-shell = {
-    users.${userName} = {
-      enable = true;
-      defaultShell = "fish";
-      bash.bashrcExtra = ''
-        0file() { curl -F"file=@$1" https://envs.sh ; }
-        0pb() { curl -F"file=@-;" https://envs.sh ; }
-        0url() { curl -F"url=$1" https://envs.sh ; }
-        0short() { curl -F"shorten=$1" https://envs.sh ; }
-      '';
-    };
+  user-shell.users.${userName} = {
+    enable = true;
+    defaultShell = "fish";
+    bash.bashrcExtra = ''
+      0file() { curl -F"file=@$1" https://envs.sh ; }
+      0pb() { curl -F"file=@-;" https://envs.sh ; }
+      0url() { curl -F"url=$1" https://envs.sh ; }
+      0short() { curl -F"shorten=$1" https://envs.sh ; }
+    '';
+    languageServer = ["alejandra"];
   };
 
   users.users.${userName} = {

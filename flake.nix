@@ -28,8 +28,6 @@
       nixpkgs,
       home-manager,
       nix-flatpak,
-      alejandra,
-      nil,
       ...
     }@inputs:
     {

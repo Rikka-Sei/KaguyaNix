@@ -7,7 +7,8 @@
   ...
 }:
 let
-  inherit (lib) mapAttrs mkIf elem;
+  inherit (lib) mapAttrs mkIf;
+  inherit (lib.lists) elem;
 
   root = config.user-shell;
   cfg = root.users;
@@ -18,13 +19,22 @@ let
       # inner cfg, helps function to locate specific configs
       icfg = value.languageServer;
     in
-    mkIf (elem "alejandra" icfg) { home.packages = [ alejandra.defaultPackage.${system} ]; };
+    mkIf (elem "alejandra" icfg) { 
+      home.packages = [ alejandra.defaultPackage.${system} ]; 
+    };
 
   # Check whether the `user-shell` module is enabled for this user.
   isEnabled = v: v.enable;
+
+  userConfigs = mapAttrs 
+    (userName: userConfig: 
+      mkIf (isEnabled userConfig) {
+        home-manager.users.${userName} = plugin-conf userName userConfig;
+    }) 
+    cfg;
 in
 {
-  config = {
-    home-manager.users = mapAttrs (name: v: mkIf (isEnabled v) (plugin-conf name v)) cfg;
+  home-manager = {
+      users = lib.mkMerge (lib.attrValues userConfigs);
   };
 }
