@@ -13,7 +13,7 @@ in
       0url() { curl -F"url=$1" https://envs.sh ; }
       0short() { curl -F"shorten=$1" https://envs.sh ; }
     '';
-    languageServer = ["alejandra"];
+    languageServer = ["alejandra" "nil"];
   };
 
   users.users.${userName} = {
