@@ -95,7 +95,7 @@ in
   ];
 
   options = {
-    user-shell = {
+    user-envirentment = {
       users = mkOption {
         type = attrsOf (submodule userOpts);
         example = {

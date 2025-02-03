@@ -7,7 +7,7 @@
 let
   inherit (lib) concatLines mapAttrs mkIf;
 
-  root = config.user-shell;
+  root = config.user-envirentment;
   cfg = root.users;
   vars = root.variables;
 
