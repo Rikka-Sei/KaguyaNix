@@ -53,10 +53,6 @@
               ./layer/flatpak
               ./layer/home-manager
 
-              # plugin
-              ./plugin/font/laptop
-              ./plugin/input/fcitx5
-
               # extra services
               ./plugin/services/tailscale
               ./plugin/services/virtualbox

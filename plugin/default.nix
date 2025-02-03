@@ -1,4 +1,8 @@
 { ... }:
 {
-  imports = [ ./user-envirentment ];
+  imports = [
+    ./font
+    ./input
+    ./user-envirentment
+  ];
 }
