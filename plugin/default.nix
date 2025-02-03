@@ -1,9 +1,4 @@
+{ ... }:
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
-  imports = [ ./user-shell ];
+  imports = [ ./user-envirentment ];
 }
