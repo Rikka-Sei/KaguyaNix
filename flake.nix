@@ -44,12 +44,15 @@
               ./plugin
             ]
             ++ [
+              # Desktop
+              ./desktop/gnome
+
               # device
               ./device/ASUS_TianXuan4
 
               # layers
               ./layer/develop
-              ./layer/gnome
+
               ./layer/flatpak
               ./layer/home-manager
 
