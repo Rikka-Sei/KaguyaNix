@@ -71,6 +71,10 @@ let
           '';
         };
 
+        defaultShellOptions = {
+
+        };
+
         languageServer = mkOption {
           type = listOf (enum [
             "nil"
@@ -82,9 +86,6 @@ let
             Select supported languageServer for a specific user.
           '';
         };
-
-        # load shell options
-        inherit bash;
       };
     };
 in

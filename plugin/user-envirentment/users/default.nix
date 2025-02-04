@@ -1,12 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ ... }:
 {
   imports = [
-    ./plugin
-    ./shell
+    ./defaultShell
+    ./languageServer
   ];
 }

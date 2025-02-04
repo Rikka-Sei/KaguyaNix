@@ -23,13 +23,7 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      nix-flatpak,
-      ...
-    }@inputs:
+    { self, nixpkgs, ... }@inputs:
     {
       nixosConfigurations = {
         "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
@@ -39,8 +33,7 @@
           };
           modules =
             [
-              nix-flatpak.nixosModules.nix-flatpak
-              home-manager.nixosModules.home-manager
+
               ./plugin
             ]
             ++ [

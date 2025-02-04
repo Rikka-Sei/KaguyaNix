@@ -1,1 +1,4 @@
-{ imports = [ ./tracker ]; }
+{ ... }:
+{
+  imports = [ ./tracker ];
+}
