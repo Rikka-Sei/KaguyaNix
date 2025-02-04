@@ -7,7 +7,7 @@
 let
   inherit (lib) concatLines mapAttrs mkIf;
 
-  root = config.user-envirentment;
+  root = config.user-environment;
   cfg = root.users;
   vars = root.variables;
 
@@ -72,7 +72,9 @@ let
 in
 {
   config = {
-    home-manager.users = mapAttrs (name: v: mkIf (isSelected v) (shell-conf name v)) cfg;
+    home-manager.users = mapAttrs (
+      userName: userConfig: mkIf (isSelected userConfig) (shell-conf userName userConfig)
+    ) cfg;
 
     # users.users.<name>.shell = pkgs.bash;
     users.users = mapAttrs (_: v: mkIf (isSelected v) { shell = pkgs.bash; }) cfg;

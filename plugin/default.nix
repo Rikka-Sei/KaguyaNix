@@ -5,6 +5,6 @@
     inputs.home-manager.nixosModules.home-manager
     ./font
     ./input
-    ./user-envirentment
+    ./user-environment
   ];
 }

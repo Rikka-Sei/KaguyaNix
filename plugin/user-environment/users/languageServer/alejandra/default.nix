@@ -10,7 +10,7 @@ let
   inherit (lib.lists) elem;
 
   system = pkgs.stdenv.hostPlatform.system;
-  root = config.user-envirentment;
+  root = config.user-environment;
   cfg = root.users;
 
   plugin-conf =
@@ -21,7 +21,7 @@ let
     in
     mkIf (elem "alejandra" icfg) { home.packages = [ inputs.alejandra.defaultPackage.${system} ]; };
 
-  # Check whether the `user-envirentment` module is enabled for this user.
+  # Check whether the `user-environment` module is enabled for this user.
   isEnabled = v: v.enable;
 
   userConfigs = mapAttrs (

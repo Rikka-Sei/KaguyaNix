@@ -9,7 +9,7 @@ let
   inherit (lib) mapAttrs mkIf elem;
 
   system = pkgs.stdenv.hostPlatform.system;
-  root = config.user-envirentment;
+  root = config.user-environment;
   cfg = root.users;
 
   plugin-conf =
@@ -20,15 +20,14 @@ let
     in
     mkIf (elem "nil" icfg) { home.packages = [ inputs.nil.packages.${system}.default ]; };
 
-  # Check whether the `user-envirentment` module is enabled for this user.
+  # Check whether the `user-environment` module is enabled for this user.
   isEnabled = v: v.enable;
 
-  userConfigs = mapAttrs (
-    userName: userConfig: mkIf (isEnabled userConfig) { ${userName} = plugin-conf userName userConfig; }
-  ) cfg;
 in
 {
   config = {
-    home-manager.users = lib.mkMerge (lib.attrValues userConfigs);
+    home-manager.users = mapAttrs (
+      userName: userConfig: mkIf (isEnabled userConfig) { ${userName} = plugin-conf userName userConfig; }
+    ) cfg;
   };
 }

@@ -12,43 +12,6 @@ let
     submodule
     ;
 
-  bash = {
-    bashrcExtra = mkOption {
-      type = lines;
-      default = "";
-      example = ''
-        export username=rikki
-      '';
-      description = ''
-        Extra commands that should be placed in {file}~/.bashrc.
-        Note that these commands will be run even in non-interactive shells.
-        (Inherit from parent)
-      '';
-    };
-
-    blesh = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        example = false;
-        description = ''
-          Choose whether to enable the blesh feature.
-        '';
-      };
-    };
-
-    starship = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        example = false;
-        description = ''
-          Choose whether to enable the starship feature.
-        '';
-      };
-    };
-  };
-
   userOpts =
     { name, ... }:
     {
@@ -72,7 +35,42 @@ let
         };
 
         defaultShellOptions = {
+          bash = {
+            bashrcExtra = mkOption {
+              type = lines;
+              default = "";
+              example = ''
+                export username=rikki
+              '';
+              description = ''
+                Extra commands that should be placed in {file}~/.bashrc.
+                Note that these commands will be run even in non-interactive shells.
+                (Inherit from parent)
+              '';
+            };
 
+            blesh = {
+              enable = mkOption {
+                type = bool;
+                default = false;
+                example = false;
+                description = ''
+                  Choose whether to enable the blesh feature.
+                '';
+              };
+            };
+
+            starship = {
+              enable = mkOption {
+                type = bool;
+                default = false;
+                example = false;
+                description = ''
+                  Choose whether to enable the starship feature.
+                '';
+              };
+            };
+          };
         };
 
         languageServer = mkOption {
@@ -96,7 +94,7 @@ in
   ];
 
   options = {
-    user-envirentment = {
+    user-environment = {
       users = mkOption {
         type = attrsOf (submodule userOpts);
         example = {
