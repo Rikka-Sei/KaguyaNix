@@ -23,13 +23,11 @@ let
 
   # Check whether the `user-environment` module is enabled for this user.
   isEnabled = v: v.enable;
-
-  userConfigs = mapAttrs (
-    userName: userConfig: mkIf (isEnabled userConfig) { ${userName} = plugin-conf userName userConfig; }
-  ) cfg;
 in
 {
   config = {
-    home-manager.users = lib.mkMerge (lib.attrValues userConfigs);
+    home-manager.users = mapAttrs (
+      userName: userConfig: mkIf (isEnabled userConfig) (plugin-conf userName userConfig)
+    ) cfg;
   };
 }

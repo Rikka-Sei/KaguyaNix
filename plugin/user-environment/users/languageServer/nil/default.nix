@@ -27,7 +27,7 @@ in
 {
   config = {
     home-manager.users = mapAttrs (
-      userName: userConfig: mkIf (isEnabled userConfig) { ${userName} = plugin-conf userName userConfig; }
+      userName: userConfig: mkIf (isEnabled userConfig) (plugin-conf userName userConfig)
     ) cfg;
   };
 }
