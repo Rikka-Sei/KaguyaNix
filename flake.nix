@@ -2,12 +2,12 @@
   description = "Rikki 's NixOS Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,9 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nix-ld = {
       url = "github:Mic92/nix-ld";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-master";
     };
 
   };
