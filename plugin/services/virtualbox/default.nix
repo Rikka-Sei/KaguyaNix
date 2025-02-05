@@ -5,7 +5,7 @@
     let
       pkgs = import (builtins.fetchGit {
         # Descriptive name to make the store path easier to identify
-        name = "my-old-revision";
+        name = "overlay-virtualbox";
         url = "https://github.com/NixOS/nixpkgs/";
         ref = "refs/heads/nixos-24.05";
         rev = "6eb01a67e1fc558644daed33eaeb937145e17696";
