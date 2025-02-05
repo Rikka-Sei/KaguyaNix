@@ -98,7 +98,6 @@ let
           packages = lib.mkOption {
             type = lib.types.listOf lib.types.package;
             default = [ ];
-            example = lib.literalExpression "[ pkgs.firefox ]"; # TODO waiting to update example
             description = ''
               Add any missing dynamic libraries for unpackaged programs here.
               (!) nix-ld does not work for 32-bit executables on x86_64 machines.

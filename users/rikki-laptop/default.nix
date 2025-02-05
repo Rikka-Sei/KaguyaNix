@@ -19,6 +19,9 @@ in
       "alejandra"
       "nil"
     ];
+    nix-ld = {
+      enable = true;
+    };
   };
 
   users.users.${userName} = {
