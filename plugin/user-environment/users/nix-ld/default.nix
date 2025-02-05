@@ -25,7 +25,7 @@ let
 in
 {
   config = {
-    programs.nix-ld = {
+    programs.nix-ld.dev = {
       enable = isNixLdEnable;
       libraries = packages;
     };
