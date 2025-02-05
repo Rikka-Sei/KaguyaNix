@@ -51,7 +51,6 @@
               ./layer/develop
 
               ./layer/flatpak
-              ./layer/home-manager
 
               # extra services
               ./plugin/services/tailscale
