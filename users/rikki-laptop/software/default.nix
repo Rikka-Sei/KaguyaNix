@@ -12,7 +12,7 @@
     ]
     ++ [
       # Gnome pkgs
-      gnome.gnome-software
+      gnome-software
     ]
     ++ [
       # User GUI Tools

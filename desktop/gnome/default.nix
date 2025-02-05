@@ -7,8 +7,8 @@
   };
 
   services.xserver.desktopManager.gnome.sessionPath = with pkgs; [
-    gnome.mutter
-    gnome.gnome-shell
+    mutter
+    gnome-shell
   ];
 
   programs.kdeconnect = {
@@ -21,8 +21,8 @@
     gnomeExtensions.gtile
     gnomeExtensions.kimpanel
     gnomeExtensions.notification-banner-reloaded
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
   ];
 
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
 }
