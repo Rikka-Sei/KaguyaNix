@@ -32,10 +32,7 @@
             inherit inputs;
           };
           modules =
-            [
-
-              ./plugin
-            ]
+            [ ./plugin ]
             ++ [
               # Desktop
               ./desktop/gnome

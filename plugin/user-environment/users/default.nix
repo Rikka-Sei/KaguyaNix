@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./defaultShell
+    ./defaultShellOptions
     ./languageServer
   ];
 }
