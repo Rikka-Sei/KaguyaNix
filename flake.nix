@@ -21,12 +21,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nix-ld = {
-      url = "github:Mic92/nix-ld";
-      inputs.nixpkgs.follows = "nixpkgs-master";
-    };
-
   };
 
   outputs =
@@ -54,7 +48,7 @@
 
               # extra services
               ./plugin/services/tailscale
-              ./plugin/services/virtualbox
+              #./plugin/services/virtualbox
               ./plugin/services/vm
 
               # users
