@@ -29,6 +29,8 @@ in
     extraGroups = [
       "wheel"
       "vboxusers"
+      "libvirt"
+      "kvm"
     ];
   };
 
