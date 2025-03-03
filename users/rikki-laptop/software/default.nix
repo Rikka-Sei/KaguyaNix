@@ -43,5 +43,6 @@
     ++ [
       # Generater
       typst
+      thunderbird
     ];
 }
