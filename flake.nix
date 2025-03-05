@@ -50,6 +50,7 @@
               ./plugin/services/tailscale
               #./plugin/services/virtualbox
               ./plugin/services/vm
+              ./plugin/services/docker
 
               # users
               ./users/rikki-laptop
