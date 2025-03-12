@@ -1,5 +1,6 @@
 ASUS_TianXuan4_Rikki:
-	sudo nixos-rebuild switch --flake ./#ASUS_TianXuan4_Rikki --show-trace
+	http_proxy=http://127.0.0.1:20171 https_proxy=http://127.0.0.1:20171 nixos-rebuild build --flake ./#ASUS_TianXuan4_Rikki --show-trace
+	sudo nixos-rebuild switch --flake ./#ASUS_TianXuan4_Rikki
 	
 update:
 	nix flake update
