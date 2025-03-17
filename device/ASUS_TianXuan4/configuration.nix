@@ -29,6 +29,13 @@
     networkmanager.enable = true;
   };
 
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [
+      8080
+    ];
+  };
+
   networking.nameservers = [
     "119.29.29.29"
     "2402:4e00::"
