@@ -1,6 +1,6 @@
 { ... }:
 {
   imports = [
-    ./command-not-found.nix
+    #./command-not-found.nix
   ];
 }
