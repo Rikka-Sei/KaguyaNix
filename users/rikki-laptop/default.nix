@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   userName = "rikki";
   stateVersion = "24.05";
@@ -51,4 +51,10 @@ in
     home.stateVersion = "${stateVersion}";
     programs.home-manager.enable = true;
   };
+
+  programs.gnupg.agent = {
+    enable = true;
+    pinentryPackage = pkgs.pinentry-gnome3;
+  };
+
 }
