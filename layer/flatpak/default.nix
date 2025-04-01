@@ -10,11 +10,8 @@
 
   services.flatpak.packages = [
     "ar.xjuan.Cambalache"
-    "com.getpostman.Postman"
-    "com.github.gmg137.netease-cloud-music-gtk"
     "com.google.Chrome"
     "com.obsproject.Studio"
-    "com.qq.QQ"
     "com.tencent.WeChat"
     "com.usebottles.bottles"
     "com.valvesoftware.Steam"
@@ -39,8 +36,6 @@
     "io.github.Foldex.AdwSteamGtk"
     "org.gabmus.gfeeds"
     "com.belmoussaoui.Authenticator" # Authenticator 身份验证器
-    "com.usebottles.bottles"
     "com.github.tchx84.Flatseal"
-    "net.codelogistics.webapps"
   ];
 }

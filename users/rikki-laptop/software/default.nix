@@ -46,5 +46,6 @@
       thunderbird
       qq
       code-cursor
+      hoppscotch
     ];
 }
