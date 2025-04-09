@@ -84,6 +84,4 @@
   programs.direnv.enable = true;
 
   nixpkgs.config.permittedInsecurePackages = [ "electron-25.9.0" ];
-
-  services.v2raya.enable = true;
 }
