@@ -83,5 +83,7 @@
 
   programs.direnv.enable = true;
 
+  services.sing-box.enable = true;
+
   nixpkgs.config.permittedInsecurePackages = [ "electron-25.9.0" ];
 }
