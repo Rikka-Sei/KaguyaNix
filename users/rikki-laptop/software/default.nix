@@ -46,6 +46,6 @@
       thunderbird
       qq
       code-cursor
-      gui-for-singbox
+      hiddify-app
     ];
 }
