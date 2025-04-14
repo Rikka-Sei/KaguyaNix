@@ -13,6 +13,22 @@ let
       enable = true;
       interactiveShellInit = ''
         set fish_greeting # Disable greeting
+
+        function gitsign -d "Git commit with signing"
+            if test (count $argv) -lt 1
+                echo "用法: gitsign <message> [keyid]"
+                return 1
+            end
+
+            set -l message $argv[1]
+            set -l keyid 8A33560C4120DFA3  # 默认密钥
+
+            if test (count $argv) -ge 2
+                set keyid $argv[2]
+            end
+
+            git -c user.signingkey=$keyid! commit -S -m "$message"
+        end
       '';
       # shellInit = ''
       #   export TL=${trackerList}
