@@ -47,5 +47,9 @@
       qq
       code-cursor
       hiddify-app
+    ]
+    ++ [
+      ghidra
+      ghidra-extensions.ghidra-golanganalyzerextension
     ];
 }
