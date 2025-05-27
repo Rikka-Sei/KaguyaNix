@@ -22,6 +22,7 @@
     gnomeExtensions.kimpanel
     gnomeExtensions.notification-banner-reloaded
     gnomeExtensions.places-status-indicator
+    gnomeExtensions.appindicator
     adwaita-icon-theme
   ];
 
