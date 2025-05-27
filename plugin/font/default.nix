@@ -4,7 +4,7 @@
   fonts = {
     fontDir.enable = true;
     packages = with pkgs; [
-      fira-code-nerdfont
+      nerd-fonts.fira-code
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif

@@ -37,9 +37,7 @@ in
   home-manager.users.${userName} = {
     home.username = "${userName}";
     home.homeDirectory = "/home/${userName}";
-
-    nixpkgs.config.allowUnfree = true;
-
+    
     imports = [
       # layers
       ./software

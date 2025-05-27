@@ -51,5 +51,7 @@
     ++ [
       ghidra
       ghidra-extensions.ghidra-golanganalyzerextension
+      remmina
+      feishu
     ];
 }

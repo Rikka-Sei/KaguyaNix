@@ -1,7 +1,5 @@
 ASUS_TianXuan4_Rikki:
-	nixos-rebuild build --flake ./#ASUS_TianXuan4_Rikki --show-trace
-	sudo nixos-rebuild switch --flake ./#ASUS_TianXuan4_Rikki
-	rm result
+	sudo nixos-rebuild switch --flake ./#ASUS_TianXuan4_Rikki --show-trace
 	
 update:
 	nix flake update
