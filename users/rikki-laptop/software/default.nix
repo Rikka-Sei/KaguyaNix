@@ -7,6 +7,8 @@
     with pkgs;
     [
       # User Cli Tools
+      bc
+      jq
       fastfetch
       treefmt
     ]
@@ -44,14 +46,19 @@
       # Generater
       typst
       thunderbird
-      qq
       code-cursor
       hiddify-app
     ]
     ++ [
+      AI-code
+      gemini-cli
+      ddnet
       ghidra
       ghidra-extensions.ghidra-golanganalyzerextension
       remmina
       feishu
+      tor-browser
+      kdePackages.kdenlive
+      qq
     ];
 }

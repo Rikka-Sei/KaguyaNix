@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   boot.loader = {
     grub = {
@@ -28,16 +28,8 @@
   };
 
   networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      8080
-    ];
+    enable = false;
   };
-
-  networking.nameservers = [
-    "119.29.29.29"
-    "2402:4e00::"
-  ];
 
   time.timeZone = "Asia/Shanghai";
 

@@ -12,9 +12,8 @@
     "ar.xjuan.Cambalache"
     "com.google.Chrome"
     "com.obsproject.Studio"
-    "com.tencent.WeChat"
-    "com.usebottles.bottles"
     "com.valvesoftware.Steam"
+    "com.tencent.WeChat"
     "dev.geopjr.Calligraphy"
     "org.gnome.Boxes"
     "org.gnome.Builder"
@@ -37,5 +36,6 @@
     "org.gabmus.gfeeds"
     "com.belmoussaoui.Authenticator" # Authenticator 身份验证器
     "com.github.tchx84.Flatseal"
+    "com.qq.QQ"
   ];
 }

@@ -79,7 +79,22 @@
     ++ [
       # Monitor tools
       mission-center
+
+      mailutils
     ];
+
+  services.postfix = {
+    enable = true;
+    # 仅本地配置
+    domain = "localhost";
+    origin = "localhost";
+    config = {
+      mydestination = "localhost";
+      inet_interfaces = "loopback-only";
+      # 不需要网络配置
+      default_transport = "local";
+    };
+  };
 
   programs.direnv.enable = true;
 }

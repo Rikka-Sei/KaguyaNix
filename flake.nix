@@ -46,12 +46,11 @@
               ./layer/develop
 
               ./layer/flatpak
-
               # extra services
               # ./plugin/services/tailscale
               # ./plugin/services/virtualbox
               #./plugin/services/vmware
-              #./plugin/services/vm
+              ./plugin/services/vm
               ./plugin/services/docker
 
               # users
