@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, unstable, ... }:
 {
   imports = [
     inputs.nix-flatpak.nixosModules.nix-flatpak
@@ -12,5 +12,9 @@
   # home-manager pre config
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.extraSpecialArgs = inputs;
+
+  home-manager.extraSpecialArgs = {
+    inherit inputs;
+    inherit unstable; # 传递 unstable 参数给 home-manager
+  };
 }

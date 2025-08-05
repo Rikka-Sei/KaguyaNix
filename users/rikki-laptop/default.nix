@@ -37,7 +37,7 @@ in
   home-manager.users.${userName} = {
     home.username = "${userName}";
     home.homeDirectory = "/home/${userName}";
-    
+
     imports = [
       # layers
       ./software

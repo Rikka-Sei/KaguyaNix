@@ -38,9 +38,24 @@
     "flakes"
   ];
 
+  nix.settings.trusted-users = [
+    "root"
+    "rikki"
+  ];
+
+  # 启用 QEMU 用户模式模拟
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
+  # 配置 Nix 设置
   nix.settings = {
-    substituters = [ "https://cache.nixos.org" ];
+    # 允许额外的平台
+    extra-platforms = [ "aarch64-linux" ];
   };
+
+  # 确保 QEMU 可用
+  environment.systemPackages = with pkgs; [
+    qemu
+  ];
 
   system.stateVersion = "24.05";
 }

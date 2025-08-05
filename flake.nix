@@ -3,60 +3,58 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    alejandra = {
-      url = "github:kamadorueda/alejandra/3.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nil = {
-      url = "github:oxalica/nil";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
+    nil.url = "github:oxalica/nil";
   };
 
   outputs =
-    { self, nixpkgs, ... }@inputs:
+    {
+      self,
+      nixpkgs-unstable,
+      nixpkgs,
+      ...
+    }@inputs:
     {
       nixosConfigurations = {
-        "ASUS_TianXuan4_Rikki" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit inputs;
+        "ASUS_TianXuan4_Rikki" =
+          let
+            system = "x86_64-linux";
+          in
+          nixpkgs.lib.nixosSystem {
+            specialArgs = {
+              inherit inputs;
+              unstable = import nixpkgs-unstable {
+                inherit system;
+                config.allowUnfree = true;
+              };
+            };
+            modules =
+              [
+                ./plugin
+              ]
+              ++ [
+                {
+                  nixpkgs.config.allowUnfree = true;
+                }
+                # Desktop
+                ./desktop/gnome
+
+                # device
+                ./device/ASUS_TianXuan4
+
+                # layers
+                ./layer/develop
+
+                ./layer/flatpak
+                ./plugin/services/vm
+
+                # users
+                ./users/rikki-laptop
+              ];
           };
-          modules =
-            [ ./plugin ]
-            ++ [
-              { nixpkgs.config.allowUnfree = true; }
-              # Desktop
-              ./desktop/gnome
-
-              # device
-              ./device/ASUS_TianXuan4
-
-              # layers
-              ./layer/develop
-
-              ./layer/flatpak
-              # extra services
-              # ./plugin/services/tailscale
-              # ./plugin/services/virtualbox
-              #./plugin/services/vmware
-              ./plugin/services/vm
-              ./plugin/services/docker
-
-              # users
-              ./users/rikki-laptop
-            ];
-        };
       };
     };
 }
