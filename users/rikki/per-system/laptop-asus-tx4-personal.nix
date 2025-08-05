@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{lib, pkgs, ...}: let
   userName = "rikki";
 in {
   # 笔记本上的用户特定配置（非硬件相关）
@@ -19,7 +19,7 @@ in {
 
     # 笔记本环境下的 Git 配置（比如使用不同的邮箱）
     programs.git = {
-      userEmail = "rikki@laptop.local"; # 示例：笔记本特定邮箱
+      userEmail = lib.mkForce "rikki@member.fsf.org"; # 示例：笔记本特定邮箱
       extraConfig = {
         # 笔记本上可能使用不同的代理设置等
       };

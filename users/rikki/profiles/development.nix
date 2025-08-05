@@ -6,9 +6,9 @@
   userName = "rikki";
 in {
   # 开发工具
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     inputs.alejandra.defaultPackage.${pkgs.system}
-    inputs.nil.defaultPackage.${pkgs.system}
+    inputs.nil.packages.${pkgs.system}.default
   ];
 
   # nix-ld 支持
@@ -54,4 +54,5 @@ in {
   };
 
   users.users.${userName}.shell = pkgs.fish;
+  programs.fish.enable = true;
 }

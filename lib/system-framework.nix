@@ -1,8 +1,4 @@
-{
-  lib,
-  config,
-  ...
-}: {
+{lib, ...}: {
   options.systemConfig = lib.mkOption {
     type = lib.types.submodule {
       options = {
@@ -24,18 +20,5 @@
       };
     };
     description = "系统配置";
-  };
-
-  config = {
-    nixpkgs.hostPlatform = config.systemConfig.architecture;
-
-    imports =
-      [
-        # 硬件配置
-        ../hardware/${config.systemConfig.hardware}/configuration.nix
-      ]
-      ++
-      # 额外模块
-      (map (module: ../modules/${module}) config.systemConfig.modules);
   };
 }
