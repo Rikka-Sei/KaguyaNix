@@ -1,60 +1,45 @@
 {
-  description = "Rikki 's NixOS Flake";
+  description = "Rikki's NixOS Flake - Refactored";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
     nix-flatpak.url = "github:gmodena/nix-flatpak";
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
-    nil.url = "github:oxalica/nil";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    alejandra = {
+      url = "github:kamadorueda/alejandra/3.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nil = {
+      url = "github:oxalica/nil";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs-unstable,
-      nixpkgs,
-      ...
-    }@inputs:
-    {
-      nixosConfigurations = {
-        "ASUS_TianXuan4_Rikki" =
-          let
-            system = "x86_64-linux";
-          in
-          nixpkgs.lib.nixosSystem {
-            specialArgs = {
-              inherit inputs;
-              unstable = import nixpkgs-unstable {
-                inherit system;
-                config.allowUnfree = true;
-              };
-            };
-            modules =
-              [
-                ./plugin
-              ]
-              ++ [
-                {
-                  nixpkgs.config.allowUnfree = true;
-                }
-                # Desktop
-                ./desktop/gnome
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = [
+        ./parts/systems.nix
+      ];
 
-                # device
-                ./device/ASUS_TianXuan4
+      systems = ["x86_64-linux" "aarch64-linux"];
 
-                # layers
-                ./layer/develop
-
-                ./layer/flatpak
-                ./plugin/services/vm
-
-                # users
-                ./users/rikki-laptop
-              ];
-          };
+      perSystem = {
+        config,
+        self',
+        inputs',
+        pkgs,
+        system,
+        ...
+      }: {
+        # Per-system attributes
       };
     };
 }

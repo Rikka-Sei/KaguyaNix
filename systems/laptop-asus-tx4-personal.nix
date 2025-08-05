@@ -1,0 +1,37 @@
+{
+  networking.hostName = "laptop-asus-tx4-personal";
+
+  systemConfig = {
+    architecture = "x86_64-linux";
+    hardware = "asus-tianxuan4";
+
+    users = {
+      rikki.profiles = ["development" "gaming" "software"];
+    };
+
+    modules = [
+      "desktop/gnome"
+      "services/docker"
+      "services/flatpak"
+      "services/vm"
+      "core/fonts"
+      "core/input"
+      "development/base"
+    ];
+  };
+
+  # 系统级配置
+  time.timeZone = "Asia/Shanghai";
+
+  networking = {
+    networkmanager.enable = true;
+    firewall.enable = false;
+  };
+
+  nix.settings = {
+    experimental-features = ["nix-command" "flakes"];
+    trusted-users = ["root" "rikki"];
+  };
+
+  system.stateVersion = "24.05";
+}
