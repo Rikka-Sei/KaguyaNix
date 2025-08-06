@@ -6,7 +6,11 @@
     hardware = "asus-tianxuan4";
 
     users = {
-      rikki.profiles = ["development" "gaming" "software"];
+      rikki.profiles = [
+        "development"
+        "software"
+        "gaming"
+      ];
     };
 
     modules = [
@@ -29,8 +33,14 @@
   };
 
   nix.settings = {
-    experimental-features = ["nix-command" "flakes"];
-    trusted-users = ["root" "rikki"];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    trusted-users = [
+      "root"
+      "rikki"
+    ];
   };
 
   system.stateVersion = "24.05";

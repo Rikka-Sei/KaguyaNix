@@ -1,6 +1,8 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   userName = "rikki";
-in {
+in
+{
   # 游戏相关包
   environment.systemPackages = with pkgs; [
     steam
@@ -21,8 +23,8 @@ in {
   home-manager.users.${userName} = {
     # 游戏相关的 Home Manager 配置
     home.packages = with pkgs; [
-      discord
       obs-studio
+      osu-lazer-bin
     ];
   };
 }
