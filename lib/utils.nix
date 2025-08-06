@@ -32,13 +32,13 @@
   generateSystemModules = systemConfig: let
     # 硬件配置 - 使用路径而不是字符串
     hardwareModule = ../hardware + "/${systemConfig.hardware}/configuration.nix";
-    
+
     # 额外模块路径解析
-    moduleResolver = module: 
+    moduleResolver = module:
       if builtins.pathExists (../modules + "/${module}.nix")
-      then ../modules + "/${module}.nix"  
+      then ../modules + "/${module}.nix"
       else ../modules + "/${module}";
-    
+
     extraModules = map moduleResolver systemConfig.modules;
   in
     [hardwareModule] ++ extraModules;

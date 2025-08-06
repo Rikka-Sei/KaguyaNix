@@ -1,4 +1,8 @@
-{lib, pkgs, ...}: let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   userName = "rikki";
 in {
   # 笔记本上的用户特定配置（非硬件相关）

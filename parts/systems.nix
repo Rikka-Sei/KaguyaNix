@@ -27,12 +27,14 @@
     systemConfig = import ../systems/${systemFile};
 
     # 生成用户配置模块
-    userModules = utils.generateUserModules 
-      systemName 
+    userModules =
+      utils.generateUserModules
+      systemName
       (systemConfig.systemConfig.users or {});
 
     # 生成系统模块
-    systemModules = utils.generateSystemModules 
+    systemModules =
+      utils.generateSystemModules
       (systemConfig.systemConfig or {});
   in
     inputs.nixpkgs.lib.nixosSystem {
@@ -44,24 +46,27 @@
         };
       };
 
-      modules = [
-        # 核心框架
-        ../lib/system-framework.nix
-        ../lib/user-framework.nix
+      modules =
+        [
+          # 核心框架
+          ../lib/system-framework.nix
+          ../lib/user-framework.nix
 
-        # 通用配置
-        {
-          nixpkgs.config.allowUnfree = true;
-          nixpkgs.hostPlatform = systemConfig.systemConfig.architecture or "x86_64-linux";
-        }
+          # 通用配置
+          {
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.hostPlatform = systemConfig.systemConfig.architecture or "x86_64-linux";
+          }
 
-        # 系统特定配置
-        ../systems/${systemFile}
+          # 系统特定配置
+          ../systems/${systemFile}
 
-        # 其他 inputs 的模块
-        inputs.nix-flatpak.nixosModules.nix-flatpak
-        inputs.home-manager.nixosModules.home-manager
-      ] ++ systemModules ++ userModules; # 添加动态生成的模块
+          # 其他 inputs 的模块
+          inputs.nix-flatpak.nixosModules.nix-flatpak
+          inputs.home-manager.nixosModules.home-manager
+        ]
+        ++ systemModules
+        ++ userModules; # 添加动态生成的模块
     };
 in {
   flake = {

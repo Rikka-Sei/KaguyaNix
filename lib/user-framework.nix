@@ -1,7 +1,4 @@
-{
-  lib,
-  ...
-}: {
+{lib, ...}: {
   options.systemConfig.users = lib.mkOption {
     type = lib.types.attrsOf (lib.types.submodule {
       options = {

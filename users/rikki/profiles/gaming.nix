@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   userName = "rikki";
-in
-{
+in {
   # 游戏相关包
   environment.systemPackages = with pkgs; [
     steam
