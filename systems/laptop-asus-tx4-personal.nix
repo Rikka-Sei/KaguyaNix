@@ -18,6 +18,7 @@
       "services/docker"
       "services/flatpak"
       "services/vm"
+      "services/tailscale"
       "core/fonts"
       "core/input"
       "development/base"
