@@ -1,5 +1,7 @@
-{pkgs, ...}: {
-  environment.systemPackages = with pkgs;
+{ pkgs, ... }:
+{
+  environment.systemPackages =
+    with pkgs;
     [
       # User Tools
       axel

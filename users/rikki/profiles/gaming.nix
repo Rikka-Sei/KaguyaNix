@@ -1,6 +1,8 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   userName = "rikki";
-in {
+in
+{
   # 游戏相关包
   environment.systemPackages = with pkgs; [
     steam
@@ -23,6 +25,7 @@ in {
     home.packages = with pkgs; [
       obs-studio
       osu-lazer-bin
+      hmcl
     ];
   };
 }

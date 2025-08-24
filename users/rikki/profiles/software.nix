@@ -2,11 +2,14 @@
   pkgs,
   unstable,
   ...
-}: let
+}:
+let
   userName = "rikki";
-in {
+in
+{
   home-manager.users.${userName} = {
-    home.packages = with pkgs;
+    home.packages =
+      with pkgs;
       [
         # User CLI Tools
         bc
@@ -61,6 +64,10 @@ in {
         tor-browser
         kdePackages.kdenlive
         qq
+        v2rayn
+        xray
+        sing-box
+        calibre
       ];
   };
 }
