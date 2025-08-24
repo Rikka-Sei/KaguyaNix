@@ -10,6 +10,7 @@
         "development"
         "software"
         "gaming"
+        "business"
       ];
     };
 
