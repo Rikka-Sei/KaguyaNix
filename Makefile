@@ -10,7 +10,7 @@ help:
 	@echo "Available commands:"
 	@echo "  list                 - 列出所有可用的系统配置"
 	@echo "  <system-name>        - 构建指定的系统配置"
-	@echo "  update               - 更新 flake inputs"
+	@echo "  update [input]       - 更新 flake inputs (可指定特定 input)"
 	@echo "  format               - 格式化代码"
 	@echo "  clean-garbage        - 清理垃圾"
 	@echo "  eval-time <system>   - 评估构建时间"
@@ -33,7 +33,13 @@ $(SYSTEMS):
 
 # 通用命令
 update:
-	nix flake update
+	@if [ -n "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
+		echo "更新指定 flake input: $(filter-out $@,$(MAKECMDGOALS))"; \
+		nix flake update $(filter-out $@,$(MAKECMDGOALS)); \
+	else \
+		echo "更新所有 flake inputs"; \
+		nix flake update; \
+	fi
 
 format:
 	alejandra ./
