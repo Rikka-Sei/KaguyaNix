@@ -29,6 +29,7 @@
 │   ├── services/         # 系统服务配置
 │   └── development/      # 开发环境配置
 ├── hardware/             # 硬件特定配置
+├── deploy/               # 远程部署配置
 └── lib/                  # 框架核心实现
 ```
 
@@ -85,7 +86,7 @@
 }
 ```
 
-在本框架中，如果文件 `systems/${name}.nix`（如：`systems/laptop-asus-tx4-personal.nix`） 存在，就可以使用 `make ${name}` 来应用该配置。
+在本框架中，如果文件 `systems/${name}.nix`（如：`systems/laptop-asus-tx4-personal.nix`） 存在，就可以使用 `make use ${name}` 来应用该配置。
 
 其他配置项均来自 nixpkgs，可以通过查阅 https://search.nixos.org/options 来了解。
 
@@ -285,17 +286,51 @@ modules = [ "desktop/gnome" "services/docker" ];
 2. 将生成配置复制到 `hardware/{device-name}/`
 3. 在系统配置中设置对应的 `hardware` 值
 
+### 配置远程部署
+
+在 `deploy/` 目录创建部署配置文件：
+
+```nix
+# deploy/example.nix
+{
+  # 部署配置：香港 VPS hk2-export
+  hostname = "131.24.21.234"; # 也可以是 Domain
+  system = "hk2-export"; # systems 目录下的 profile 名
+
+  # SSH 配置
+  sshUser = "root";
+  sshOpts = [
+    "-o"
+    "StrictHostKeyChecking=no"
+  ];
+
+  # 部署选项
+  fastConnection = false; # 海外服务器，网络可能较慢
+  autoRollback = true; # 自动回滚
+  magicRollback = true; # 魔法回滚（网络断开时）
+}
+```
+
+**配置步骤：**
+1. 在 `deploy/` 创建部署配置文件
+2. 设置目标主机信息和 SSH 配置
+3. 指定要部署的系统配置名称
+4. 使用 `make deploy <target-name>` 进行部署
+
 
 ## 构建和部署
 
-### 使用 Makefile
+### 本地系统管理
 
 ```bash
-# 列出可用系统
+# 列出可用系统配置
 make list
 
-# 构建指定系统
-make system-name
+# 构建并切换到指定系统
+make use <system-name>
+
+# 检查所有系统配置
+make check
 
 # 更新依赖
 make update
@@ -307,10 +342,16 @@ make format
 make clean-garbage
 ```
 
-### 直接使用 nixos-rebuild
+### 远程部署管理
+
+基于 deploy-rs 实现声明式远程部署：
 
 ```bash
-sudo nixos-rebuild switch --flake ./#system-name
+# 列出可用部署配置
+make deploy-list
+
+# 部署到指定目标
+make deploy <target-name>
 ```
 
 

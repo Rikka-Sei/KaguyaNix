@@ -3,17 +3,25 @@
 # 自动扫描 systems 目录获取所有可用系统
 SYSTEMS := $(basename $(notdir $(wildcard systems/*.nix)))
 
+# 自动扫描 deploy 目录获取所有可用部署配置
+DEPLOYS := $(basename $(notdir $(wildcard deploy/*.nix)))
+
 # 默认目标
-.PHONY: help list $(SYSTEMS) update format clean-garbage eval-time
+.PHONY: help list use update format clean-garbage eval-time check deploy-list deploy
 
 help:
 	@echo "Available commands:"
 	@echo "  list                 - 列出所有可用的系统配置"
-	@echo "  <system-name>        - 构建指定的系统配置"
+	@echo "  use <system-name>    - 构建并切换到指定的系统配置"
 	@echo "  update [input]       - 更新 flake inputs (可指定特定 input)"
 	@echo "  format               - 格式化代码"
 	@echo "  clean-garbage        - 清理垃圾"
 	@echo "  eval-time <system>   - 评估构建时间"
+	@echo "  check                - 检查配置语法和依赖"
+	@echo ""
+	@echo "Deploy commands:"
+	@echo "  deploy-list          - 列出所有可用的部署配置"
+	@echo "  deploy <name>        - 部署到指定目标"
 	@echo ""
 	@echo "Available systems:"
 	@$(foreach system,$(SYSTEMS),echo "  $(system)";)
@@ -26,10 +34,21 @@ list:
 		fi; \
 	)
 
-# 为每个系统创建构建目标
-$(SYSTEMS):
-	@echo "构建系统: $@"
-	sudo nixos-rebuild switch --flake ./#$@ --show-trace
+# 系统构建和切换
+use:
+	@TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
+	if [ -z "$$TARGET" ]; then \
+		echo "Usage: make use <system-name>"; \
+		echo "Available systems:"; \
+		$(foreach system,$(SYSTEMS),echo "  $(system)";) \
+		exit 1; \
+	fi; \
+	if [ ! -f "systems/$$TARGET.nix" ]; then \
+		echo "错误: 系统配置 systems/$$TARGET.nix 不存在"; \
+		exit 1; \
+	fi; \
+	echo "构建并切换到系统: $$TARGET"; \
+	sudo nixos-rebuild switch --flake ./#$$TARGET --show-trace
 
 # 通用命令
 update:
@@ -59,6 +78,38 @@ eval-time:
 laptop: laptop-asus-tx4-personal
 desktop: desktop-home-rikki
 server: server-vps-prod
+
+# 部署相关命令
+deploy-list:
+	@echo "可用的部署配置:"
+	@$(foreach deploy,$(DEPLOYS), \
+		if [ -f "deploy/$(deploy).nix" ]; then \
+			echo "  $(deploy) - $(shell grep 'hostname.*=' deploy/$(deploy).nix | cut -d '"' -f2)"; \
+		fi; \
+	)
+
+check:
+	@echo "检查所有系统配置..."
+	@$(foreach system,$(SYSTEMS), \
+		echo "检查系统: $(system)"; \
+		nix build .#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
+	)
+
+# 通用部署目标
+deploy:
+	@TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
+	if [ -z "$$TARGET" ]; then \
+		echo "Usage: make deploy <target-name>"; \
+		echo "Available targets:"; \
+		$(foreach deploy,$(DEPLOYS),echo "  $(deploy)";) \
+		exit 1; \
+	fi; \
+	if [ ! -f "deploy/$$TARGET.nix" ]; then \
+		echo "错误: 部署配置 deploy/$$TARGET.nix 不存在"; \
+		exit 1; \
+	fi; \
+	echo "部署到目标: $$TARGET"; \
+	nix run github:serokell/deploy-rs -- .#$$TARGET
 
 # 防止 make 将别名参数解释为目标
 %:
