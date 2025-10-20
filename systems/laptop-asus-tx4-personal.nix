@@ -11,6 +11,7 @@
         "software"
         "gaming"
         "business"
+        "lifetime"
       ];
     };
 
