@@ -11,7 +11,6 @@
       wget
       curl
       vlc
-      emacs
       gnumake
     ]
     ++ [

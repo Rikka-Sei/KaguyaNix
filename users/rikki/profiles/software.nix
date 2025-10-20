@@ -51,7 +51,6 @@ in
         # Generator
         typst
         thunderbird
-        hiddify-app
       ]
       ++ [
         unstable.AI-code
@@ -68,6 +67,10 @@ in
         xray
         sing-box
         calibre
+        signal-desktop
+      ]
+      ++ [
+        logseq
       ];
   };
 }

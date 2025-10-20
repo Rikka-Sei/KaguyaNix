@@ -20,9 +20,11 @@
       "services/flatpak"
       "services/vm"
       "services/tailscale"
+      "services/cups"
       "core/fonts"
       "core/input"
       "development/base"
+      "development/emacs"
     ];
   };
 
@@ -33,7 +35,11 @@
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 20171 ];
+      allowedTCPPorts = [
+        3000
+        8080
+        20171
+      ];
     };
   };
 

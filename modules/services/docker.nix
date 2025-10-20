@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   environment.systemPackages = [
     pkgs.docker-compose
   ];
@@ -21,8 +22,8 @@
     "net.bridge.bridge-nf-call-iptables" = 1;
   };
 
-  boot.kernelModules = ["br_netfilter"];
+  boot.kernelModules = [ "br_netfilter" ];
 
   # 注意：用户组配置移到用户配置中
-  users.extraGroups.docker.members = ["username-with-access-to-socket"];
+  users.extraGroups.docker.members = [ "username-with-access-to-socket" ];
 }
