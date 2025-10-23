@@ -39,7 +39,7 @@
       then ../modules + "/${module}.nix"
       else ../modules + "/${module}";
 
-    extraModules = map moduleResolver systemConfig.modules;
+    extraModules = map moduleResolver (systemConfig.modules or []);
   in
     [hardwareModule] ++ extraModules;
 }
