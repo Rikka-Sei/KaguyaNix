@@ -11,22 +11,6 @@ in {
     inputs.nil.packages.${pkgs.system}.default
   ];
 
-  # nix-ld 支持
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      # 常用的动态库
-      stdenv.cc.cc
-      zlib
-      fuse3
-      icu
-      nss
-      openssl
-      curl
-      expat
-    ];
-  };
-
   home-manager.users.${userName} = {
     # Home Manager 开发环境配置
     programs.git = {

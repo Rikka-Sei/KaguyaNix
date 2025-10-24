@@ -16,9 +16,8 @@
     };
 
     modules = [
-      # 暂时注释掉模块，先确保基本配置工作
-      # "development/base"
-      # "development/emacs"
+      "development/base"
+      "development/emacs"
     ];
 
     # 演示 inputs 覆盖功能 - 可以为特定系统定制 inputs
@@ -44,8 +43,7 @@
     ];
   };
 
-  # Darwin 特定配置
-  services.nix-daemon.enable = true;
+  # Darwin 特定配置 - nix-daemon 现在默认启用，不需要手动设置
 
   # 用于向后兼容性
   system.stateVersion = 6;

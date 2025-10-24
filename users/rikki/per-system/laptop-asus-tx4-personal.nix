@@ -5,6 +5,17 @@
 }: let
   userName = "rikki";
 in {
+  users.users.${userName} = {
+    isNormalUser = true;
+    extraGroups = [
+      "wheel"
+      "docker"
+      "vboxusers"
+      "libvirt"
+      "kvm"
+    ];
+  };
+  
   # 笔记本上的用户特定配置（非硬件相关）
   home-manager.users.${userName} = {
     # 笔记本上常用的便携工具
@@ -19,6 +30,12 @@ in {
       "power-usage" = "sudo powertop";
       "brightness" = "brightnessctl";
       "battery" = "acpi -b";
+    };
+
+    # GPG 配置
+    programs.gnupg.agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-gnome3;
     };
 
     # 笔记本环境下的 Git 配置（比如使用不同的邮箱）

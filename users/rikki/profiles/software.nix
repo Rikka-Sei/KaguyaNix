@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   unstable,
   ...
 }:
@@ -16,61 +17,63 @@ in
         jq
         fastfetch
         treefmt
-      ]
-      ++ [
-        # GNOME packages
-        gnome-software
-      ]
-      ++ [
-        # User GUI Tools
+
+        # Cross-platform GUI Tools
         gimp
-        typora
-      ]
-      ++ [
-        # Games
-        hmcl
-        mindustry
-      ]
-      ++ [
-        # Web Browser
         firefox
-      ]
-      ++ [
-        # Editor
         vscode
-      ]
-      ++ [
-        # Learn
-        anki
-      ]
-      ++ [
-        # File Transfer
-        filezilla
-      ]
-      ++ [
-        # Generator
-        typst
         thunderbird
-      ]
-      ++ [
+
+        # Cross-platform CLI/Other Tools
         unstable.AI-code
         gemini-cli
-        ddnet
-        ghidra
-        ghidra-extensions.ghidra-golanganalyzerextension
-        remmina
-        feishu
-        tor-browser
-        kdePackages.kdenlive
-        qq
-        v2rayn
         xray
         sing-box
-        calibre
-        signal-desktop
-      ]
-      ++ [
         logseq
+        typst
+
+      ]
+      # Linux 特有的包
+      ++ lib.optionals pkgs.stdenv.isLinux [
+        # GNOME 软件
+        gnome-software
+        
+        # KDE 软件
+        kdePackages.kdenlive
+        
+        # Linux 专有工具
+        remmina
+        qq
+        v2rayn
+        
+        # Linux 专有编辑器和应用
+        typora
+        
+        # Games (Linux-specific builds)
+        hmcl
+        mindustry
+        ddnet
+        
+        # 其他可能有平台问题的包
+        feishu
+        
+        # 学习工具 (当前在 macOS 上 broken)
+        anki
+        
+        # 文件传输工具
+        filezilla
+        
+        # 安全分析工具 (当前 broken)
+        ghidra
+        ghidra-extensions.ghidra-golanganalyzerextension
+        
+        # 隐私浏览器
+        tor-browser
+        
+        # 电子书管理 (当前 broken)
+        calibre
+
+        signal-desktop
       ];
   };
 }

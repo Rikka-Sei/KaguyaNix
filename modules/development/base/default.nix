@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   environment.systemPackages =
     with pkgs;
@@ -10,8 +10,11 @@
       vim
       wget
       curl
-      vlc
       gnumake
+    ]
+    # 条件性包含 VLC - 仅在支持的平台上
+    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+      vlc
     ]
     ++ [
       # system tools
@@ -47,39 +50,28 @@
       nixfmt-rfc-style
 
       btop
-      iotop
       iftop
 
       # system call monitoring
+      lsof
+    ]
+    # Linux 特有的包
+    ++ lib.optionals pkgs.stdenv.isLinux [
+      iotop
       strace
       ltrace
-      lsof
-
-      # system tools
       sysstat
       lm_sensors
       ethtool
       pciutils
       usbutils
-
-      netcat-openbsd
+      mission-center
     ]
     ++ [
-      # Monitor tools
-      mission-center
+      # netcat 替代方案 - netcat-openbsd 在某些版本中被标记为 broken
+      netcat-gnu
       mailutils
     ];
-
-  services.postfix = {
-    enable = true;
-    domain = "localhost";
-    origin = "localhost";
-    config = {
-      mydestination = "localhost";
-      inet_interfaces = "loopback-only";
-      default_transport = "local";
-    };
-  };
 
   programs.direnv.enable = true;
 }

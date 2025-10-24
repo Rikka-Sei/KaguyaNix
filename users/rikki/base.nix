@@ -1,28 +1,16 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }: let
   userName = "rikki";
   stateVersion = "24.05";
+  # 根据系统平台确定 home 目录
+  homeDirectory = if pkgs.stdenv.isDarwin 
+                  then "/Users/${userName}"
+                  else "/home/${userName}";
 in {
-  users.users.${userName} = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "docker"
-      "vboxusers"
-      "libvirt"
-      "kvm"
-    ];
-  };
-
-  # GPG 配置
-  programs.gnupg.agent = {
-    enable = true;
-    pinentryPackage = pkgs.pinentry-gnome3;
-  };
-
   # Home Manager 基础配置
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
@@ -32,7 +20,7 @@ in {
 
   home-manager.users.${userName} = {
     home.username = "${userName}";
-    home.homeDirectory = "/home/${userName}";
+    home.homeDirectory = homeDirectory;
     home.stateVersion = "${stateVersion}";
     programs.home-manager.enable = true;
   };
