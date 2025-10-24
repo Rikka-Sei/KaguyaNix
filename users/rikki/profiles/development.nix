@@ -1,9 +1,12 @@
 {
   pkgs,
   inputs,
+  config,
+  kaguya,
   ...
 }: let
   userName = "rikki";
+  isDarwin = kaguya.arch.isDarwin config.systemConfig.architecture;
 in {
   # 开发工具
   environment.systemPackages = [
@@ -114,6 +117,11 @@ in {
     programs.starship.enable = true;
   };
 
+  # Shell 配置
   users.users.${userName}.shell = pkgs.fish;
   programs.fish.enable = true;
+
+  # macOS: 将 fish 添加到系统可用的 shell 列表
+  # 这会更新 /etc/shells 文件，使 fish 成为合法的登录 shell
+  environment.shells = if isDarwin then [pkgs.fish] else [];
 }
