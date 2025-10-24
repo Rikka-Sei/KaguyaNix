@@ -51,7 +51,7 @@ use:
 	echo "正在检测系统类型..."; \
 	if nix eval .#darwinConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
 		echo "✅ 检测到 Darwin 系统，使用 darwin-rebuild..."; \
-		sudo darwin-rebuild switch --flake ./#$$TARGET --show-trace; \
+		sudo darwin-rebuild switch --flake .#$$TARGET --show-trace; \
 	elif nix eval .#nixosConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
 		echo "✅ 检测到 NixOS 系统，使用 nixos-rebuild..."; \
 		sudo nixos-rebuild switch --flake ./#$$TARGET --show-trace; \
