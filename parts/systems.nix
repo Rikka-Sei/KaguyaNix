@@ -25,7 +25,11 @@ let
       systemName = lib.removeSuffix ".nix" systemFile;
 
       # 读取系统配置来获取架构信息
-      systemConfig = import ../systems/${systemFile};
+      rawConfig = import ../systems/${systemFile};
+      # 如果是函数，调用它获取配置；否则直接使用
+      systemConfig = if lib.isFunction rawConfig
+                     then rawConfig { pkgs = null; lib = lib; config = {}; }
+                     else rawConfig;
 
       # 获取架构信息
       architecture = systemConfig.systemConfig.architecture or "x86_64-linux";
