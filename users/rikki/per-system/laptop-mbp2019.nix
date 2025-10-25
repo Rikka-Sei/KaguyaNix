@@ -1,5 +1,5 @@
 # Darwin 特定的用户配置 - laptop-mbp2019
-{ lib, ... }:
+{ pkgs, ... }:
 
 {
   # 在 Darwin 系统中明确设置用户的 home 目录
@@ -7,5 +7,13 @@
   users.users.rikki = {
     name = "rikki";
     home = "/Users/rikki";
+  };
+
+  environment.systemPackages = with pkgs; [
+    gnupg
+  ];
+
+  programs.gnupg.agent = {
+    enable = true;
   };
 }
