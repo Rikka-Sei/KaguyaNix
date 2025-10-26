@@ -1,2 +1,6 @@
 # nixos build
 result
+
+.DS_Store
+
+*.code-workspace
