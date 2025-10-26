@@ -8,6 +8,10 @@ let
   # 导入通用工具函数
   utils = import ../lib/utils.nix { inherit lib; };
   arch = import ../lib/arch.nix { inherit lib; };
+  packagesLoader = import ../lib/packages.nix { inherit lib; };
+
+  # 加载所有 packages
+  packages = packagesLoader.loadPackages ../packages;
 
   # 扫描 systems 目录获取所有系统配置
   systemFiles = builtins.readDir ../systems;
@@ -103,6 +107,12 @@ let
           # 核心框架
           ./options/system.nix
           ./options/user.nix
+
+          # Packages overlay 和模块
+          {
+            nixpkgs.overlays = [ packages.overlay ];
+          }
+          packages.module
 
           # 通用配置
           {

@@ -43,8 +43,6 @@
     ];
   };
 
-  # Darwin 特定配置 - nix-daemon 现在默认启用，不需要手动设置
-
   # 用于向后兼容性
   system.stateVersion = 6;
 }

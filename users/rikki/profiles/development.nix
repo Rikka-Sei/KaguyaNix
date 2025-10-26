@@ -1,18 +1,26 @@
 {
   pkgs,
+  unstable,
   inputs,
   config,
   kaguya,
   ...
-}: let
+}:
+let
   userName = "rikki";
   isDarwin = kaguya.arch.isDarwin config.systemConfig.architecture;
-in {
+in
+{
   # 开发工具
   environment.systemPackages = [
     inputs.alejandra.defaultPackage.${pkgs.system}
     inputs.nil.packages.${pkgs.system}.default
   ];
+
+  programs.AI-wrapper = {
+    enable = true;
+    package = unstable.AI-code;
+  };
 
   home-manager.users.${userName} = {
     # Home Manager 开发环境配置
@@ -123,5 +131,5 @@ in {
 
   # macOS: 将 fish 添加到系统可用的 shell 列表
   # 这会更新 /etc/shells 文件，使 fish 成为合法的登录 shell
-  environment.shells = if isDarwin then [pkgs.fish] else [];
+  environment.shells = if isDarwin then [ pkgs.fish ] else [ ];
 }
