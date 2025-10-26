@@ -28,6 +28,7 @@
 │   ├── desktop/          # 桌面环境配置
 │   ├── services/         # 系统服务配置
 │   └── development/      # 开发环境配置
+├── packages/             # 自定义包（按需加载）
 ├── hardware/             # 硬件特定配置
 ├── deploy/               # 远程部署配置
 └── lib/                  # 框架核心实现
@@ -221,12 +222,45 @@ in {
 ```nix
 { pkgs, ... }: {
   services.example.enable = true;
-  
+
   environment.systemPackages = with pkgs; [
     example-package
   ];
 }
 ```
+
+### 自定义包
+
+`packages/` 目录用于管理 nixpkgs 之外的自定义包。包会自动注入到 `pkgs` 命名空间，支持两种使用方式：
+
+**方式 1：直接引用包**
+```nix
+environment.systemPackages = [ pkgs.AI-wrapper ];
+```
+
+**方式 2：通过 options 配置**
+```nix
+programs.AI-wrapper = {
+  enable = true;
+  package = unstable.AI-code;
+};
+```
+
+**包定义格式** (`packages/<name>/default.nix`):
+```nix
+{ pkgs, lib, config, ... }: {
+  # 包定义 - 注入到 pkgs.<name>
+  package = pkgs.stdenv.mkDerivation { ... };
+
+  # Options 定义（可选）
+  options.programs.<name> = { ... };
+
+  # Config（可选）
+  config = lib.mkIf config.programs.<name>.enable { ... };
+}
+```
+
+只有被引用或 enable 的包才会构建，实现按需加载。
 
 ## 框架实现
 
@@ -279,6 +313,13 @@ modules = [ "desktop/gnome" "services/docker" ];
 1. 在 `modules/` 相应分类下创建模块文件
 2. 实现模块功能配置
 3. 在系统配置的 `modules` 列表中引用
+
+### 创建自定义包
+
+1. 在 `packages/` 创建包目录或文件
+2. 定义 `package` 属性（必需）
+3. 可选定义 `options` 和 `config`
+4. 直接使用 `pkgs.<name>` 或配置 `programs.<name>.enable`
 
 ### 支持新硬件
 
