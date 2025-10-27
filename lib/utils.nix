@@ -13,8 +13,20 @@
             then [baseConfigPath]
             else [];
 
-          # profile 配置
-          profileConfigs = map (profile: userDir + "/profiles/${profile}.nix") userCfg.profiles;
+          # profile 配置 - 支持单文件和目录两种形式
+          profileResolver = profile: let
+            # 尝试单文件形式: profiles/${profile}.nix
+            singleFile = userDir + "/profiles/${profile}.nix";
+            # 尝试目录形式: profiles/${profile}/default.nix
+            dirFile = userDir + "/profiles/${profile}/default.nix";
+          in
+            if builtins.pathExists singleFile
+            then singleFile
+            else if builtins.pathExists dirFile
+            then dirFile
+            else throw "Profile '${profile}' not found for user '${username}' (tried ${toString singleFile} and ${toString dirFile})";
+
+          profileConfigs = map profileResolver userCfg.profiles;
 
           # 系统特定配置
           systemConfigPath = userDir + "/per-system/${systemName}.nix";
