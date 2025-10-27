@@ -43,6 +43,9 @@ in
   };
 
   home-manager.users.${userName} = {
+    # 添加 ~/.local/bin 到 PATH
+    home.sessionPath = [ "$HOME/.local/bin" ];
+
     # Home Manager 开发环境配置
     programs.git = {
       enable = true;
