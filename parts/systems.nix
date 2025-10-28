@@ -68,6 +68,17 @@ let
       # 获取架构信息
       architecture = systemConfig.systemConfig.architecture or "x86_64-linux";
 
+      # 从架构和 inputs 推断版本
+      # 最简单的方法：检查 inputs 中是否有 nixpkgs-darwin，以及它指向哪个分支
+      # 由于 nixpkgs-25.05-darwin 内部版本号错误标记为 25.11，我们直接用 "25.05"
+      nixpkgsVersion = "25.05";
+
+      # 加载版本特定的补丁
+      patches = import ./patch/default.nix {
+        lib = extendedLib;
+        inherit architecture nixpkgsVersion;
+      };
+
       # 合并 inputs (基础 inputs + 系统特定的 inputsOverride)
       mergedInputs = inputs // (systemConfig.systemConfig.inputsOverride or { });
 
@@ -82,8 +93,8 @@ let
         if extendedLib.arch.isDarwin architecture then
           {
             builder = mergedInputs.nix-darwin.lib.darwinSystem;
-            nixpkgsInput = mergedInputs.nixpkgs-darwin or mergedInputs.nixpkgs;
-            nixpkgsUnstableInput = mergedInputs.nixpkgs-unstable or mergedInputs.nixpkgs;
+            nixpkgsInput = mergedInputs.nixpkgs-darwin;
+            nixpkgsUnstableInput = mergedInputs.nixpkgs-unstable or mergedInputs.nixpkgs-darwin;
             platformModules = [
               # Darwin 特定模块
             ]
@@ -148,8 +159,10 @@ let
         ]
         ++ buildSystemConfig.platformModules
         ++ systemModules
-        ++ userModules;
-      };
+        ++ userModules
+        ++ patches.getModules;  # 添加版本特定的补丁模块
+      }
+      // patches.getBuildArgs;  # 合并版本特定的构建参数
 
       # 构建系统配置
       builtSystem = buildSystemConfig.builder systemBuildArgs;

@@ -32,18 +32,16 @@ in {
       "battery" = "acpi -b";
     };
 
-    # GPG 配置
-    programs.gnupg.agent = {
+    # GPG Agent 配置
+    services.gpg-agent = {
       enable = true;
       pinentryPackage = pkgs.pinentry-gnome3;
     };
 
     # 笔记本环境下的 Git 配置（比如使用不同的邮箱）
-    programs.git = {
-      userEmail = lib.mkForce "rikki@member.fsf.org"; # 示例：笔记本特定邮箱
-      extraConfig = {
-        # 笔记本上可能使用不同的代理设置等
-      };
+    programs.git.settings = {
+      user.email = lib.mkForce "rikki@member.fsf.org"; # 示例：笔记本特定邮箱
+      # 笔记本上可能使用不同的代理设置等
     };
   };
 }

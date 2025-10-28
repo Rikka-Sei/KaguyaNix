@@ -48,10 +48,12 @@ in
     programs.git = {
       enable = true;
       lfs.enable = true;
-      userName = "Rikki";
-      userEmail = "rikki@member.fsf.org";
-      extraConfig = {
-        user.signingkey = "3927D7F5365B0203";
+      settings = {
+        user = {
+          name = "Rikki";
+          email = "rikki@member.fsf.org";
+          signingkey = "3927D7F5365B0203";
+        };
         commit.gpgsign = true;
       };
     };

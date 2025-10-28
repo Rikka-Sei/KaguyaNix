@@ -17,7 +17,7 @@ help:
 	@echo "  format               - 格式化代码"
 	@echo "  clean-garbage        - 清理垃圾"
 	@echo "  eval-time <system>   - 评估构建时间"
-	@echo "  check                - 检查配置语法和依赖"
+	@echo "  check <system-name>  - 检查配置语法和依赖（可选参数）"
 	@echo ""
 	@echo "Deploy commands:"
 	@echo "  deploy-list          - 列出所有可用的部署配置"
@@ -113,17 +113,33 @@ deploy-list:
 	)
 
 check:
-	@echo "检查所有系统配置..."
-	@$(foreach system,$(SYSTEMS), \
-		echo "检查系统: $(system)"; \
-		if nix eval .#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
-			echo "  Darwin 系统，检查 darwinConfigurations.$(system)"; \
-			nix build .#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
-		else \
-			echo "  NixOS 系统，检查 nixosConfigurations.$(system)"; \
-			nix build .#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
+	@TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
+	if [ -z "$$TARGET" ]; then \
+		echo "检查所有系统配置..."; \
+		$(foreach system,$(SYSTEMS), \
+			echo "检查系统: $(system)"; \
+			if nix eval .#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
+				echo "  Darwin 系统，检查 darwinConfigurations.$(system)"; \
+				nix build .#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
+			else \
+				echo "  NixOS 系统，检查 nixosConfigurations.$(system)"; \
+				nix build .#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
+			fi; \
+		) \
+	else \
+		echo "检查系统: $$TARGET"; \
+		if [ ! -f "systems/$$TARGET.nix" ]; then \
+			echo "错误: 系统配置 systems/$$TARGET.nix 不存在"; \
+			exit 1; \
 		fi; \
-	)
+		if nix eval .#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
+			echo "  Darwin 系统，检查 darwinConfigurations.$$TARGET"; \
+			nix build .#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
+		else \
+			echo "  NixOS 系统，检查 nixosConfigurations.$$TARGET"; \
+			nix build .#nixosConfigurations.$$TARGET.config.system.build.toplevel --dry-run --show-trace; \
+		fi; \
+	fi
 
 # 通用部署目标
 deploy:
