@@ -5,13 +5,37 @@
   ...
 }:
 let
-  # 导入通用工具函数
-  utils = import ../lib/utils.nix { inherit lib; };
-  arch = import ../lib/arch.nix { inherit lib; };
-  packagesLoader = import ../lib/packages.nix { inherit lib; };
+  # 扩展 lib，自动加载 lib/ 目录下的所有函数
+  extendedLib = lib.extend (
+    final: prev: let
+      # 扫描 lib 目录获取所有 .nix 文件
+      libFiles = builtins.readDir ../lib;
+
+      # 过滤出 .nix 文件并构建属性集
+      libExtensions = builtins.listToAttrs (
+        map (name: let
+          # 去掉 .nix 后缀作为属性名
+          attrName = lib.removeSuffix ".nix" name;
+          # 导入对应文件
+          attrValue = import (../lib + "/${name}") { lib = final; };
+        in {
+          name = attrName;
+          value = attrValue;
+        }) (
+          builtins.filter (name:
+            libFiles.${name} == "regular" &&
+            lib.hasSuffix ".nix" name
+          ) (builtins.attrNames libFiles)
+        )
+      );
+    in libExtensions
+  );
+
+  # 导入框架构建工具（从 parts/ 目录）
+  utils = import ./utils.nix { lib = extendedLib; };
 
   # 加载所有 packages
-  packages = packagesLoader.loadPackages ../packages;
+  packages = extendedLib.packages.loadPackages ../packages;
 
   # 扫描 systems 目录获取所有系统配置
   systemFiles = builtins.readDir ../systems;
@@ -55,7 +79,7 @@ let
 
       # 根据架构选择平台配置 (类似 switch/case)
       buildSystemConfig =
-        if arch.isDarwin architecture then
+        if extendedLib.arch.isDarwin architecture then
           {
             builder = mergedInputs.nix-darwin.lib.darwinSystem;
             nixpkgsInput = mergedInputs.nixpkgs-darwin or mergedInputs.nixpkgs;
@@ -70,7 +94,7 @@ let
                 [ ]
             );
           }
-        else if arch.isLinux architecture then
+        else if extendedLib.arch.isLinux architecture then
           {
             builder = mergedInputs.nixpkgs.lib.nixosSystem;
             nixpkgsInput = mergedInputs.nixpkgs;
@@ -94,12 +118,11 @@ let
       systemBuildArgs = {
         specialArgs = {
           inputs = mergedInputs;
+          systemName = systemName;  # 传递系统名称给模块
+          lib = extendedLib;        # 传递扩展的 lib（包含 per-sys、arch、packages 等）
           unstable = import buildSystemConfig.nixpkgsUnstableInput {
             system = architecture;
             config.allowUnfree = true;
-          };
-          kaguya = {
-            arch = arch;
           };
         };
 
@@ -156,8 +179,8 @@ let
     ) systemNames;
 
   # 分离 Darwin 和 NixOS 系统
-  darwinSystems = systemFilter arch.isDarwin;
-  nixosSystems = systemFilter arch.isLinux;
+  darwinSystems = systemFilter extendedLib.arch.isDarwin;
+  nixosSystems = systemFilter extendedLib.arch.isLinux;
 
 in
 {

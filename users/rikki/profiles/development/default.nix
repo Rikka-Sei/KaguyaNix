@@ -3,13 +3,12 @@
   unstable,
   inputs,
   config,
-  kaguya,
   lib,
   ...
 }:
 let
   userName = "rikki";
-  isDarwin = kaguya.arch.isDarwin config.systemConfig.architecture;
+  isDarwin = lib.arch.isDarwin config.systemConfig.architecture;
 
   # 自动扫描 scripts 目录下的所有 .sh 文件
   scriptsDir = ./scripts;
@@ -17,7 +16,8 @@ let
 
   # 生成 home.file 配置，将每个 .sh 文件部署到 ~/.local/bin/
   # 文件名去掉 .sh 后缀，并设置为可执行
-  deployScripts = lib.mapAttrs' (name: type:
+  deployScripts = lib.mapAttrs' (
+    name: type:
     let
       # 去掉 .sh 后缀
       scriptName = lib.removeSuffix ".sh" name;
@@ -26,9 +26,7 @@ let
       source = scriptsDir + "/${name}";
       executable = true;
     }
-  ) (lib.filterAttrs (name: type:
-    type == "regular" && lib.hasSuffix ".sh" name
-  ) scriptFiles);
+  ) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".sh" name) scriptFiles);
 in
 {
   # 开发工具
