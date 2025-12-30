@@ -57,8 +57,6 @@
     ephemeral = true; # 临时模式: VM 关闭后状态丢失，节省磁盘空间
   };
 
-  nixpkgs.config.allowBroken = true;
-
   # 用于向后兼容性
   system.stateVersion = 6;
 }

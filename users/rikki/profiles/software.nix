@@ -30,9 +30,6 @@ in
         logseq
         typst
 
-        # 安全分析工具 (当前 broken)
-        ghidra
-        ghidra-extensions.ghidra-golanganalyzerextension
       ]
       # Linux 特有的包
       ++ lib.optionals pkgs.stdenv.isLinux [
@@ -60,6 +57,10 @@ in
 
         # 文件传输工具
         filezilla
+
+        # 安全分析工具 (当前 broken)
+        ghidra
+        ghidra-extensions.ghidra-golanganalyzerextension
 
         # 学习工具 (当前在 macOS 上 broken)
         anki
