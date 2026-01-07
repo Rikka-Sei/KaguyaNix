@@ -40,14 +40,11 @@ if [ -z "$usdt_rate" ] || [ "$usdt_rate" = "null" ]; then
     exit 1
 fi
 
-# 计算调整后汇率 (减去0.1)
-adjusted_rate=$(echo "$usdt_rate - 0.1" | bc -l)
-
 # 计算总费用 CNY (流量 * 传入的价格)
 total_cny=$(echo "$traffic * $price" | bc -l)
 
 # 计算需要的USDT数量
-usdt_amount=$(echo "scale=6; $total_cny / $adjusted_rate" | bc -l)
+usdt_amount=$(echo "scale=6; $total_cny / $usdt_rate" | bc -l)
 
 # 输出结果
 echo ""
@@ -55,6 +52,5 @@ echo "========== 计算结果 =========="
 echo "流量: $traffic G"
 echo "总费用: $total_cny CNY"
 echo "USDT汇率: $usdt_rate CNY"
-echo "调整后汇率: $adjusted_rate CNY"
 echo "需要USDT: $usdt_amount"
 echo "============================="
