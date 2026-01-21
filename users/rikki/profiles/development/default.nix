@@ -42,7 +42,13 @@ in
 
   home-manager.users.${userName} = {
     # 添加 ~/.local/bin 到 PATH
-    home.sessionPath = [ "$HOME/.local/bin" ];
+    home.sessionPath = [
+      "$HOME/.local/bin"
+
+      # curl -fsSL https://opencode.ai/install | bash
+      # 需要安装 opencode
+      "$HOME/.opencode/bin"
+    ];
 
     # Home Manager 开发环境配置
     programs.git = {
