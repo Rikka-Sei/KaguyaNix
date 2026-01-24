@@ -19,7 +19,6 @@ in
 
         # Cross-platform GUI Tools
         gimp
-        firefox
         vscode
         thunderbird
 
@@ -64,6 +63,9 @@ in
 
         # 学习工具 (当前在 macOS 上 broken)
         anki
+
+        # 浏览器
+        firefox
 
         # 隐私浏览器
         tor-browser
