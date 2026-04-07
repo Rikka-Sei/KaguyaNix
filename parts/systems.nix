@@ -5,207 +5,256 @@
   ...
 }:
 let
-  # 扩展 lib，自动加载 lib/ 目录下的所有函数
   extendedLib = lib.extend (
-    final: prev: let
-      # 扫描 lib 目录获取所有 .nix 文件
+    final: prev:
+    let
       libFiles = builtins.readDir ../lib;
-
-      # 过滤出 .nix 文件并构建属性集
       libExtensions = builtins.listToAttrs (
-        map (name: let
-          # 去掉 .nix 后缀作为属性名
-          attrName = lib.removeSuffix ".nix" name;
-          # 导入对应文件
-          attrValue = import (../lib + "/${name}") { lib = final; };
-        in {
-          name = attrName;
-          value = attrValue;
-        }) (
+        map
+          (
+            name:
+            let
+              attrName = lib.removeSuffix ".nix" name;
+              attrValue = import (../lib + "/${name}") { lib = final; };
+            in
+            {
+              name = attrName;
+              value = attrValue;
+            }
+          )
+          (
           builtins.filter (name:
             libFiles.${name} == "regular" &&
             lib.hasSuffix ".nix" name
           ) (builtins.attrNames libFiles)
         )
       );
-    in libExtensions
+    in
+    libExtensions
   );
-
-  # 导入框架构建工具（从 parts/ 目录）
-  utils = import ./utils.nix { lib = extendedLib; };
-
-  # 加载所有 packages
   packages = extendedLib.packages.loadPackages ../packages;
+  graph = extendedLib.capabilityGraph;
+  systemEntries = builtins.readDir ../systems;
+  systemNames = builtins.filter (
+    name:
+    systemEntries.${name} == "directory" &&
+    builtins.pathExists (../systems + "/${name}/meta.nix")
+  ) (builtins.attrNames systemEntries);
 
-  # 扫描 systems 目录获取所有系统配置
-  systemFiles = builtins.readDir ../systems;
+  mkPlan =
+    hostName:
+    graph.buildPlanFromMeta {
+      inherit hostName;
+      meta = import (../systems + "/${hostName}/meta.nix");
+      modulesDir = ../modules;
+      hardwareDir = ../hardware;
+    };
 
-  # 过滤出 .nix 文件
-  systemNames = lib.filterAttrs (
-    name: type: type == "regular" && lib.hasSuffix ".nix" name
-  ) systemFiles;
+  shellPackage =
+    pkgs: shellName:
+    if shellName == "fish" then
+      pkgs.fish
+    else if shellName == "zsh" then
+      pkgs.zsh
+    else
+      pkgs.bashInteractive;
 
-  # 构建系统配置
-  mkSystem =
-    systemFile:
+  mkFrameworkModule =
+    {
+      hostName,
+      plan,
+      unstable,
+    }:
+    {
+      lib,
+      pkgs,
+      ...
+    }:
     let
-      # 从文件名提取系统名称 (去掉 .nix 后缀)
-      systemName = lib.removeSuffix ".nix" systemFile;
-
-      # 读取系统配置来获取架构信息
-      rawConfig = import ../systems/${systemFile};
-      # 如果是函数，调用它获取配置；否则直接使用
-      systemConfig =
-        if lib.isFunction rawConfig then
-          rawConfig {
-            pkgs = null;
-            lib = lib;
-            config = { };
+      enabledUsers = lib.filterAttrs (_: userCfg: userCfg.enable) plan.users;
+      shellPackages = lib.unique (map (userCfg: shellPackage pkgs userCfg.shell) (builtins.attrValues enabledUsers));
+      hasFishUsers = lib.any (userCfg: userCfg.shell == "fish") (builtins.attrValues enabledUsers);
+      hostConfig = graph.mergeAttrsets (
+        plan.systemOptionDefaults
+        ++ [
+          plan.hostOverrides
+          {
+            kaguya.buildPlan = plan;
           }
-        else
-          rawConfig;
+        ]
+      );
+      mkUserModule =
+        userName: userCfg:
+        let
+          userConfig = graph.mergeAttrsets (userCfg.optionDefaults ++ [ userCfg.overrides ]);
+        in
+        {
+          imports = userCfg.modulePaths ++ [
+            {
+              config = userConfig;
+            }
+          ];
 
-      # 获取架构信息
-      architecture = systemConfig.systemConfig.architecture or "x86_64-linux";
-
-      # 从架构和 inputs 推断版本
-      # 最简单的方法：检查 inputs 中是否有 nixpkgs-darwin，以及它指向哪个分支
-      # 由于 nixpkgs-25.05-darwin 内部版本号错误标记为 25.11，我们直接用 "25.05"
-      nixpkgsVersion = "25.05";
-
-      # 加载版本特定的补丁
-      patches = import ./patch/default.nix {
-        lib = extendedLib;
-        inherit architecture nixpkgsVersion;
+          home.username = userName;
+          home.homeDirectory = userCfg.homeDirectory;
+          home.stateVersion = userCfg.stateVersion;
+          programs.home-manager.enable = true;
+        };
+      mkUserAccount =
+        userName: userCfg:
+        let
+          shellPkg = shellPackage pkgs userCfg.shell;
+          linuxGroups = lib.optionals userCfg.admin [ "wheel" ] ++ userCfg.extraGroups;
+        in
+        {
+          ${userName} =
+            if plan.target.platform == "darwin" then
+              {
+                name = userName;
+                home = userCfg.homeDirectory;
+                shell = shellPkg;
+              }
+            else
+              {
+                isNormalUser = true;
+                home = userCfg.homeDirectory;
+                extraGroups = linuxGroups;
+                shell = shellPkg;
+              };
+        };
+    in
+    {
+      options.kaguya.buildPlan = lib.mkOption {
+        type = lib.types.attrs;
+        internal = true;
+        readOnly = true;
+        description = "Kaguya 在预构建阶段生成的冻结构建计划。";
       };
 
-      # 合并 inputs (基础 inputs + 系统特定的 inputsOverride)
-      mergedInputs = inputs // (systemConfig.systemConfig.inputsOverride or { });
+      config =
+        hostConfig
+        // {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = {
+            inherit inputs unstable;
+            hostName = hostName;
+            kaguyaBuildPlan = plan;
+          };
+          home-manager.users = lib.mapAttrs mkUserModule enabledUsers;
+          users.users = lib.mkMerge (lib.mapAttrsToList mkUserAccount enabledUsers);
+          environment.shells = shellPackages;
+          programs.fish.enable = hasFishUsers;
+        };
+    };
 
-      # 生成用户配置模块
-      userModules = utils.generateUserModules systemName (systemConfig.systemConfig.users or { });
-
-      # 生成系统模块
-      systemModules = utils.generateSystemModules (systemConfig.systemConfig or { });
-
-      # 根据架构选择平台配置 (类似 switch/case)
+  mkSystem =
+    hostName:
+    let
+      plan = mkPlan hostName;
+      nixpkgsVersion = "25.05";
+      patches = import ./patch/default.nix {
+        lib = extendedLib;
+        architecture = plan.target.system;
+        inherit nixpkgsVersion;
+      };
+      defaultModulePath = ../systems + "/${hostName}/default.nix";
+      hasDefaultModule = builtins.pathExists defaultModulePath;
       buildSystemConfig =
-        if extendedLib.arch.isDarwin architecture then
+        if plan.target.platform == "darwin" then
           {
-            builder = mergedInputs.nix-darwin.lib.darwinSystem;
-            nixpkgsInput = mergedInputs.nixpkgs-darwin;
-            nixpkgsUnstableInput = mergedInputs.nixpkgs-unstable or mergedInputs.nixpkgs-darwin;
-            platformModules = [
-              # Darwin 特定模块
-            ]
-            ++ (
-              if mergedInputs ? home-manager && mergedInputs.home-manager ? darwinModules then
-                [ mergedInputs.home-manager.darwinModules.home-manager ]
-              else
-                [ ]
-            );
-          }
-        else if extendedLib.arch.isLinux architecture then
-          {
-            builder = mergedInputs.nixpkgs.lib.nixosSystem;
-            nixpkgsInput = mergedInputs.nixpkgs;
-            nixpkgsUnstableInput = mergedInputs.nixpkgs-unstable or mergedInputs.nixpkgs;
-            platformModules = [
-              # NixOS 特定模块
-            ]
-            ++ (
-              if mergedInputs ? nix-flatpak then [ mergedInputs.nix-flatpak.nixosModules.nix-flatpak ] else [ ]
-            )
-            ++ (
-              if mergedInputs ? home-manager && mergedInputs.home-manager ? nixosModules then
-                [ mergedInputs.home-manager.nixosModules.home-manager ]
-              else
-                [ ]
-            );
+            builder = inputs.nix-darwin.lib.darwinSystem;
+            nixpkgsInput = inputs.nixpkgs-darwin;
+            nixpkgsUnstableInput = inputs.nixpkgs-unstable or inputs.nixpkgs-darwin;
+            platformModules =
+              lib.optional
+                (inputs ? home-manager && inputs.home-manager ? darwinModules)
+                inputs.home-manager.darwinModules.home-manager;
           }
         else
-          throw "Unsupported architecture: ${architecture}";
-      # 通用的系统构建参数
+          {
+            builder = inputs.nixpkgs.lib.nixosSystem;
+            nixpkgsInput = inputs.nixpkgs;
+            nixpkgsUnstableInput = inputs.nixpkgs-unstable or inputs.nixpkgs;
+            platformModules =
+              lib.optional (inputs ? nix-flatpak) inputs.nix-flatpak.nixosModules.nix-flatpak
+              ++ lib.optional
+                (inputs ? home-manager && inputs.home-manager ? nixosModules)
+                inputs.home-manager.nixosModules.home-manager;
+          };
+      unstable = import buildSystemConfig.nixpkgsUnstableInput {
+        system = plan.target.system;
+        config.allowUnfree = true;
+      };
       systemBuildArgs = {
         specialArgs = {
-          inputs = mergedInputs;
-          systemName = systemName;  # 传递系统名称给模块
-          lib = extendedLib;        # 传递扩展的 lib（包含 per-sys、arch、packages 等）
-          unstable = import buildSystemConfig.nixpkgsUnstableInput {
-            system = architecture;
-            config.allowUnfree = true;
-          };
+          inherit inputs unstable;
+          lib = extendedLib;
+          hostName = hostName;
+          kaguyaBuildPlan = plan;
         };
 
         modules = [
-          # 核心框架
-          ./options/system.nix
-          ./options/user.nix
-
-          # Packages overlay 和模块
           {
             nixpkgs.overlays = [ packages.overlay ];
           }
           packages.module
-
-          # 通用配置
           {
             nixpkgs.config.allowUnfree = true;
-            nixpkgs.hostPlatform = architecture;
+            nixpkgs.hostPlatform = plan.target.system;
           }
-
-          # 系统特定配置
-          ../systems/${systemFile}
+          (mkFrameworkModule {
+            inherit hostName plan unstable;
+          })
+          plan.hardware.modulePath
         ]
         ++ buildSystemConfig.platformModules
-        ++ systemModules
-        ++ userModules
-        ++ patches.getModules;  # 添加版本特定的补丁模块
+        ++ plan.systemModulePaths
+        ++ lib.optional hasDefaultModule defaultModulePath
+        ++ patches.getModules;
       }
-      // patches.getBuildArgs;  # 合并版本特定的构建参数
-
-      # 构建系统配置
-      builtSystem = buildSystemConfig.builder systemBuildArgs;
+      // patches.getBuildArgs;
     in
-    builtSystem;
+    buildSystemConfig.builder systemBuildArgs;
 
-  # 系统过滤器 - 根据条件筛选系统
-  systemFilter =
-    predicate:
-    lib.filterAttrs (
-      name: _:
-      let
-        rawConfig = import ../systems/${name};
-        # 如果是函数，调用它获取配置；否则直接使用
-        systemConfig =
-          if lib.isFunction rawConfig then
-            rawConfig {
-              pkgs = null;
-              lib = lib;
-              config = { };
-            }
-          else
-            rawConfig;
-        architecture = systemConfig.systemConfig.architecture or "x86_64-linux";
-      in
-      predicate architecture
-    ) systemNames;
+  nixosSystems = builtins.filter (
+    hostName:
+    let
+      meta = import (../systems + "/${hostName}/meta.nix");
+      platform = meta.target.platform or "linux";
+    in
+    platform == "linux"
+  ) systemNames;
 
-  # 分离 Darwin 和 NixOS 系统
-  darwinSystems = systemFilter extendedLib.arch.isDarwin;
-  nixosSystems = systemFilter extendedLib.arch.isLinux;
+  darwinSystems = builtins.filter (
+    hostName:
+    let
+      meta = import (../systems + "/${hostName}/meta.nix");
+      platform = meta.target.platform or "linux";
+    in
+    platform == "darwin"
+  ) systemNames;
 
 in
 {
   flake = {
-    # NixOS 系统配置
-    nixosConfigurations = lib.mapAttrs' (
-      name: _: lib.nameValuePair (lib.removeSuffix ".nix" name) (mkSystem name)
-    ) nixosSystems;
+    lib.kaguya = {
+      inherit (graph) buildPlanFromMeta mergeAttrsets;
+      inherit (graph.errors) defaultLocale renderError throwError;
+    };
 
-    # Darwin 系统配置 - 复用 mkSystem
-    darwinConfigurations = lib.mapAttrs' (
-      name: _: lib.nameValuePair (lib.removeSuffix ".nix" name) (mkSystem name)
-    ) darwinSystems;
+    nixosConfigurations = builtins.listToAttrs (
+      map (name: {
+        inherit name;
+        value = mkSystem name;
+      }) nixosSystems
+    );
+
+    darwinConfigurations = builtins.listToAttrs (
+      map (name: {
+        inherit name;
+        value = mkSystem name;
+      }) darwinSystems
+    );
   };
 }

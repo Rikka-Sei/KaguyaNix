@@ -1,7 +1,7 @@
 # 新的 Makefile - 支持自动发现系统配置
 
 # 自动扫描 systems 目录获取所有可用系统
-SYSTEMS := $(basename $(notdir $(wildcard systems/*.nix)))
+SYSTEMS := $(patsubst %/,%,$(notdir $(wildcard systems/*/)))
 
 # 自动扫描 deploy 目录获取所有可用部署配置
 DEPLOYS := $(basename $(notdir $(wildcard deploy/*.nix)))
@@ -32,8 +32,8 @@ help:
 list:
 	@echo "可用的系统配置:"
 	@$(foreach system,$(SYSTEMS), \
-		if [ -f "systems/$(system).nix" ]; then \
-			echo "  $(system) - $(shell head -5 systems/$(system).nix | grep -o 'hostName.*' | cut -d '"' -f2)"; \
+		if [ -f "systems/$(system)/meta.nix" ]; then \
+			echo "  $(system)"; \
 		fi; \
 	)
 
@@ -46,24 +46,24 @@ use:
 		$(foreach system,$(SYSTEMS),echo "  $(system)";) \
 		exit 1; \
 	fi; \
-	if [ ! -f "systems/$$TARGET.nix" ]; then \
-		echo "错误: 系统配置 systems/$$TARGET.nix 不存在"; \
+	if [ ! -f "systems/$$TARGET/meta.nix" ]; then \
+		echo "错误: 系统配置 systems/$$TARGET/meta.nix 不存在"; \
 		exit 1; \
 	fi; \
 	echo "构建并切换到系统: $$TARGET"; \
 	echo "正在检测系统类型..."; \
-	if nix eval .#darwinConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
+	if nix eval path:./#darwinConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
 		echo "✅ 检测到 Darwin 系统，使用 darwin-rebuild..."; \
-		sudo darwin-rebuild switch --flake .#$$TARGET --show-trace; \
-	elif nix eval .#nixosConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
+		sudo darwin-rebuild switch --flake path:./#$$TARGET --show-trace; \
+	elif nix eval path:./#nixosConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
 		echo "✅ 检测到 NixOS 系统，使用 nixos-rebuild..."; \
-		sudo nixos-rebuild switch --flake ./#$$TARGET --show-trace; \
+		sudo nixos-rebuild switch --flake path:./#$$TARGET --show-trace; \
 	else \
 		echo "❌ 错误: 无法找到系统配置 $$TARGET"; \
 		echo "可用的 Darwin 系统:"; \
-		nix eval .#darwinConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
+		nix eval path:./#darwinConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
 		echo "可用的 NixOS 系统:"; \
-		nix eval .#nixosConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
+		nix eval path:./#nixosConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
 		exit 1; \
 	fi
 
@@ -89,12 +89,12 @@ eval-time:
 		exit 1; \
 	fi; \
 	TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
-	if nix eval .#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
+	if nix eval path:./#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
 		echo "评估 Darwin 系统构建时间: $$TARGET"; \
-		time nix build .#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
+		time nix build path:./#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
 	else \
 		echo "评估 NixOS 系统构建时间: $$TARGET"; \
-		time nix eval --raw .#nixosConfigurations.$$TARGET.config.system.build.toplevel --show-trace; \
+		time nix eval --raw path:./#nixosConfigurations.$$TARGET.config.system.build.toplevel --show-trace; \
 	fi
 
 # 便捷别名（基于常见系统）
@@ -118,26 +118,26 @@ check:
 		echo "检查所有系统配置..."; \
 		$(foreach system,$(SYSTEMS), \
 			echo "检查系统: $(system)"; \
-			if nix eval .#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
+			if nix eval path:./#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
 				echo "  Darwin 系统，检查 darwinConfigurations.$(system)"; \
-				nix build .#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
+				nix build path:./#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
 			else \
 				echo "  NixOS 系统，检查 nixosConfigurations.$(system)"; \
-				nix build .#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
+				nix build path:./#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
 			fi; \
 		) \
 	else \
 		echo "检查系统: $$TARGET"; \
-		if [ ! -f "systems/$$TARGET.nix" ]; then \
-			echo "错误: 系统配置 systems/$$TARGET.nix 不存在"; \
+		if [ ! -f "systems/$$TARGET/meta.nix" ]; then \
+			echo "错误: 系统配置 systems/$$TARGET/meta.nix 不存在"; \
 			exit 1; \
 		fi; \
-		if nix eval .#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
+		if nix eval path:./#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
 			echo "  Darwin 系统，检查 darwinConfigurations.$$TARGET"; \
-			nix build .#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
+			nix build path:./#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
 		else \
 			echo "  NixOS 系统，检查 nixosConfigurations.$$TARGET"; \
-			nix build .#nixosConfigurations.$$TARGET.config.system.build.toplevel --dry-run --show-trace; \
+			nix build path:./#nixosConfigurations.$$TARGET.config.system.build.toplevel --dry-run --show-trace; \
 		fi; \
 	fi
 
@@ -175,7 +175,7 @@ kaguya-upgrade:
 		echo "Usage: make kaguya upgrade <target-path>"; \
 		echo ""; \
 		echo "此命令会将当前仓库的 KaguyaNix 框架代码同步到目标仓库"; \
-		echo "同时保留目标仓库的用户数据（users/systems/packages/modules/hardware/deploy）"; \
+		echo "同时保留目标仓库的业务数据（systems/packages/modules/hardware/deploy）"; \
 		echo ""; \
 		echo "⚠️  注意: 此操作会删除目标仓库的框架文件，请确保已提交所有更改！"; \
 		exit 1; \
@@ -226,7 +226,6 @@ kaguya-upgrade:
 	echo "⚠️  警告: 此操作将执行以下步骤:"; \
 	echo ""; \
 	echo "  1. 保留目标仓库的以下目录:"; \
-	echo "     - users/      (用户配置)"; \
 	echo "     - systems/    (系统定义)"; \
 	echo "     - packages/   (自定义包)"; \
 	echo "     - modules/    (功能模块)"; \
@@ -253,7 +252,7 @@ kaguya-upgrade:
 	TIMESTAMP=$$(date +%Y%m%d_%H%M%S); \
 	BACKUP_DIR="/tmp/kaguya_upgrade_backup_$$TIMESTAMP"; \
 	mkdir -p "$$BACKUP_DIR"; \
-	for DIR in users systems packages modules hardware deploy; do \
+	for DIR in systems packages modules hardware deploy; do \
 		if [ -d "$$TARGET_PATH/$$DIR" ]; then \
 			echo "  备份: $$DIR/"; \
 			cp -r "$$TARGET_PATH/$$DIR" "$$BACKUP_DIR/"; \
@@ -301,7 +300,7 @@ kaguya-upgrade:
 	\
 	echo ""; \
 	echo "[步骤 4/4] 恢复用户数据..."; \
-	for DIR in users systems packages modules hardware deploy; do \
+	for DIR in systems packages modules hardware deploy; do \
 		if [ -d "$$BACKUP_DIR/$$DIR" ]; then \
 			echo "  恢复: $$DIR/"; \
 			rm -rf "$$TARGET_PATH/$$DIR"; \
