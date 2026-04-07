@@ -49,9 +49,15 @@ assert_eq "$linux_arch" "x86_64" "Linux host 应暴露新的 buildPlan 架构信
 
 darwin_platform="$(
   cd "$ROOT_DIR" &&
-    nix eval "${NIX_FLAGS[@]}" --raw "$FLAKE_REF#darwinConfigurations.laptop-mbp2019.config.kaguya.buildPlan.target.platform"
+    nix eval "${NIX_FLAGS[@]}" --raw "$FLAKE_REF#darwinConfigurations.laptop-mbpM2.config.kaguya.buildPlan.target.platform"
 )"
 assert_eq "$darwin_platform" "darwin" "Darwin host 应暴露新的 buildPlan 平台信息"
+
+darwin_arch="$(
+  cd "$ROOT_DIR" &&
+    nix eval "${NIX_FLAGS[@]}" --raw "$FLAKE_REF#darwinConfigurations.laptop-mbpM2.config.kaguya.buildPlan.target.arch"
+)"
+assert_eq "$darwin_arch" "aarch64" "Darwin host 应暴露新的 buildPlan 架构信息"
 
 linux_capabilities="$(
   cd "$ROOT_DIR" &&

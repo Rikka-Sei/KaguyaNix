@@ -1,6 +1,6 @@
 {
   support = {
     platform = [ "darwin" ];
-    arch = [ "x86_64" ];
+    arch = [ "aarch64" ];
   };
 }

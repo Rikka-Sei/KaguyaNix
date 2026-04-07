@@ -1,10 +1,10 @@
 {
   target = {
     platform = "darwin";
-    arch = "x86_64";
+    arch = "aarch64";
   };
 
-  hardware = "mbp2019";
+  hardware = "mbpM2";
   locale = "zh-CN";
 
   capabilities = [

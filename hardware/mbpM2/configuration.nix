@@ -1,4 +1,4 @@
-# MacBook Pro 2019 硬件配置
+# MacBook Pro M2 硬件配置
 {
   config,
   lib,

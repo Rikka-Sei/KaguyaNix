@@ -4,7 +4,7 @@
     ./users/rikki/default.nix
   ];
 
-  networking.hostName = "Rikkis-MacBook-Pro";
+  networking.hostName = "laptop-mbpM2";
 
   time.timeZone = "Asia/Shanghai";
 

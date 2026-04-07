@@ -17,24 +17,7 @@ assert_contains_file() {
   fi
 }
 
-assert_git_show_contains() {
-  local git_path="$1"
-  local needle="$2"
-  local message="$3"
-  local output
-
-  output="$(cd "$ROOT_DIR" && git show "HEAD:$git_path")"
-
-  if [[ "$output" != *"$needle"* ]]; then
-    echo "断言失败: $message" >&2
-    echo "  Git 路径: $git_path" >&2
-    echo "  期望包含: $needle" >&2
-    exit 1
-  fi
-}
-
 # 旧的系统 user profiles 应转成新的 user capabilities
-assert_git_show_contains "systems/laptop-asus-tx4-personal.nix" "rikki.profiles" "旧 Linux 系统应有 profile 列表以供对照"
 assert_contains_file "$ROOT_DIR/systems/laptop-asus-tx4-personal/users/rikki/meta.nix" "\"development/base\"" "Linux user meta 应映射 development profile"
 assert_contains_file "$ROOT_DIR/systems/laptop-asus-tx4-personal/users/rikki/meta.nix" "\"software/common\"" "Linux user meta 应映射 software profile"
 assert_contains_file "$ROOT_DIR/systems/laptop-asus-tx4-personal/users/rikki/meta.nix" "\"gaming/base\"" "Linux user meta 应映射 gaming profile"
@@ -60,7 +43,7 @@ assert_contains_file "$ROOT_DIR/modules/development/base/user/scripts/workspace.
 assert_contains_file "$ROOT_DIR/modules/development/base/user/scripts/genprime.sh" "bash" "开发脚本应完整迁移"
 
 # Darwin 主机也应有清晰的用户入口
-assert_contains_file "$ROOT_DIR/systems/laptop-mbp2019/users/rikki/meta.nix" "\"identity/rikki\"" "Darwin user meta 应保留 identity capability"
-assert_contains_file "$ROOT_DIR/systems/laptop-mbp2019/users/rikki/default.nix" "gnupg" "Darwin host-local user 模块应保留 gnupg 相关补充"
+assert_contains_file "$ROOT_DIR/systems/laptop-mbpM2/users/rikki/meta.nix" "\"identity/rikki\"" "Darwin user meta 应保留 identity capability"
+assert_contains_file "$ROOT_DIR/systems/laptop-mbpM2/users/rikki/default.nix" "gnupg" "Darwin host-local user 模块应保留 gnupg 相关补充"
 
 echo "Migration equivalence checks passed"

@@ -27,7 +27,7 @@ KaguyaNix 当前采用“能力图 + 两阶段构建”模型：
 │   │       └── rikki/
 │   │           ├── meta.nix
 │   │           └── default.nix
-│   └── laptop-mbp2019/
+│   └── laptop-mbpM2/
 │       ├── meta.nix
 │       ├── default.nix
 │       └── users/
@@ -39,7 +39,7 @@ KaguyaNix 当前采用“能力图 + 两阶段构建”模型：
 │   │   ├── meta.nix
 │   │   ├── configuration.nix
 │   │   └── hardware-configuration.nix
-│   └── mbp2019/
+│   └── mbpM2/
 │       ├── meta.nix
 │       └── configuration.nix
 ├── modules/
