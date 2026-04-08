@@ -12,8 +12,11 @@
   capabilities = [
     "identity/rikki"
     "development/base"
-    "software/common"
+    "software/workstation"
+    "software/network-access"
+    "software/learning"
     "software/logseq"
+    "software/reverse-engineering"
     "gaming/base"
     "business/common"
     "lifetime/common"

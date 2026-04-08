@@ -19,6 +19,8 @@ in
       ++ lib.optionals pkgs.stdenv.isLinux [
         osu-lazer-bin
         hmcl
+        mindustry
+        ddnet
       ];
   };
 }

@@ -86,6 +86,22 @@ KaguyaNix 采用“能力图 + 两阶段构建”模型：
 }
 ```
 
+字段说明：
+
+| 字段 | 作用 | 阶段 |
+| --- | --- | --- |
+| `target.platform` | 声明目标平台，决定使用 `nixosSystem` 还是 `darwinSystem`，并参与 capability / hardware 支持表校验。 | 第一阶段 |
+| `target.arch` | 声明目标架构，参与 capability / hardware 支持表校验，并形成最终 `system` 标识。 | 第一阶段 |
+| `hardware` | 指向 `hardware/<name>/` 目录，用于加载硬件支持表与第二阶段的 `configuration.nix`。 | 第一、二阶段 |
+| `locale` | 选择错误信息的本地化语言；当前主要影响框架错误输出。 | 第一阶段 |
+| `capabilities` | 宿主机级 capability 列表，只能放系统侧复用能力，例如桌面、服务、输入设备支持。 | 第一阶段 |
+| `users` | 宿主机上的用户实例集合，值通常来自 `./users/<name>/meta.nix`。 | 第一阶段 |
+
+约束：
+
+- `meta.nix` 必须保持为纯数据入口，不应写原生模块逻辑。
+- 宿主机局部但不适合建模为 capability 的补充，应写入 `systems/<host>/default.nix`。
+
 ### 2. Capability
 
 一个 capability 对应 `modules/<domain>/<name>/` 一个目录。
@@ -125,7 +141,8 @@ modules/development/base/
   capabilities = [
     "identity/rikki"
     "development/base"
-    "software/common"
+    "software/workstation"
+    "software/network-access"
   ];
   overrides = {
     kaguya.programs.git.email = "rikki@member.fsf.org";
@@ -133,10 +150,24 @@ modules/development/base/
 }
 ```
 
+字段说明：
+
+| 字段 | 作用 | 阶段 |
+| --- | --- | --- |
+| `enable` | 控制该用户实例是否参与构建。关闭后，框架不会为该用户生成用户模块。 | 第一阶段 |
+| `admin` | 声明该用户是否应具备管理员权限；框架会在第二阶段映射到系统用户配置。 | 第一、二阶段 |
+| `shell` | 声明用户登录 shell，当前允许值由框架固定枚举控制。 | 第一阶段 |
+| `extraGroups` | 用户需要加入的额外系统组，例如 `docker`、`libvirtd`。 | 第一、二阶段 |
+| `capabilities` | 用户态 capability 列表，用于展开 Home Manager 侧复用能力。 | 第一阶段 |
+| `overrides` | 注入到 `kaguya.*` 命名空间的覆写值，用于宿主机实例对 capability 默认值做局部修正。 | 第二阶段 |
+| `stateVersion` | 该用户实例的 Home Manager 状态版本，默认值为 `24.05`。 | 第一、二阶段 |
+| `homeDirectory` | 显式指定用户主目录；未填写时按平台自动推导。 | 第一、二阶段 |
+
 用户的长期偏好通过 capability 复用，例如：
 
 - `identity/rikki`
-- `software/common`
+- `software/workstation`
+- `software/network-access`
 - `development/base`
 
 ## 两阶段构建
@@ -196,6 +227,21 @@ modules/development/base/
   conflicts = [ ];
 }
 ```
+
+字段说明：
+
+| 字段 | 作用 |
+| --- | --- |
+| `optionPath` | 该 capability 默认启用时写入的 option 路径。框架会在展开 capability 图后自动注入 `${optionPath}.enable = true`。 |
+| `support.platform` | 该 facet 支持的平台列表，构建目标若不在列表内会直接报错。 |
+| `support.arch` | 该 facet 支持的架构列表，构建目标若不在列表内会直接报错。 |
+| `requires` | 当前 capability 依赖的其他 capability 列表，框架会先展开依赖，再导入当前 capability。 |
+| `conflicts` | 当前 capability 不能同时启用的 capability 列表；若同时出现，第一阶段直接报错。 |
+
+补充约定：
+
+- `meta.nix` 只描述 capability 的静态信息，不应放置 `home.packages`、`services.*` 等实现逻辑。
+- 聚合 capability 可以只通过 `requires` 组合其他 capability，而在 `module.nix` 中不直接声明配置。
 
 固定枚举：
 

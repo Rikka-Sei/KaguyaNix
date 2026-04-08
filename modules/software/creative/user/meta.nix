@@ -2,7 +2,7 @@
   optionPath = [
     "kaguya"
     "software"
-    "common"
+    "creative"
   ];
 
   support = {

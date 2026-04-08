@@ -5,8 +5,13 @@
   capabilities = [
     "identity/rikki"
     "development/base"
-    "software/common"
+    "software/workstation"
+    "software/network-access"
     "business/common"
     "lifetime/common"
   ];
+
+  overrides = {
+    kaguya.development.base.vscode.enable = false;
+  };
 }

@@ -89,7 +89,8 @@ modules/<domain>/<name>/
   capabilities = [
     "identity/rikki"
     "development/base"
-    "software/common"
+    "software/workstation"
+    "software/network-access"
   ];
 }
 ```
@@ -98,7 +99,8 @@ modules/<domain>/<name>/
 
 - `identity/rikki`
 - `development/base`
-- `software/common`
+- `software/workstation`
+- `software/network-access`
 
 ## Two-Phase Build
 
