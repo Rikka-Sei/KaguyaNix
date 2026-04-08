@@ -16,6 +16,6 @@
     ];
   };
 
-  requires = [ ];
-  conflicts = [ ];
+  requires = [];
+  conflicts = [];
 }

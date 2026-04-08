@@ -2,12 +2,10 @@
   config,
   lib,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.identity.rikki;
   gitCfg = config.kaguya.programs.git;
-in
-{
+in {
   options = {
     kaguya.identity.rikki.enable = lib.mkEnableOption "Rikki 身份能力";
 

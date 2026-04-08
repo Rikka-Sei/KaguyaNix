@@ -3,14 +3,12 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software.logseq;
-in
-{
+in {
   options.kaguya.software.logseq.enable = lib.mkEnableOption "Logseq 软件能力";
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.logseq ];
+    home.packages = [pkgs.logseq];
   };
 }

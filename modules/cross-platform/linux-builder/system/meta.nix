@@ -6,13 +6,13 @@
   ];
 
   support = {
-    platform = [ "darwin" ];
+    platform = ["darwin"];
     arch = [
       "x86_64"
       "aarch64"
     ];
   };
 
-  requires = [ ];
-  conflicts = [ ];
+  requires = [];
+  conflicts = [];
 }

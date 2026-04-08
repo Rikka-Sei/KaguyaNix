@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  cfg = config.kaguya.services.flatpak;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.kaguya.services.flatpak;
+in {
   options.kaguya.services.flatpak = {
     enable = lib.mkEnableOption "Flatpak 服务能力";
     remotes = lib.mkOption {

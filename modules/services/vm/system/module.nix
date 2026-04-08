@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.services.vm;
-in
-{
+in {
   options.kaguya.services.vm.enable = lib.mkEnableOption "虚拟化能力";
 
   config = lib.mkIf cfg.enable {
@@ -25,7 +23,8 @@ in
             (pkgs.OVMF.override {
               secureBoot = true;
               tpmSupport = true;
-            }).fd
+            })
+            .fd
           ];
         };
       };

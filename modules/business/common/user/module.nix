@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.business.common;
-in
-{
+in {
   options.kaguya.business.common.enable = lib.mkEnableOption "办公软件能力";
 
   config = lib.mkIf cfg.enable {

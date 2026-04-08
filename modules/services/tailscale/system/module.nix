@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  cfg = config.kaguya.services.tailscale;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.kaguya.services.tailscale;
+in {
   options.kaguya.services.tailscale = {
     enable = lib.mkEnableOption "Tailscale 能力";
     useRoutingFeatures = lib.mkOption {

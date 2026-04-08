@@ -1,6 +1,6 @@
 {
   support = {
-    platform = [ "darwin" ];
-    arch = [ "aarch64" ];
+    platform = ["darwin"];
+    arch = ["aarch64"];
   };
 }

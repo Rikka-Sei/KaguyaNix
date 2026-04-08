@@ -1,8 +1,11 @@
-{ config, lib, pkgs, ... }:
-let
-  cfg = config.kaguya.gaming.base;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.kaguya.gaming.base;
+in {
   options.kaguya.gaming.base.enable = lib.mkEnableOption "基础游戏能力";
 
   config = lib.mkIf cfg.enable {

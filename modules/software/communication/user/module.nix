@@ -3,16 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software.communication;
-in
-{
+in {
   options.kaguya.software.communication.enable = lib.mkEnableOption "通信软件能力";
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         thunderbird
       ]

@@ -5,13 +5,11 @@
   pkgs,
   unstable,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.development.base;
   alejandraPkg = inputs.alejandra.packages.${pkgs.system}.default or inputs.alejandra.defaultPackage.${pkgs.system};
   nilPkg = inputs.nil.packages.${pkgs.system}.default;
-in
-{
+in {
   options.kaguya.development.base = {
     enable = lib.mkEnableOption "基础开发能力";
     AIPackage = lib.mkOption {
@@ -22,8 +20,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages =
-      with pkgs;
+    environment.systemPackages = with pkgs;
       [
         axel
         nano

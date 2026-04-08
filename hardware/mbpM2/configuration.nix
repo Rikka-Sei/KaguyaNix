@@ -4,9 +4,7 @@
   lib,
   pkgs,
   ...
-}:
-
-{
+}: {
   # 设置主用户 - 新版本 nix-darwin 需要为 system.defaults 设置主用户
   system.primaryUser = "rikki";
 
@@ -29,7 +27,6 @@
       AppleShowAllExtensions = true;
       FXEnableExtensionChangeWarning = false;
     };
-
   };
 
   # 安全配置 - 在 nix-darwin 中启用 Touch ID for sudo

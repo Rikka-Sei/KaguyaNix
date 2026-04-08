@@ -3,21 +3,19 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.development.base;
   vscodeCfg = cfg.vscode;
   scriptsDir = ./scripts;
   scriptFiles = builtins.readDir scriptsDir;
   deployScripts = lib.mapAttrs' (
     name: _:
-    lib.nameValuePair ".local/bin/${lib.removeSuffix ".sh" name}" {
-      source = scriptsDir + "/${name}";
-      executable = true;
-    }
+      lib.nameValuePair ".local/bin/${lib.removeSuffix ".sh" name}" {
+        source = scriptsDir + "/${name}";
+        executable = true;
+      }
   ) (lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".sh" name) scriptFiles);
-in
-{
+in {
   options.kaguya.development.base = {
     enable = lib.mkEnableOption "基础开发用户能力";
 
@@ -29,8 +27,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         treefmt
         gemini-cli

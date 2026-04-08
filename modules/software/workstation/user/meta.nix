@@ -24,5 +24,5 @@
     "software/desktop-tools"
     "software/remote-access"
   ];
-  conflicts = [ ];
+  conflicts = [];
 }

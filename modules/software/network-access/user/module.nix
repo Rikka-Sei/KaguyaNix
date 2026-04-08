@@ -3,16 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software."network-access";
-in
-{
+in {
   options.kaguya.software."network-access".enable = lib.mkEnableOption "网络接入软件能力";
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         xray
         sing-box

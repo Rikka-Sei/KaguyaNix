@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   home-manager.users.rikki = {
     home.packages = with pkgs; [
       powertop

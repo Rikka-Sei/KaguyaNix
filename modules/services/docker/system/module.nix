@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.services.docker;
-in
-{
+in {
   options.kaguya.services.docker = {
     enable = lib.mkEnableOption "Docker 服务能力";
     storageDriver = lib.mkOption {
@@ -36,7 +34,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.docker-compose ];
+    environment.systemPackages = [pkgs.docker-compose];
 
     virtualisation.docker = {
       enable = true;
@@ -56,6 +54,6 @@ in
       "net.bridge.bridge-nf-call-iptables" = 1;
     };
 
-    boot.kernelModules = [ "br_netfilter" ];
+    boot.kernelModules = ["br_netfilter"];
   };
 }

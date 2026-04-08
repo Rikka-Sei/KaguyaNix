@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.crossPlatform.linuxBuilder;
-in
-{
+in {
   options.kaguya.crossPlatform.linuxBuilder = {
     enable = lib.mkEnableOption "Linux Builder 能力";
     cores = lib.mkOption {
@@ -51,7 +49,7 @@ in
     };
 
     nix.settings = {
-      trusted-users = [ "@admin" ];
+      trusted-users = ["@admin"];
       builders-use-substitutes = lib.mkDefault true;
     };
   };

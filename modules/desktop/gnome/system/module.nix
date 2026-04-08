@@ -1,8 +1,11 @@
-{ config, lib, pkgs, ... }:
-let
-  cfg = config.kaguya.desktop.gnome;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.kaguya.desktop.gnome;
+in {
   options.kaguya.desktop.gnome.enable = lib.mkEnableOption "GNOME 桌面能力";
 
   config = lib.mkIf cfg.enable {
@@ -32,6 +35,6 @@ in
       adwaita-icon-theme
     ];
 
-    services.udev.packages = with pkgs; [ gnome-settings-daemon ];
+    services.udev.packages = with pkgs; [gnome-settings-daemon];
   };
 }

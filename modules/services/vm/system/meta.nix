@@ -6,13 +6,13 @@
   ];
 
   support = {
-    platform = [ "linux" ];
+    platform = ["linux"];
     arch = [
       "x86_64"
       "aarch64"
     ];
   };
 
-  requires = [ ];
-  conflicts = [ ];
+  requires = [];
+  conflicts = [];
 }

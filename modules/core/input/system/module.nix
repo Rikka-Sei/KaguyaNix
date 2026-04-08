@@ -1,8 +1,11 @@
-{ lib, pkgs, config, ... }:
-let
-  cfg = config.kaguya.core.input;
-in
 {
+  lib,
+  pkgs,
+  config,
+  ...
+}: let
+  cfg = config.kaguya.core.input;
+in {
   options.kaguya.core.input.enable = lib.mkEnableOption "输入法能力";
 
   config = lib.mkIf cfg.enable {

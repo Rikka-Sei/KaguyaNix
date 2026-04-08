@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.core.fonts;
-in
-{
+in {
   options.kaguya.core.fonts.enable = lib.mkEnableOption "核心字体能力";
 
   config = lib.mkIf cfg.enable {
@@ -30,7 +28,7 @@ in
       ];
 
       fontconfig.defaultFonts = {
-        emoji = [ "Noto Color Emoji" ];
+        emoji = ["Noto Color Emoji"];
         monospace = [
           "Ubuntu Mono"
           "Noto Sans Mono CJK SC"
@@ -50,35 +48,33 @@ in
       };
     };
 
-    system.fsPackages = [ pkgs.bindfs ];
+    system.fsPackages = [pkgs.bindfs];
 
-    fileSystems =
-      let
-        mkRoSymBind = path: {
-          device = path;
-          fsType = "fuse.bindfs";
-          options = [
-            "ro"
-            "resolve-symlinks"
-            "x-gvfs-hide"
-          ];
-        };
-
-        aggregatedIcons = pkgs.buildEnv {
-          name = "system-icons";
-          paths = with pkgs; [ gnome-themes-extra ];
-          pathsToLink = [ "/share/icons" ];
-        };
-
-        aggregatedFonts = pkgs.buildEnv {
-          name = "system-fonts";
-          paths = config.fonts.packages;
-          pathsToLink = [ "/share/fonts" ];
-        };
-      in
-      {
-        "/usr/share/icons" = mkRoSymBind "${aggregatedIcons}/share/icons";
-        "/usr/local/share/fonts" = mkRoSymBind "${aggregatedFonts}/share/fonts";
+    fileSystems = let
+      mkRoSymBind = path: {
+        device = path;
+        fsType = "fuse.bindfs";
+        options = [
+          "ro"
+          "resolve-symlinks"
+          "x-gvfs-hide"
+        ];
       };
+
+      aggregatedIcons = pkgs.buildEnv {
+        name = "system-icons";
+        paths = with pkgs; [gnome-themes-extra];
+        pathsToLink = ["/share/icons"];
+      };
+
+      aggregatedFonts = pkgs.buildEnv {
+        name = "system-fonts";
+        paths = config.fonts.packages;
+        pathsToLink = ["/share/fonts"];
+      };
+    in {
+      "/usr/share/icons" = mkRoSymBind "${aggregatedIcons}/share/icons";
+      "/usr/local/share/fonts" = mkRoSymBind "${aggregatedFonts}/share/fonts";
+    };
   };
 }

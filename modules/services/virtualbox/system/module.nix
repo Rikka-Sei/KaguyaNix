@@ -1,8 +1,10 @@
-{ config, lib, ... }:
-let
-  cfg = config.kaguya.services.virtualbox;
-in
 {
+  config,
+  lib,
+  ...
+}: let
+  cfg = config.kaguya.services.virtualbox;
+in {
   options.kaguya.services.virtualbox.enable = lib.mkEnableOption "VirtualBox 能力";
 
   config = lib.mkIf cfg.enable {

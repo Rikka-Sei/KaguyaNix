@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software."desktop-tools";
-in
-{
+in {
   options.kaguya.software."desktop-tools".enable = lib.mkEnableOption "桌面工具软件能力";
 
   config = lib.mkIf cfg.enable {

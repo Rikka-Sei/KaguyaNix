@@ -1,6 +1,6 @@
 {
   support = {
-    platform = [ "linux" ];
-    arch = [ "x86_64" ];
+    platform = ["linux"];
+    arch = ["x86_64"];
   };
 }

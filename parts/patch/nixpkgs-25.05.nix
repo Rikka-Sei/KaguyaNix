@@ -10,13 +10,10 @@
 # 1. 禁用 Darwin 系统的文档生成（避免文档生成阶段触发版本检查）
 # 2. 禁用 darwinSystem 的版本检查参数
 # 3. 这是临时解决方案，等待上游修复后可以移除此补丁
-
 {
-  lib,          # extendedLib
+  lib, # extendedLib
   architecture,
-}:
-
-{
+}: {
   # 返回要添加到模块列表的配置
   getModules = lib.optionals (lib.arch.isDarwin architecture) [
     {

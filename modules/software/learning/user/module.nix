@@ -3,17 +3,14 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software.learning;
-in
-{
+in {
   options.kaguya.software.learning.enable = lib.mkEnableOption "学习软件能力";
 
   config = lib.mkIf cfg.enable {
     home.packages = lib.optionals pkgs.stdenv.isLinux (
-      with pkgs;
-      [
+      with pkgs; [
         anki
         calibre
       ]

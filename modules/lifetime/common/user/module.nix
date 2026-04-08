@@ -3,11 +3,9 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.lifetime.common;
-in
-{
+in {
   options.kaguya.lifetime.common.enable = lib.mkEnableOption "日常生活软件能力";
 
   config = lib.mkIf cfg.enable {

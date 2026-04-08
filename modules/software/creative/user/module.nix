@@ -3,16 +3,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.software.creative;
-in
-{
+in {
   options.kaguya.software.creative.enable = lib.mkEnableOption "创作软件能力";
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      with pkgs;
+    home.packages = with pkgs;
       [
         gimp
         typst

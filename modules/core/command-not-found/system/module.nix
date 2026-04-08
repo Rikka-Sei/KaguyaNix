@@ -4,15 +4,13 @@
   lib,
   pkgs,
   ...
-}:
-let
+}: let
   cfg = config.kaguya.core.commandNotFound;
   nixosTarball = inputs.nixpkgs;
-  programsSqlite = pkgs.runCommand "program.sqlite" { } ''
+  programsSqlite = pkgs.runCommand "program.sqlite" {} ''
     cp ${nixosTarball}/programs.sqlite $out
   '';
-in
-{
+in {
   options.kaguya.core.commandNotFound.enable = lib.mkEnableOption "command-not-found 数据库能力";
 
   config = lib.mkIf cfg.enable {

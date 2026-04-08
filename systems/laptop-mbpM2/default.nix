@@ -1,5 +1,4 @@
-{ ... }:
-{
+{...}: {
   imports = [
     ./users/rikki/default.nix
   ];

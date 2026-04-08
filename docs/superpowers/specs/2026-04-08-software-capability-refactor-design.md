@@ -2,7 +2,7 @@
 
 ## 背景
 
-当前 [modules/software/common/user/module.nix](/Users/rikki/WorkSpace/KaguyaNix/modules/software/common/user/module.nix) 实际上是旧 `users/rikki/profiles/software.nix` 在 capability 化后的直接迁移结果。结构已经切换到 capability 模型，但语义边界仍然停留在“共享软件大包”阶段。
+原 `modules/software/common/user/module.nix` 实际上是旧 `users/rikki/profiles/software.nix` 在 capability 化后的直接迁移结果。结构已经切换到 capability 模型，但语义边界仍然停留在“共享软件大包”阶段。
 
 这带来三个问题：
 
@@ -135,6 +135,8 @@ Darwin 用户：
 - `software/network-access`
 - `business/common`
 - `lifetime/common`
+
+其中 `laptop-mbpM2` 通过用户实例 `overrides` 关闭 `kaguya.development.base.vscode.enable`，避免与宿主机外部安装的 VSCode 重复。
 
 ## README 补充内容
 
