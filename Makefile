@@ -42,7 +42,10 @@ list:
 
 # 系统构建和切换
 use:
-	@TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
+	@TARGET="$(TARGET_SYSTEM)"; \
+	if [ -z "$$TARGET" ]; then \
+		TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
+	fi; \
 	if [ -z "$$TARGET" ]; then \
 		echo "Usage: make use <system-name>"; \
 		echo "Available systems:"; \
@@ -107,7 +110,7 @@ desktop: desktop-home-rikki
 server: server-vps-prod
 
 $(SYSTEMS):
-	@$(MAKE) use $@
+	@$(MAKE) use TARGET_SYSTEM=$@
 
 # 部署相关命令
 deploy-list:

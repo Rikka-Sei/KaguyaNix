@@ -51,6 +51,6 @@ alias_plan="$(
     make -n laptop-mbpM2
 )"
 
-assert_contains "$alias_plan" '$(MAKE) use laptop-mbpM2' "直接执行 make <system-name> 应转发到 make use <system-name>"
+assert_contains "$alias_plan" 'make use TARGET_SYSTEM=laptop-mbpM2' "直接执行 make <system-name> 应转发到 make use TARGET_SYSTEM=<system-name>"
 
 echo "Makefile smoke tests passed"

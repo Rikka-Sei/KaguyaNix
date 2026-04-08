@@ -24,7 +24,6 @@ in
         gemini-cli
         xray
         sing-box
-        logseq
         typst
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [

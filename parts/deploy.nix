@@ -35,7 +35,7 @@ let
         autoRollback = deployConfig.autoRollback or true;
         magicRollback = deployConfig.magicRollback or true;
 
-        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${systemName};
+        path = inputs.deploy-rs.lib.${builtins.currentSystem}.activate.nixos self.nixosConfigurations.${systemName};
       };
     };
 

@@ -13,6 +13,7 @@
     "identity/rikki"
     "development/base"
     "software/common"
+    "software/logseq"
     "gaming/base"
     "business/common"
     "lifetime/common"
