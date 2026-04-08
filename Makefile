@@ -1,13 +1,16 @@
 # 新的 Makefile - 支持自动发现系统配置
 
+NIX := nix --extra-experimental-features 'nix-command flakes'
+FLAKE_REF := path:./
+
 # 自动扫描 systems 目录获取所有可用系统
-SYSTEMS := $(patsubst %/,%,$(notdir $(wildcard systems/*/)))
+SYSTEMS := $(sort $(notdir $(patsubst %/,%,$(dir $(wildcard systems/*/meta.nix)))))
 
 # 自动扫描 deploy 目录获取所有可用部署配置
 DEPLOYS := $(basename $(notdir $(wildcard deploy/*.nix)))
 
 # 默认目标
-.PHONY: help list use update format clean-garbage eval-time check deploy-list deploy kaguya-upgrade
+.PHONY: help list use update format clean-garbage eval-time check deploy-list deploy kaguya-upgrade $(SYSTEMS)
 
 help:
 	@echo "Available commands:"
@@ -52,18 +55,18 @@ use:
 	fi; \
 	echo "构建并切换到系统: $$TARGET"; \
 	echo "正在检测系统类型..."; \
-	if nix eval path:./#darwinConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
-		echo "✅ 检测到 Darwin 系统，使用 darwin-rebuild..."; \
-		sudo darwin-rebuild switch --flake path:./#$$TARGET --show-trace; \
-	elif nix eval path:./#nixosConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
+	if $(NIX) eval $(FLAKE_REF)#darwinConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
+		echo "✅ 检测到 Darwin 系统，使用 nix run nix-darwin..."; \
+		sudo env HOME=/var/root USER=root LOGNAME=root XDG_CACHE_HOME=/var/root/.cache $(NIX) run nix-darwin -- switch --flake $(FLAKE_REF)#$$TARGET --show-trace; \
+	elif $(NIX) eval $(FLAKE_REF)#nixosConfigurations --apply 'x: builtins.hasAttr "'$$TARGET'" x' 2>/dev/null | grep -q true; then \
 		echo "✅ 检测到 NixOS 系统，使用 nixos-rebuild..."; \
-		sudo nixos-rebuild switch --flake path:./#$$TARGET --show-trace; \
+		sudo nixos-rebuild switch --flake $(FLAKE_REF)#$$TARGET --show-trace; \
 	else \
 		echo "❌ 错误: 无法找到系统配置 $$TARGET"; \
 		echo "可用的 Darwin 系统:"; \
-		nix eval path:./#darwinConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
+		$(NIX) eval $(FLAKE_REF)#darwinConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
 		echo "可用的 NixOS 系统:"; \
-		nix eval path:./#nixosConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
+		$(NIX) eval $(FLAKE_REF)#nixosConfigurations --apply 'x: builtins.attrNames x' 2>/dev/null || echo "  无"; \
 		exit 1; \
 	fi
 
@@ -71,10 +74,10 @@ use:
 update:
 	@if [ -n "$(filter-out $@,$(MAKECMDGOALS))" ]; then \
 		echo "更新指定 flake input: $(filter-out $@,$(MAKECMDGOALS))"; \
-		nix flake update $(filter-out $@,$(MAKECMDGOALS)); \
+		$(NIX) flake update $(filter-out $@,$(MAKECMDGOALS)); \
 	else \
 		echo "更新所有 flake inputs"; \
-		nix flake update; \
+		$(NIX) flake update; \
 	fi
 
 format:
@@ -89,12 +92,12 @@ eval-time:
 		exit 1; \
 	fi; \
 	TARGET="$(filter-out $@,$(MAKECMDGOALS))"; \
-	if nix eval path:./#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
+	if $(NIX) eval $(FLAKE_REF)#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
 		echo "评估 Darwin 系统构建时间: $$TARGET"; \
-		time nix build path:./#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
+		time $(NIX) build $(FLAKE_REF)#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
 	else \
 		echo "评估 NixOS 系统构建时间: $$TARGET"; \
-		time nix eval --raw path:./#nixosConfigurations.$$TARGET.config.system.build.toplevel --show-trace; \
+		time $(NIX) eval --raw $(FLAKE_REF)#nixosConfigurations.$$TARGET.config.system.build.toplevel --show-trace; \
 	fi
 
 # 便捷别名（基于常见系统）
@@ -102,6 +105,9 @@ eval-time:
 laptop: laptop-asus-tx4-personal
 desktop: desktop-home-rikki
 server: server-vps-prod
+
+$(SYSTEMS):
+	@$(MAKE) use $@
 
 # 部署相关命令
 deploy-list:
@@ -118,12 +124,12 @@ check:
 		echo "检查所有系统配置..."; \
 		$(foreach system,$(SYSTEMS), \
 			echo "检查系统: $(system)"; \
-			if nix eval path:./#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
+			if $(NIX) eval $(FLAKE_REF)#darwinConfigurations.$(system) 2>/dev/null >/dev/null; then \
 				echo "  Darwin 系统，检查 darwinConfigurations.$(system)"; \
-				nix build path:./#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
+				$(NIX) build $(FLAKE_REF)#darwinConfigurations.$(system).system --dry-run --show-trace || exit 1; \
 			else \
 				echo "  NixOS 系统，检查 nixosConfigurations.$(system)"; \
-				nix build path:./#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
+				$(NIX) build $(FLAKE_REF)#nixosConfigurations.$(system).config.system.build.toplevel --dry-run --show-trace || exit 1; \
 			fi; \
 		) \
 	else \
@@ -132,12 +138,12 @@ check:
 			echo "错误: 系统配置 systems/$$TARGET/meta.nix 不存在"; \
 			exit 1; \
 		fi; \
-		if nix eval path:./#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
+		if $(NIX) eval $(FLAKE_REF)#darwinConfigurations.$$TARGET 2>/dev/null >/dev/null; then \
 			echo "  Darwin 系统，检查 darwinConfigurations.$$TARGET"; \
-			nix build path:./#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
+			$(NIX) build $(FLAKE_REF)#darwinConfigurations.$$TARGET.system --dry-run --show-trace; \
 		else \
 			echo "  NixOS 系统，检查 nixosConfigurations.$$TARGET"; \
-			nix build path:./#nixosConfigurations.$$TARGET.config.system.build.toplevel --dry-run --show-trace; \
+			$(NIX) build $(FLAKE_REF)#nixosConfigurations.$$TARGET.config.system.build.toplevel --dry-run --show-trace; \
 		fi; \
 	fi
 
@@ -155,7 +161,7 @@ deploy:
 		exit 1; \
 	fi; \
 	echo "部署到目标: $$TARGET"; \
-	nix run github:serokell/deploy-rs -- .#$$TARGET
+	$(NIX) run github:serokell/deploy-rs -- $(FLAKE_REF)#$$TARGET
 
 # KaguyaNix 框架升级工具
 kaguya:
