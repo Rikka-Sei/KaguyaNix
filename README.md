@@ -4,7 +4,7 @@
 
 ## 概述
 
-KaguyaNix 当前采用“能力图 + 两阶段构建”模型：
+KaguyaNix 采用“能力图 + 两阶段构建”模型：
 
 - `systems/` 负责声明具体宿主机
 - `hardware/` 负责硬件特定配置
@@ -12,7 +12,7 @@ KaguyaNix 当前采用“能力图 + 两阶段构建”模型：
 - `packages/` 负责自定义包 overlay 与模块集成
 - `deploy/` 负责远程部署配置
 
-框架不再使用旧的 `users/ + profiles + per-system` 组合模型。用户现在是宿主机内部的实例数据，复用单元统一为 capability。
+用户以宿主机内部实例数据的形式组织，复用单元统一为 capability。
 
 ## 目录结构
 
@@ -197,7 +197,7 @@ modules/development/base/
 }
 ```
 
-当前固定枚举：
+固定枚举：
 
 - `platform = linux | darwin`
 - `arch = x86_64 | aarch64`
@@ -222,6 +222,18 @@ modules/development/base/
 - `meta.nix` 只负责数据，不承担原生模块逻辑
 - `default.nix` 是 escape hatch，但不参与 capability 图解析
 
-## 当前状态
+## 样例系统
 
-当前仓库已迁移到新 capability 模型。旧 `users/ + profiles + per-system` 组合层已停止作为主路径使用，残留旧数据仅用于人工确认迁移完成后的最终清理。
+- Linux 样例系统：`laptop-asus-tx4-personal`
+- Darwin 样例系统：`laptop-mbpM2`
+
+## 验证
+
+- `./tests/framework-smoke.sh`
+- `./tests/host-user-layout.sh`
+- `./tests/migration-equivalence.sh`
+- `./tests/cleanup-check.sh`
+- `./tests/makefile-smoke.sh`
+- `./tests/deploy-smoke.sh`
+- `./tests/software-capabilities.sh`
+- `./tests/darwin-etc-compat.sh`

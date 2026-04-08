@@ -26,7 +26,7 @@
 
 ## 架构概览
 
-KaguyaNix 现已切换到“capability graph + two-phase build”模型。
+KaguyaNix 采用“capability graph + two-phase build”模型。
 
 顶层结构：
 
@@ -38,7 +38,7 @@ KaguyaNix 现已切换到“capability graph + two-phase build”模型。
 - `lib/` - capability 图、错误模型、框架工具
 - `parts/` - flake-parts 入口
 
-## 当前核心约定
+## 核心约定
 
 ### 1. System Layout
 
@@ -77,8 +77,6 @@ modules/<domain>/<name>/
 - `module.nix` 负责实现
 
 ### 3. User Model
-
-用户不再通过全局 `users/` 目录做 profile 组合。
 
 用户实例数据写在宿主机内部：
 
@@ -139,13 +137,15 @@ modules/<domain>/<name>/
 - capability 的支持范围必须写入 `meta.nix`
 - 用户相关的宿主机局部补充应写在 `systems/<host>/users/<name>/default.nix`
 
-## 迁移清理
+## 验证要求
 
-当前仓库可能仍存在未删除的旧残留，仅用于人工确认迁移是否等价。
-
-删除旧数据前，至少应满足：
+修改框架时，至少应保持以下检查通过：
 
 - `./tests/framework-smoke.sh` 通过
 - `./tests/host-user-layout.sh` 通过
 - `./tests/migration-equivalence.sh` 通过
-- 宿主机完整构建验证已完成或明确记录了外部阻塞原因
+- `./tests/cleanup-check.sh` 通过
+- `./tests/makefile-smoke.sh` 通过
+- `./tests/deploy-smoke.sh` 通过
+- `./tests/software-capabilities.sh` 通过
+- `./tests/darwin-etc-compat.sh` 通过
