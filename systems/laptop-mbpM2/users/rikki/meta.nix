@@ -13,5 +13,6 @@
 
   overrides = {
     kaguya.development.base.vscode.enable = false;
+    kaguya.software.browser.enable = false;
   };
 }
