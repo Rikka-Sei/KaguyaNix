@@ -4,3 +4,6 @@ result
 .DS_Store
 
 *.code-workspace
+
+# git worktrees
+.worktrees/
