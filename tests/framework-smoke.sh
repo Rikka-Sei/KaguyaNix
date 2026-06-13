@@ -86,7 +86,7 @@ invalid_output="$(
         plan = flake.outputs.lib.kaguya.buildPlanFromMeta {
           hostName = "invalid-capability";
           meta = import ./tests/fixtures/invalid-capability.nix;
-          modulesDir = ./modules;
+          capsDir = ./caps;
           hardwareDir = ./hardware;
           viewsDir = ./views;
         };

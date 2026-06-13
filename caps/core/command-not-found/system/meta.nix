@@ -1,12 +1,15 @@
 {
   optionPath = [
     "kaguya"
-    "crossPlatform"
-    "linuxBuilder"
+    "core"
+    "command-not-found"
   ];
 
   support = {
-    platform = ["darwin"];
+    platform = [
+      "linux"
+      "darwin"
+    ];
     arch = [
       "x86_64"
       "aarch64"

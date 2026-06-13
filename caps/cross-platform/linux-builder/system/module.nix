@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.kaguya.crossPlatform.linuxBuilder;
+  cfg = config.kaguya.cross-platform.linux-builder;
 in {
-  options.kaguya.crossPlatform.linuxBuilder = {
+  options.kaguya.cross-platform.linux-builder = {
     enable = lib.mkEnableOption "Linux Builder 能力";
     cores = lib.mkOption {
       type = lib.types.int;

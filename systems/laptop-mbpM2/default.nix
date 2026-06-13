@@ -31,7 +31,7 @@
     ];
   };
 
-  kaguya.crossPlatform.linuxBuilder = {
+  kaguya.cross-platform.linux-builder = {
     cores = 3;
     memorySize = 2048;
     diskSize = 25000;

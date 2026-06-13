@@ -8,7 +8,7 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 
 - `systems/` 负责声明具体宿主机
 - `hardware/` 负责硬件特定配置
-- `modules/` 负责叶子能力（cap），每个目录对应单一职责的原子实现
+- `caps/` 负责叶子能力（cap），每个目录对应单一职责的原子实现
 - `views/` 负责聚合视图（view），以纯数据方式组合叶子能力
 - `packages/` 负责自定义包 overlay 与模块集成
 - `deploy/` 负责远程部署配置
@@ -47,7 +47,7 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 │   └── mbpM2/
 │       ├── meta.nix
 │       └── configuration.nix
-├── modules/
+├── caps/
 │   ├── services/docker/system/
 │   ├── software/firefox/user/
 │   ├── development/toolchain/system/
@@ -119,7 +119,7 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 | `hardware` | 指向 `hardware/<name>/` 目录，用于加载硬件支持表与第二阶段的 `configuration.nix`。 | 第一、二阶段 |
 | `locale` | 选择错误信息的本地化语言；当前主要影响框架错误输出。 | 第一阶段 |
 | `views` | 宿主机级聚合视图列表，引用 `views/` 下的视图，框架展开后得到叶子能力。 | 第一阶段 |
-| `caps` | 宿主机级叶子能力列表，直接引用 `modules/` 下的原子能力。 | 第一阶段 |
+| `caps` | 宿主机级叶子能力列表，直接引用 `caps/` 下的原子能力。 | 第一阶段 |
 | `users` | 宿主机上的用户实例集合，值通常来自 `./users/<name>/meta.nix`。 | 第一阶段 |
 
 约束：
@@ -129,7 +129,7 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 
 ### 2. Cap（叶子能力）
 
-cap 是唯一复用实现单元，对应 `modules/<domain>/<name>/` 下的一个目录。
+cap 是唯一复用实现单元，对应 `caps/<domain>/<name>/` 下的一个目录。
 
 cap 可以有两个 facet：
 
@@ -144,7 +144,7 @@ cap 可以有两个 facet：
 示例：
 
 ```text
-modules/services/docker/
+caps/services/docker/
 └── system/
     ├── meta.nix
     └── module.nix
@@ -179,7 +179,7 @@ cap 的 `meta.nix` 必须返回：
 补充约定：
 
 - `meta.nix` 只描述能力的静态信息，不应放置 `home.packages`、`services.*` 等实现逻辑。
-- `modules/` 只承载叶子能力，不允许放聚合入口或用户身份模块。
+- `caps/` 只承载叶子能力，不允许放聚合入口或用户身份模块。
 
 ### 3. View（聚合视图）
 
@@ -219,7 +219,7 @@ view 可以有两个文件（而非目录 facet）：
 | `includes` | 引用其他视图，框架递归展开。 |
 | `caps` | 该视图直接包含的叶子能力列表。 |
 
-约定：`base` / `workstation` 这类聚合名称只允许出现在 `views/` 层，不允许出现在 `modules/` 层。
+约定：`base` / `workstation` 这类聚合名称只允许出现在 `views/` 层，不允许出现在 `caps/` 层。
 
 ### 4. 用户模型
 
@@ -254,7 +254,7 @@ view 可以有两个文件（而非目录 facet）：
 | `shell` | 声明用户登录 shell，当前允许值由框架固定枚举控制。 | 第一阶段 |
 | `extraGroups` | 用户需要加入的额外系统组，例如 `docker`、`libvirtd`。 | 第一、二阶段 |
 | `views` | 用户态聚合视图列表，引用 `views/` 下的视图。 | 第一阶段 |
-| `caps` | 用户态叶子能力列表，直接引用 `modules/` 下的原子能力。 | 第一阶段 |
+| `caps` | 用户态叶子能力列表，直接引用 `caps/` 下的原子能力。 | 第一阶段 |
 | `stateVersion` | 该用户实例的 Home Manager 状态版本，默认值为 `24.05`。 | 第一、二阶段 |
 | `homeDirectory` | 显式指定用户主目录；未填写时按平台自动推导。 | 第一、二阶段 |
 
@@ -269,7 +269,7 @@ view 可以有两个文件（而非目录 facet）：
 - `systems/<host>/meta.nix`
 - `systems/<host>/users/*/meta.nix`
 - `hardware/*/meta.nix`
-- `modules/**/meta.nix`
+- `caps/**/meta.nix`
 - `views/**/{system,user}.nix`
 
 职责：
@@ -318,7 +318,7 @@ view 可以有两个文件（而非目录 facet）：
 ## 设计原则
 
 - 复用分两层：叶子 cap 是唯一实现单元；view 是纯数据聚合
-- `modules/` 只承载叶子 cap，不允许聚合入口或身份模块
+- `caps/` 只承载叶子 cap，不允许聚合入口或身份模块
 - `views/` 只承载纯数据聚合，不含实现逻辑
 - 平台支持必须显式写在 `meta.nix`，不能靠目录猜测
 - 宿主机是最终覆盖层

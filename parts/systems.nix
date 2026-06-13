@@ -44,7 +44,7 @@
     graph.buildPlanFromMeta {
       inherit hostName;
       meta = import (../systems + "/${hostName}/meta.nix");
-      modulesDir = ../modules;
+      capsDir = ../caps;
       hardwareDir = ../hardware;
       viewsDir = ../views;
     };

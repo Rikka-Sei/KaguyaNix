@@ -62,9 +62,9 @@ assert_contains_file "$ROOT_DIR/systems/shared/users/rikki/default.nix" "\"Rikki
 assert_contains_file "$ROOT_DIR/systems/shared/users/rikki/default.nix" "\"rikki@member.fsf.org\"" "共享身份模块应保留 Git 邮箱"
 assert_contains_file "$ROOT_DIR/systems/shared/users/rikki/default.nix" "\"3927D7F5365B0203\"" "共享身份模块应保留签名 key"
 
-# 开发脚本仍在 modules/development/scripts cap 下
-assert_contains_file "$ROOT_DIR/modules/development/scripts/user/scripts/workspace.sh" "workspace" "开发脚本应在 development/scripts cap 目录中"
-assert_contains_file "$ROOT_DIR/modules/development/scripts/user/scripts/genprime.sh" "bash" "开发脚本应完整迁移"
+# 开发脚本仍在 caps/development/scripts cap 下
+assert_contains_file "$ROOT_DIR/caps/development/scripts/user/scripts/workspace.sh" "workspace" "开发脚本应在 development/scripts cap 目录中"
+assert_contains_file "$ROOT_DIR/caps/development/scripts/user/scripts/genprime.sh" "bash" "开发脚本应完整迁移"
 
 # Darwin 主机也应有清晰的用户入口（新架构）
 assert_contains_file "$ROOT_DIR/systems/laptop-mbpM2/users/rikki/meta.nix" "views" "Darwin user meta 应含 views 字段"

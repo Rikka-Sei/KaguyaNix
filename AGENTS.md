@@ -32,7 +32,7 @@ KaguyaNix 采用"能力图（cap graph）+ 两阶段构建"模型。
 
 - `systems/` - 宿主机定义
 - `hardware/` - 硬件配置与支持表
-- `modules/` - 叶子能力（cap）实现，每个目录为单一职责的原子模块
+- `caps/` - 叶子能力（cap）实现，每个目录为单一职责的原子模块
 - `views/` - 聚合视图（view），纯数据，通过 `includes` / `caps` 组合叶子能力
 - `packages/` - 自定义包
 - `deploy/` - 部署目标
@@ -65,7 +65,7 @@ systems/<host>/
 ### 2. Cap Layout（叶子能力）
 
 ```text
-modules/<domain>/<name>/
+caps/<domain>/<name>/
 ├── system/
 │   ├── meta.nix
 │   └── module.nix
@@ -78,7 +78,7 @@ modules/<domain>/<name>/
 - `system` / `user` 是 facet，不是顶层分类
 - `meta.nix` 负责支持表、依赖、冲突、optionPath
 - `module.nix` 负责实现
-- `modules/` 只允许叶子能力，不允许聚合入口或用户身份模块
+- `caps/` 只允许叶子能力，不允许聚合入口或用户身份模块
 
 ### 3. View Layout（聚合视图）
 
@@ -147,7 +147,7 @@ views/<domain>/<name>/
 - `systems/*/meta.nix`
 - `systems/*/users/*/meta.nix`
 - `hardware/*/meta.nix`
-- `modules/**/meta.nix`
+- `caps/**/meta.nix`
 - `views/**/{system,user}.nix`
 
 完成：
@@ -174,7 +174,7 @@ views/<domain>/<name>/
 
 - 不要再引入 `systemConfig`
 - 不要再创建 `profiles` 或 `per-system`
-- 新的原子复用需求建模为叶子 cap（置于 `modules/`）
+- 新的原子复用需求建模为叶子 cap（置于 `caps/`）
 - 新的聚合复用需求建模为 view（置于 `views/`，纯数据）
 - 用户身份默认值写在 `systems/shared/users/<name>/default.nix`，不建模为 cap
 - cap 的支持范围必须写入 `meta.nix`

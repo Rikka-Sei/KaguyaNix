@@ -91,46 +91,46 @@
         actual = normalized;
       };
 
-  ensureOptionPath = locale: capabilityId: facet: value:
+  ensureOptionPath = locale: capId: facet: value:
     if builtins.isList value && lib.all builtins.isString value
     then value
     else
       errors.throwError locale {
         code = "cap.invalidMetaField";
-        subject = capabilityId;
+        subject = capId;
         inherit facet;
         field = "optionPath";
       };
 
   mergeAttrsets = attrsets: lib.foldl' lib.recursiveUpdate {} attrsets;
 
-  parseCapId = locale: capabilityId: let
-    match = builtins.match "([^/]+)/([^/]+)" capabilityId;
+  parseCapId = locale: capId: let
+    match = builtins.match "([^/]+)/([^/]+)" capId;
   in
     if match == null
     then
       errors.throwError locale {
         code = "cap.invalidId";
-        subject = capabilityId;
+        subject = capId;
       }
     else {
       domain = builtins.elemAt match 0;
       name = builtins.elemAt match 1;
     };
 
-  capDir = locale: modulesDir: capabilityId: let
-    parts = parseCapId locale capabilityId;
+  capDir = locale: capsDir: capId: let
+    parts = parseCapId locale capId;
   in
-    modulesDir + "/${parts.domain}/${parts.name}";
+    capsDir + "/${parts.domain}/${parts.name}";
 
   loadCapFacet = {
     locale,
-    modulesDir,
-    capabilityId,
+    capsDir,
+    capId,
     facet,
     target,
   }: let
-    baseDir = capDir locale modulesDir capabilityId;
+    baseDir = capDir locale capsDir capId;
     facetDir = baseDir + "/${facet}";
     metaPath = facetDir + "/meta.nix";
     modulePath = facetDir + "/module.nix";
@@ -139,13 +139,13 @@
     then
       errors.throwError locale {
         code = "cap.unknown";
-        subject = capabilityId;
+        subject = capId;
       }
     else if !(builtins.pathExists metaPath && builtins.pathExists modulePath)
     then
       errors.throwError locale {
         code = "cap.missingFacet";
-        subject = capabilityId;
+        subject = capId;
         inherit facet;
       }
     else let
@@ -156,7 +156,7 @@
       arch = ensureListOfStrings locale "meta" "support.arch" (support.arch or []);
       requires = ensureListOfStrings locale "meta" "requires" (meta.requires or []);
       conflicts = ensureListOfStrings locale "meta" "conflicts" (meta.conflicts or []);
-      optionPath = ensureOptionPath locale capabilityId facet (meta.optionPath or []);
+      optionPath = ensureOptionPath locale capId facet (meta.optionPath or []);
 
       _platformCheck =
         if builtins.elem target.platform platform
@@ -164,7 +164,7 @@
         else
           errors.throwError locale {
             code = "cap.unsupportedPlatform";
-            subject = capabilityId;
+            subject = capId;
             inherit facet;
             expected = platform;
             actual = target.platform;
@@ -176,7 +176,7 @@
         else
           errors.throwError locale {
             code = "cap.unsupportedArch";
-            subject = capabilityId;
+            subject = capId;
             inherit facet;
             expected = arch;
             actual = target.arch;
@@ -185,7 +185,7 @@
       builtins.seq _platformCheck (builtins.seq _archCheck {
         inherit
           arch
-          capabilityId
+          capId
           conflicts
           facet
           modulePath
@@ -197,31 +197,31 @@
 
   resolveCaps = {
     locale,
-    modulesDir,
+    capsDir,
     target,
     facet,
     requested,
   }: let
-    visit = state: capabilityId:
-      if state.seen.${capabilityId} or false
+    visit = state: capId:
+      if state.seen.${capId} or false
       then state
-      else if builtins.elem capabilityId state.stack
+      else if builtins.elem capId state.stack
       then
         errors.throwError locale {
           code = "cap.cycle";
-          cycle = state.stack ++ [capabilityId];
+          cycle = state.stack ++ [capId];
         }
       else let
-        nextState = state // {stack = state.stack ++ [capabilityId];};
+        nextState = state // {stack = state.stack ++ [capId];};
         meta = loadCapFacet {
-          inherit locale modulesDir capabilityId facet target;
+          inherit locale capsDir capId facet target;
         };
         afterRequires = lib.foldl' visit nextState meta.requires;
       in
         afterRequires
         // {
           stack = state.stack;
-          seen = afterRequires.seen // {${capabilityId} = true;};
+          seen = afterRequires.seen // {${capId} = true;};
           resolved = afterRequires.resolved ++ [meta];
         };
 
@@ -233,7 +233,7 @@
       }
       requested;
 
-    resolvedIds = map (item: item.capabilityId) finalState.resolved;
+    resolvedIds = map (item: item.capId) finalState.resolved;
 
     _conflictChecks =
       map (
@@ -244,7 +244,7 @@
               then
                 errors.throwError locale {
                   code = "cap.conflict";
-                  subject = item.capabilityId;
+                  subject = item.capId;
                   conflicting = conflict;
                 }
               else true
@@ -476,7 +476,7 @@ in {
   buildPlanFromMeta = {
     hostName,
     meta,
-    modulesDir,
+    capsDir,
     hardwareDir,
     viewsDir,
   }: let
@@ -549,7 +549,7 @@ in {
       requested = hostViews;
     };
     systemResolution = resolveCaps {
-      inherit locale modulesDir target;
+      inherit locale capsDir target;
       facet = "system";
       requested = lib.unique (systemViewResolution.caps ++ hostCaps);
     };
@@ -565,7 +565,7 @@ in {
               else [];
           };
           userResolution = resolveCaps {
-            inherit locale modulesDir target;
+            inherit locale capsDir target;
             facet = "user";
             requested =
               if userCfg.enable
