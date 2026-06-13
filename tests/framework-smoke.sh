@@ -61,15 +61,21 @@ assert_eq "$darwin_arch" "aarch64" "Darwin host 应暴露新的 buildPlan 架构
 
 linux_capabilities="$(
   cd "$ROOT_DIR" &&
-    nix eval "${NIX_FLAGS[@]}" --json "$FLAKE_REF#nixosConfigurations.laptop-asus-tx4-personal.config.kaguya.buildPlan.systemCapabilities"
+    nix eval "${NIX_FLAGS[@]}" --json "$FLAKE_REF#nixosConfigurations.laptop-asus-tx4-personal.config.kaguya.buildPlan.systemCaps"
 )"
-assert_contains "$linux_capabilities" "\"services/docker\"" "Linux host 应包含 system capability 展开结果"
+assert_contains "$linux_capabilities" "\"services/docker\"" "Linux host 应包含 system cap 展开结果"
+
+linux_system_views="$(
+  cd "$ROOT_DIR" &&
+    nix eval "${NIX_FLAGS[@]}" --json "$FLAKE_REF#nixosConfigurations.laptop-asus-tx4-personal.config.kaguya.buildPlan.systemViews"
+)"
+assert_contains "$linux_system_views" "\"development/base\"" "Linux host 应在 systemViews 中包含 development/base"
 
 rikki_capabilities="$(
   cd "$ROOT_DIR" &&
-    nix eval "${NIX_FLAGS[@]}" --json "$FLAKE_REF#nixosConfigurations.laptop-asus-tx4-personal.config.kaguya.buildPlan.users.rikki.capabilities"
+    nix eval "${NIX_FLAGS[@]}" --json "$FLAKE_REF#nixosConfigurations.laptop-asus-tx4-personal.config.kaguya.buildPlan.users.rikki.caps"
 )"
-assert_contains "$rikki_capabilities" "\"identity/rikki\"" "用户 capability 应出现在 buildPlan 中"
+assert_contains "$rikki_capabilities" "\"core/user-cli\"" "用户 cap 应出现在 buildPlan 中"
 
 set +e
 invalid_output="$(
@@ -82,19 +88,20 @@ invalid_output="$(
           meta = import ./tests/fixtures/invalid-capability.nix;
           modulesDir = ./modules;
           hardwareDir = ./hardware;
+          viewsDir = ./views;
         };
       in
-      plan.systemCapabilities
+      plan.systemCaps
     ' 2>&1
 )"
 invalid_status=$?
 set -e
 
 if [[ "$invalid_status" -eq 0 ]]; then
-  echo "断言失败: 非法 capability 测试应当失败" >&2
+  echo "断言失败: 非法 cap 测试应当失败" >&2
   exit 1
 fi
 
-assert_contains "$invalid_output" "未知 capability" "非法 capability 应返回中文错误"
+assert_contains "$invalid_output" "未知 cap" "非法 cap 应返回中文错误"
 
 echo "Framework smoke tests passed"

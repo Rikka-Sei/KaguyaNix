@@ -8,7 +8,7 @@
       "node.invalidEnum" = err: "系统 ${err.host} 的 `${err.subject}` 取值非法，期望 ${lib.concatStringsSep ", " err.expected}，实际为 `${err.actual}`。";
       "user.invalidShell" = err: "系统 ${err.host} 中用户 `${err.user}` 的 shell 不受支持，期望 ${lib.concatStringsSep ", " err.expected}，实际为 `${err.actual}`。";
       "cap.invalidId" = err: "capability 标识 `${err.subject}` 不合法，必须是 `<domain>/<name>` 形式。";
-      "cap.unknown" = err: "未知 capability: ${err.subject}";
+      "cap.unknown" = err: "未知 cap: ${err.subject}";
       "cap.missingFacet" = err: "capability `${err.subject}` 缺少 `${err.facet}` facet。";
       "cap.invalidMetaField" = err: "capability `${err.subject}.${err.facet}` 的元数据字段 `${err.field}` 非法。";
       "cap.unsupportedPlatform" = err: "capability `${err.subject}.${err.facet}` 不支持当前平台 `${err.actual}`，支持的平台为 ${lib.concatStringsSep ", " err.expected}。";

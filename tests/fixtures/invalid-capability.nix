@@ -7,7 +7,7 @@
   hardware = "asus-tianxuan4";
   locale = "zh-CN";
 
-  capabilities = [
+  caps = [
     "does/not-exist"
   ];
 }
