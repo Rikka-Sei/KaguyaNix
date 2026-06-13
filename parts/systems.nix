@@ -31,7 +31,7 @@
       libExtensions
   );
   packages = extendedLib.packages.loadPackages ../packages;
-  graph = extendedLib.capabilityGraph;
+  graph = extendedLib.capGraph;
   systemEntries = builtins.readDir ../systems;
   systemNames = builtins.filter (
     name:
@@ -46,6 +46,7 @@
       meta = import (../systems + "/${hostName}/meta.nix");
       modulesDir = ../modules;
       hardwareDir = ../hardware;
+      viewsDir = ../views;
     };
 
   shellPackage = pkgs: shellName:
@@ -195,7 +196,7 @@
             plan.hardware.modulePath
           ]
           ++ buildSystemConfig.platformModules
-          ++ plan.systemModulePaths
+          ++ plan.systemCapModulePaths
           ++ lib.optional hasDefaultModule defaultModulePath
           ++ patches.getModules;
       }
@@ -225,7 +226,7 @@
 in {
   flake = {
     lib.kaguya = {
-      inherit (graph) buildPlanFromMeta mergeAttrsets;
+      inherit (graph) buildPlanFromMeta mergeAttrsets resolveViews;
       inherit (graph.errors) defaultLocale renderError throwError;
     };
 
