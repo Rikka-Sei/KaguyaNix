@@ -96,7 +96,7 @@
     then value
     else
       errors.throwError locale {
-        code = "capability.invalidMetaField";
+        code = "cap.invalidMetaField";
         subject = capabilityId;
         inherit facet;
         field = "optionPath";
@@ -104,13 +104,13 @@
 
   mergeAttrsets = attrsets: lib.foldl' lib.recursiveUpdate {} attrsets;
 
-  parseCapabilityId = locale: capabilityId: let
+  parseCapId = locale: capabilityId: let
     match = builtins.match "([^/]+)/([^/]+)" capabilityId;
   in
     if match == null
     then
       errors.throwError locale {
-        code = "capability.invalidId";
+        code = "cap.invalidId";
         subject = capabilityId;
       }
     else {
@@ -118,19 +118,19 @@
       name = builtins.elemAt match 1;
     };
 
-  capabilityDir = locale: modulesDir: capabilityId: let
-    parts = parseCapabilityId locale capabilityId;
+  capDir = locale: modulesDir: capabilityId: let
+    parts = parseCapId locale capabilityId;
   in
     modulesDir + "/${parts.domain}/${parts.name}";
 
-  loadFacetMeta = {
+  loadCapFacet = {
     locale,
     modulesDir,
     capabilityId,
     facet,
     target,
   }: let
-    baseDir = capabilityDir locale modulesDir capabilityId;
+    baseDir = capDir locale modulesDir capabilityId;
     facetDir = baseDir + "/${facet}";
     metaPath = facetDir + "/meta.nix";
     modulePath = facetDir + "/module.nix";
@@ -138,13 +138,13 @@
     if !builtins.pathExists baseDir
     then
       errors.throwError locale {
-        code = "capability.unknown";
+        code = "cap.unknown";
         subject = capabilityId;
       }
     else if !(builtins.pathExists metaPath && builtins.pathExists modulePath)
     then
       errors.throwError locale {
-        code = "capability.missingFacet";
+        code = "cap.missingFacet";
         subject = capabilityId;
         inherit facet;
       }
@@ -163,7 +163,7 @@
         then true
         else
           errors.throwError locale {
-            code = "capability.unsupportedPlatform";
+            code = "cap.unsupportedPlatform";
             subject = capabilityId;
             inherit facet;
             expected = platform;
@@ -175,7 +175,7 @@
         then true
         else
           errors.throwError locale {
-            code = "capability.unsupportedArch";
+            code = "cap.unsupportedArch";
             subject = capabilityId;
             inherit facet;
             expected = arch;
@@ -194,7 +194,7 @@
         ;
     };
 
-  resolveCapabilities = {
+  resolveCaps = {
     locale,
     modulesDir,
     target,
@@ -207,12 +207,12 @@
       else if builtins.elem capabilityId state.stack
       then
         errors.throwError locale {
-          code = "capability.cycle";
+          code = "cap.cycle";
           cycle = state.stack ++ [capabilityId];
         }
       else let
         nextState = state // {stack = state.stack ++ [capabilityId];};
-        meta = loadFacetMeta {
+        meta = loadCapFacet {
           inherit locale modulesDir capabilityId facet target;
         };
         afterRequires = lib.foldl' visit nextState meta.requires;
@@ -242,7 +242,7 @@
               if builtins.elem conflict resolvedIds
               then
                 errors.throwError locale {
-                  code = "capability.conflict";
+                  code = "cap.conflict";
                   subject = item.capabilityId;
                   conflicting = conflict;
                 }
@@ -252,11 +252,60 @@
       )
       finalState.resolved;
   in {
-    capabilities = resolvedIds;
+    caps = resolvedIds;
     facets = finalState.resolved;
     modulePaths = map (item: item.modulePath) finalState.resolved;
     optionDefaults = map (item: lib.setAttrByPath (item.optionPath ++ ["enable"]) true) finalState.resolved;
   };
+
+  parseViewId = locale: viewId: let
+    match = builtins.match "([^/]+)/([^/]+)" viewId;
+  in
+    if match == null
+    then errors.throwError locale { code = "view.invalidId"; subject = viewId; }
+    else { domain = builtins.elemAt match 0; name = builtins.elemAt match 1; };
+
+  viewDir = locale: viewsDir: viewId: let
+    parts = parseViewId locale viewId;
+  in viewsDir + "/${parts.domain}/${parts.name}";
+
+  loadViewFacet = { locale, viewsDir, viewId, facet, target }: let
+    baseDir = viewDir locale viewsDir viewId;
+    facetPath = baseDir + "/${facet}.nix";
+  in
+    if !builtins.pathExists baseDir
+    then errors.throwError locale { code = "view.unknown"; subject = viewId; }
+    else if !builtins.pathExists facetPath
+    then errors.throwError locale { code = "view.missingFacet"; subject = viewId; inherit facet; }
+    else let
+      raw = import facetPath;
+      data = ensureAttrs locale "view" "view" raw;
+      support = ensureAttrs locale "view" "support" (data.support or {});
+      platform = ensureListOfStrings locale "view" "support.platform" (support.platform or []);
+      arch = ensureListOfStrings locale "view" "support.arch" (support.arch or []);
+      includes = ensureListOfStrings locale "view" "includes" (data.includes or []);
+      caps = ensureListOfStrings locale "view" "caps" (data.caps or []);
+      _platformCheck = if builtins.elem target.platform platform then true else errors.throwError locale { code = "view.unsupportedPlatform"; subject = viewId; inherit facet; expected = platform; actual = target.platform; };
+      _archCheck = if builtins.elem target.arch arch then true else errors.throwError locale { code = "view.unsupportedArch"; subject = viewId; inherit facet; expected = arch; actual = target.arch; };
+    in builtins.seq _platformCheck (builtins.seq _archCheck { inherit viewId facet includes caps; });
+
+  resolveViews = { locale, viewsDir, target, facet, requested }: let
+    visit = state: viewId:
+      if state.seen.${viewId} or false then state
+      else if builtins.elem viewId state.stack
+      then errors.throwError locale { code = "view.cycle"; cycle = state.stack ++ [viewId]; }
+      else let
+        nextState = state // { stack = state.stack ++ [viewId]; };
+        view = loadViewFacet { inherit locale viewsDir viewId facet target; };
+        afterIncludes = lib.foldl' visit nextState view.includes;
+      in afterIncludes // {
+        stack = state.stack;
+        seen = afterIncludes.seen // { ${viewId} = true; };
+        caps = afterIncludes.caps ++ view.caps;
+        views = afterIncludes.views ++ [viewId];
+      };
+    finalState = lib.foldl' visit { seen = {}; stack = []; caps = []; views = []; } requested;
+  in { views = finalState.views; caps = lib.unique finalState.caps; };
 
   normalizeUser = {
     hostName,
@@ -272,7 +321,8 @@
     admin = ensureBool locale hostName "users.${userName}.admin" (attrs.admin or false);
     inherit shell;
     extraGroups = ensureListOfStrings locale hostName "users.${userName}.extraGroups" (attrs.extraGroups or []);
-    capabilities = ensureListOfStrings locale hostName "users.${userName}.capabilities" (attrs.capabilities or []);
+    caps = ensureListOfStrings locale hostName "users.${userName}.caps" (attrs.caps or []);
+    views = ensureListOfStrings locale hostName "users.${userName}.views" (attrs.views or []);
     overrides = ensureAttrs locale hostName "users.${userName}.overrides" (attrs.overrides or {});
     stateVersion = ensureString locale hostName "users.${userName}.stateVersion" (attrs.stateVersion or "24.05");
     homeDirectory = ensureOptionalString locale hostName "users.${userName}.homeDirectory" (
@@ -348,6 +398,7 @@ in {
   inherit
     errors
     mergeAttrsets
+    resolveViews
     validArches
     validPlatforms
     ;
@@ -357,6 +408,7 @@ in {
     meta,
     modulesDir,
     hardwareDir,
+    viewsDir,
   }: let
     rawMeta = ensureAttrs errors.defaultLocale hostName "meta" meta;
     locale = ensureString errors.defaultLocale hostName "locale" (rawMeta.locale or errors.defaultLocale);
@@ -406,7 +458,8 @@ in {
         else "darwin"
       }";
     };
-    hostCapabilities = ensureListOfStrings locale hostName "capabilities" (rawMeta.capabilities or []);
+    hostViews = ensureListOfStrings locale hostName "views" (rawMeta.views or []);
+    hostCaps = ensureListOfStrings locale hostName "caps" (rawMeta.caps or []);
     hostOverrides = ensureAttrs locale hostName "overrides" (rawMeta.overrides or {});
     usersRaw = ensureAttrs locale hostName "users" (rawMeta.users or {});
     users =
@@ -420,26 +473,37 @@ in {
     hardware = validateHardware {
       inherit hardwareDir hardwareName locale target;
     };
-    systemResolution = resolveCapabilities {
+    systemViewResolution = resolveViews {
+      inherit locale viewsDir target;
+      facet = "system";
+      requested = hostViews;
+    };
+    systemResolution = resolveCaps {
       inherit locale modulesDir target;
       facet = "system";
-      requested = hostCapabilities;
+      requested = lib.unique (systemViewResolution.caps ++ hostCaps);
     };
     resolvedUsers =
       lib.mapAttrs (
         userName: userCfg: let
-          userResolution = resolveCapabilities {
+          userViewResolution = resolveViews {
+            inherit locale viewsDir target;
+            facet = "user";
+            requested = if userCfg.enable then userCfg.views else [];
+          };
+          userResolution = resolveCaps {
             inherit locale modulesDir target;
             facet = "user";
             requested =
               if userCfg.enable
-              then userCfg.capabilities
+              then lib.unique (userViewResolution.caps ++ userCfg.caps)
               else [];
           };
         in
           userCfg
           // {
-            capabilities = userResolution.capabilities;
+            caps = userResolution.caps;
+            views = userViewResolution.views;
             modulePaths = userResolution.modulePaths;
             optionDefaults = userResolution.optionDefaults;
           }
@@ -454,9 +518,10 @@ in {
       target
       ;
     hostOverrides = hostOverrides;
-    systemCapabilities = systemResolution.capabilities;
-    systemModulePaths = systemResolution.modulePaths;
+    systemCaps = systemResolution.caps;
+    systemCapModulePaths = systemResolution.modulePaths;
     systemOptionDefaults = systemResolution.optionDefaults;
+    systemViews = systemViewResolution.views;
     users = resolvedUsers;
   };
 }
