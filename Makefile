@@ -110,7 +110,7 @@ desktop: desktop-home-rikki
 server: server-vps-prod
 
 $(SYSTEMS):
-	@$(MAKE) use TARGET_SYSTEM=$@
+	@if [ -n "$(filter use,$(MAKECMDGOALS))" ]; then :; else $(MAKE) use TARGET_SYSTEM=$@; fi
 
 # 部署相关命令
 deploy-list:
