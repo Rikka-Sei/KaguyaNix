@@ -181,18 +181,19 @@
             expected = arch;
             actual = target.arch;
           };
-    in {
-      inherit
-        arch
-        capabilityId
-        conflicts
-        facet
-        modulePath
-        optionPath
-        platform
-        requires
-        ;
-    };
+    in
+      builtins.seq _platformCheck (builtins.seq _archCheck {
+        inherit
+          arch
+          capabilityId
+          conflicts
+          facet
+          modulePath
+          optionPath
+          platform
+          requires
+          ;
+      });
 
   resolveCaps = {
     locale,
@@ -251,12 +252,13 @@
           item.conflicts
       )
       finalState.resolved;
-  in {
-    caps = resolvedIds;
-    facets = finalState.resolved;
-    modulePaths = map (item: item.modulePath) finalState.resolved;
-    optionDefaults = map (item: lib.setAttrByPath (item.optionPath ++ ["enable"]) true) finalState.resolved;
-  };
+  in
+    builtins.deepSeq _conflictChecks {
+      caps = resolvedIds;
+      facets = finalState.resolved;
+      modulePaths = map (item: item.modulePath) finalState.resolved;
+      optionDefaults = map (item: lib.setAttrByPath (item.optionPath ++ ["enable"]) true) finalState.resolved;
+    };
 
   parseViewId = locale: viewId: let
     match = builtins.match "([^/]+)/([^/]+)" viewId;
@@ -456,11 +458,12 @@
             expected = arch;
             actual = target.arch;
           };
-    in {
-      name = hardwareName;
-      modulePath = configurationPath;
-      inherit arch platform;
-    };
+    in
+      builtins.seq _platformCheck (builtins.seq _archCheck {
+        name = hardwareName;
+        modulePath = configurationPath;
+        inherit arch platform;
+      });
 in {
   inherit
     errors
