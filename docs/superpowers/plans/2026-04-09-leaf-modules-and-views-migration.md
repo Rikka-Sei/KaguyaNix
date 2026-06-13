@@ -1,5 +1,7 @@
 # Leaf Modules And Views Migration Implementation Plan
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将 KaguyaNix 重构为“`modules/` 只承载叶子能力、`views/` 承载聚合视图、用户身份回到 `systems/`”的清晰架构。

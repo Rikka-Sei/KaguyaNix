@@ -1,5 +1,7 @@
 # Capability Architecture Realignment Implementation Plan
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 按 KaguyaNix 的 capability graph 架构重新整理 `modules/`，消除人名模块承载通用逻辑、`common` / `base` 大包化、服务模块混入内容清单等问题，并让宿主机与用户实例只声明真正可解释的能力。

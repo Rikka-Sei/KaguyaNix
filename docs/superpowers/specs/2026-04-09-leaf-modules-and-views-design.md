@@ -1,5 +1,7 @@
 # 叶子模块与聚合视图设计
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 ## 背景
 
 当前 KaguyaNix 的 `modules/` 同时混杂了三类完全不同的东西：

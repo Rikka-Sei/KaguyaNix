@@ -1,5 +1,7 @@
 # Development Base Split Implementation Plan
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 拆分 `modules/development/base` 中过于混杂的职责边界，并让 `laptop-mbpM2` 不再通过共享软件聚合自动安装 `firefox`。

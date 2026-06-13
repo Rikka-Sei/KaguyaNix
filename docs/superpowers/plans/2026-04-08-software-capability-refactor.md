@@ -1,5 +1,7 @@
 # Software Capability Refactor Implementation Plan
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 将 `software/common` 重构为语义明确的软件 capability 组合，并补全 README 中各类 `meta.nix` 字段说明。

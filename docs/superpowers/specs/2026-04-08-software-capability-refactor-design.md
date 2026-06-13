@@ -1,5 +1,7 @@
 # 软件 Capability 重构设计
 
+> **SUPERSEDED**：由 docs/superpowers/specs/2026-06-11-cap-view-architecture-design.md 及其计划 2026-06-11-cap-view-architecture.md 取代。
+
 ## 背景
 
 原 `modules/software/common/user/module.nix` 实际上是旧 `users/rikki/profiles/software.nix` 在 capability 化后的直接迁移结果。结构已经切换到 capability 模型，但语义边界仍然停留在“共享软件大包”阶段。
