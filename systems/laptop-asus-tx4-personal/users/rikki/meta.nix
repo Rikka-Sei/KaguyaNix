@@ -17,6 +17,8 @@
   caps = [
     "core/user-cli"
     "software/firefox"
+    "software/tor-browser"
+    "software/vlc"
     "software/vscode"
     "software/qq"
     "software/feishu"

@@ -81,5 +81,7 @@ assert_contains "$linux_packages" "signal-desktop" "Linux 用户环境应继续�
 assert_contains "$linux_packages" "vscode" "Linux 用户环境应继续包含 vscode"
 assert_contains "$linux_packages" "firefox" "Linux 用户环境应包含 firefox"
 assert_contains "$linux_packages" "gnucash" "Linux 用户环境应包含 gnucash"
+assert_contains "$linux_packages" "vlc" "Linux 用户环境应包含 vlc（迁移不得丢包，回归守卫）"
+assert_contains "$linux_packages" "tor-browser" "Linux 用户环境应包含 tor-browser（迁移不得丢包，回归守卫）"
 
 echo "Software capability tests passed"
