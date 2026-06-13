@@ -24,7 +24,10 @@
       "8b5e3466922d1ae34bc145e21c7e53e7329a7a7b58b148b436bd954d5e651ac3"
     ];
     "zshrc".knownSha256Hashes = [
-      "af60f7af4a5b4c1b0efe950e3e3f3ee8b136834ecb46fd7dba76f4b66adbc3e1"
+      "4d1ab5704f9d167a042fecac0d056c8a79a8ebd71e032d3489536c8db9ffe3e0"
+    ];
+    "zprofile".knownSha256Hashes = [
+      "f320016e2cf13573731fbee34f9fe97ba867dd2a31f24893d3120154e9306e92"
     ];
   };
 
