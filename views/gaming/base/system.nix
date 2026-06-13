@@ -1,9 +1,9 @@
 {
   support = {
-    platform = [ "linux" ];
-    arch = [ "x86_64" "aarch64" ];
+    platform = ["linux"];
+    arch = ["x86_64" "aarch64"];
   };
-  includes = [ ];
+  includes = [];
   caps = [
     "gaming/steam"
     "gaming/performance"

@@ -262,21 +262,44 @@
     match = builtins.match "([^/]+)/([^/]+)" viewId;
   in
     if match == null
-    then errors.throwError locale { code = "view.invalidId"; subject = viewId; }
-    else { domain = builtins.elemAt match 0; name = builtins.elemAt match 1; };
+    then
+      errors.throwError locale {
+        code = "view.invalidId";
+        subject = viewId;
+      }
+    else {
+      domain = builtins.elemAt match 0;
+      name = builtins.elemAt match 1;
+    };
 
   viewDir = locale: viewsDir: viewId: let
     parts = parseViewId locale viewId;
-  in viewsDir + "/${parts.domain}/${parts.name}";
+  in
+    viewsDir + "/${parts.domain}/${parts.name}";
 
-  loadViewFacet = { locale, viewsDir, viewId, facet, target }: let
+  loadViewFacet = {
+    locale,
+    viewsDir,
+    viewId,
+    facet,
+    target,
+  }: let
     baseDir = viewDir locale viewsDir viewId;
     facetPath = baseDir + "/${facet}.nix";
   in
     if !builtins.pathExists baseDir
-    then errors.throwError locale { code = "view.unknown"; subject = viewId; }
+    then
+      errors.throwError locale {
+        code = "view.unknown";
+        subject = viewId;
+      }
     else if !builtins.pathExists facetPath
-    then errors.throwError locale { code = "view.missingFacet"; subject = viewId; inherit facet; }
+    then
+      errors.throwError locale {
+        code = "view.missingFacet";
+        subject = viewId;
+        inherit facet;
+      }
     else let
       raw = import facetPath;
       data = ensureAttrs locale "view" "view" raw;
@@ -285,27 +308,71 @@
       arch = ensureListOfStrings locale "view" "support.arch" (support.arch or []);
       includes = ensureListOfStrings locale "view" "includes" (data.includes or []);
       caps = ensureListOfStrings locale "view" "caps" (data.caps or []);
-      _platformCheck = if builtins.elem target.platform platform then true else errors.throwError locale { code = "view.unsupportedPlatform"; subject = viewId; inherit facet; expected = platform; actual = target.platform; };
-      _archCheck = if builtins.elem target.arch arch then true else errors.throwError locale { code = "view.unsupportedArch"; subject = viewId; inherit facet; expected = arch; actual = target.arch; };
-    in builtins.seq _platformCheck (builtins.seq _archCheck { inherit viewId facet includes caps; });
+      _platformCheck =
+        if builtins.elem target.platform platform
+        then true
+        else
+          errors.throwError locale {
+            code = "view.unsupportedPlatform";
+            subject = viewId;
+            inherit facet;
+            expected = platform;
+            actual = target.platform;
+          };
+      _archCheck =
+        if builtins.elem target.arch arch
+        then true
+        else
+          errors.throwError locale {
+            code = "view.unsupportedArch";
+            subject = viewId;
+            inherit facet;
+            expected = arch;
+            actual = target.arch;
+          };
+    in
+      builtins.seq _platformCheck (builtins.seq _archCheck {inherit viewId facet includes caps;});
 
-  resolveViews = { locale, viewsDir, target, facet, requested }: let
+  resolveViews = {
+    locale,
+    viewsDir,
+    target,
+    facet,
+    requested,
+  }: let
     visit = state: viewId:
-      if state.seen.${viewId} or false then state
+      if state.seen.${viewId} or false
+      then state
       else if builtins.elem viewId state.stack
-      then errors.throwError locale { code = "view.cycle"; cycle = state.stack ++ [viewId]; }
+      then
+        errors.throwError locale {
+          code = "view.cycle";
+          cycle = state.stack ++ [viewId];
+        }
       else let
-        nextState = state // { stack = state.stack ++ [viewId]; };
-        view = loadViewFacet { inherit locale viewsDir viewId facet target; };
+        nextState = state // {stack = state.stack ++ [viewId];};
+        view = loadViewFacet {inherit locale viewsDir viewId facet target;};
         afterIncludes = lib.foldl' visit nextState view.includes;
-      in afterIncludes // {
-        stack = state.stack;
-        seen = afterIncludes.seen // { ${viewId} = true; };
-        caps = afterIncludes.caps ++ view.caps;
-        views = afterIncludes.views ++ [viewId];
-      };
-    finalState = lib.foldl' visit { seen = {}; stack = []; caps = []; views = []; } requested;
-  in { views = finalState.views; caps = lib.unique finalState.caps; };
+      in
+        afterIncludes
+        // {
+          stack = state.stack;
+          seen = afterIncludes.seen // {${viewId} = true;};
+          caps = afterIncludes.caps ++ view.caps;
+          views = afterIncludes.views ++ [viewId];
+        };
+    finalState =
+      lib.foldl' visit {
+        seen = {};
+        stack = [];
+        caps = [];
+        views = [];
+      }
+      requested;
+  in {
+    views = finalState.views;
+    caps = lib.unique finalState.caps;
+  };
 
   normalizeUser = {
     hostName,
@@ -489,7 +556,10 @@ in {
           userViewResolution = resolveViews {
             inherit locale viewsDir target;
             facet = "user";
-            requested = if userCfg.enable then userCfg.views else [];
+            requested =
+              if userCfg.enable
+              then userCfg.views
+              else [];
           };
           userResolution = resolveCaps {
             inherit locale modulesDir target;

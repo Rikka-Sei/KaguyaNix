@@ -1,9 +1,9 @@
 {
   support = {
-    platform = [ "linux" "darwin" ];
-    arch = [ "x86_64" "aarch64" ];
+    platform = ["linux" "darwin"];
+    arch = ["x86_64" "aarch64"];
   };
-  includes = [ ];
+  includes = [];
   caps = [
     "development/toolchain"
     "core/cli-utils"
