@@ -6,7 +6,6 @@
   includes = [ ];
   caps = [
     "development/scripts"
-    "software/vscode"
     "software/gemini-cli"
     "software/treefmt"
   ];

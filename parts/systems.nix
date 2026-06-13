@@ -79,9 +79,11 @@
     );
     mkUserModule = userName: userCfg: let
       userConfig = graph.mergeAttrsets (userCfg.optionDefaults ++ [userCfg.overrides]);
+      sharedUserFile = ../systems/shared/users/${userName}/default.nix;
     in {
       imports =
         userCfg.modulePaths
+        ++ lib.optional (builtins.pathExists sharedUserFile) sharedUserFile
         ++ [
           {
             config = userConfig;
