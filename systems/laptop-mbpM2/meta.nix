@@ -7,8 +7,11 @@
   hardware = "mbpM2";
   locale = "zh-CN";
 
-  capabilities = [
+  views = [
     "development/base"
+  ];
+
+  caps = [
     "development/emacs"
     "cross-platform/linux-builder"
   ];

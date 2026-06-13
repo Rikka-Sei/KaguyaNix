@@ -9,19 +9,31 @@
     "libvirt"
     "libvirtd"
   ];
-  capabilities = [
-    "identity/rikki"
+  views = [
     "development/base"
     "software/workstation"
-    "software/network-access"
-    "software/learning"
-    "software/logseq"
-    "software/reverse-engineering"
     "gaming/base"
-    "business/common"
-    "lifetime/common"
   ];
-  overrides = {
-    kaguya.programs.git.email = "rikki@member.fsf.org";
-  };
+  caps = [
+    "core/user-cli"
+    "software/firefox"
+    "software/vscode"
+    "software/qq"
+    "software/feishu"
+    "software/signal-desktop"
+    "software/kdenlive"
+    "software/typora"
+    "software/gnome-software"
+    "software/remmina"
+    "software/filezilla"
+    "software/xray"
+    "software/sing-box"
+    "software/v2rayn"
+    "software/anki"
+    "software/calibre"
+    "software/ghidra"
+    "software/logseq"
+    "software/gnucash"
+    "software/spotify"
+  ];
 }
