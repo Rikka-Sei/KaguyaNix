@@ -28,5 +28,13 @@
     ];
   };
 
+  kaguya.crossPlatform.linuxBuilder = {
+    cores = 3;
+    memorySize = 2048;
+    diskSize = 25000;
+    maxJobs = 3;
+    ephemeral = true;
+  };
+
   system.stateVersion = 6;
 }
