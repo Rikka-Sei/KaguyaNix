@@ -28,3 +28,9 @@ python tools/barriers.py          # 最后跑验收屏障（draft 可为空）
 1. 任何行为变更：先改 `spec.md` 的决策日志，再改正文，然后同步本目录 manifest。
 2. 禁止先改代码再补 spec；spec 与代码必须同批提交。
 3. 增加审计规则时必须同时给 `test_audit_spec.py` 增加对应负例。
+
+## 本 spec 状态（2026-09-08）
+
+- `spec_status = authoritative`：代码契约全部命中、旧契约零命中、12 个验收屏障实跑全绿（`tests/framework-smoke.sh`、`tests/error-paths.sh` 等，合计 12/12 PASS）。
+- 本仓库测试为 bash 脚本、无 Python 测试函数，故 manifest `test_anchors` 为空集；bash 断言以 `code_contracts`（`tests/*.sh`）与 `barriers` 接入。
+- 已知未闭环问题见 `../issues/`：`2026-09-08-未接线错误码.md`（保留错误码 `user.invalidShell` / `view.invalidField`）、`2026-09-08-homeDirectory-null穿透.md`（显式 null 穿透，REQ-009 目标契约之内）。

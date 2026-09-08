@@ -40,7 +40,7 @@ spec 是唯一权威。
 状态机文本。
 
 ## 4. 功能需求与接口契约
-REQ-001 示例需求。
+- REQ-001 示例需求。
 
 ## 5. 错误模型
 错误表。
@@ -153,8 +153,20 @@ class AuditTemplateSelfTest(unittest.TestCase):
             completed = _run(tmp, manifest_path)
         self.assertNotEqual(completed.returncode, 0, completed.stdout + completed.stderr)
 
-    def test_duplicate_requirement_fails(self):
-        spec = VALID_SPEC.replace("REQ-001 示例需求。", "REQ-001 A。REQ-001 B。")
+    def test_duplicate_requirement_definition_fails(self):
+        spec = VALID_SPEC.replace("- REQ-001 示例需求。", "- REQ-001 A。\n- REQ-001 B。")
+        with self._fixture(spec_text=spec) as (_, tmp, manifest_path):
+            completed = _run(tmp, manifest_path)
+        self.assertNotEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
+    def test_reference_to_defined_requirement_passes(self):
+        spec = VALID_SPEC.replace("AC-001 验收。", "AC-001 验收，参见 REQ-001。")
+        with self._fixture(spec_text=spec) as (_, tmp, manifest_path):
+            completed = _run(tmp, manifest_path)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
+    def test_reference_to_undefined_requirement_fails(self):
+        spec = VALID_SPEC.replace("AC-001 验收。", "AC-001 验收，参见 REQ-002。")
         with self._fixture(spec_text=spec) as (_, tmp, manifest_path):
             completed = _run(tmp, manifest_path)
         self.assertNotEqual(completed.returncode, 0, completed.stdout + completed.stderr)

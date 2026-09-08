@@ -78,7 +78,7 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 - `systems/<host>/users/<name>/meta.nix`：该用户在此宿主机上的实例数据
 - `systems/<host>/users/<name>/default.nix`：该用户在此宿主机上的原生补充模块
 
-示例：
+示例（简化示意，实际声明见 `systems/laptop-asus-tx4-personal/meta.nix`）：
 
 ```nix
 {
@@ -341,3 +341,4 @@ view 可以有两个文件（而非目录 facet）：
 - `./tests/deploy-smoke.sh`
 - `./tests/software-capabilities.sh`
 - `./tests/darwin-etc-compat.sh`
+- `./tests/error-paths.sh`

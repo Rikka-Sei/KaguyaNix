@@ -440,14 +440,21 @@ def run_audit(manifest_path: str | pathlib.Path) -> tuple[list[str], list[str]]:
             errors.append(f"禁止 pattern 命中 {len(matches)} 次: {pattern!r}")
 
     requirement_prefix = manifest.get("requirement_prefix", "REQ-")
-    requirement_matches = list(re.finditer(
-        _ID_BOUNDARY_L + re.escape(requirement_prefix) + r"(\d+)" + _ID_BOUNDARY_R, masked))
-    requirement_ids = [match.group(1) for match in requirement_matches]
-    duplicates = sorted({rid for rid in requirement_ids if requirement_ids.count(rid) > 1})
-    if len(requirement_ids) < manifest.get("min_requirements", 0):
-        errors.append(f"需求 ID 至少 {manifest['min_requirements']} 个，实际 {len(requirement_ids)} 个")
+    definition_ids = [match.group(1) for match in re.finditer(
+        r"(?m)^(?:[-*+]\s+|\d+\.\s+)"
+        + _ID_BOUNDARY_L + re.escape(requirement_prefix) + r"(\d+)" + _ID_BOUNDARY_R,
+        masked)]
+    reference_ids = [match.group(1) for match in re.finditer(
+        _ID_BOUNDARY_L + re.escape(requirement_prefix) + r"(\d+)" + _ID_BOUNDARY_R,
+        masked)]
+    duplicates = sorted({rid for rid in definition_ids if definition_ids.count(rid) > 1})
+    if len(definition_ids) < manifest.get("min_requirements", 0):
+        errors.append(f"需求定义至少 {manifest['min_requirements']} 个，实际 {len(definition_ids)} 个")
     if duplicates:
-        errors.append(f"需求 ID 重复: {', '.join(requirement_prefix + rid for rid in duplicates)}")
+        errors.append(f"需求 ID 重复定义: {', '.join(requirement_prefix + rid for rid in duplicates)}")
+    undefined = sorted({rid for rid in reference_ids if rid not in definition_ids})
+    if undefined:
+        errors.append(f"引用了未定义的需求 ID: {', '.join(requirement_prefix + rid for rid in undefined)}")
 
     latest = manifest["latest_decision"]
     decision_ids = sorted(decision.get("decision_id", "") for decision in manifest["decisions"])

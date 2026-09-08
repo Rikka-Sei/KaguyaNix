@@ -1,8 +1,8 @@
 {
-  "_readme": "core-spec 审计清单模板。复制到 docs/specs/<spec-name>/tools/audit_manifest.json 后填写；本文件是规范与验证的唯一事实源，必须先于 spec 正文写。所有键值均可按需增删，但 schema 由同目录 audit_spec.py 校验。",
-  "spec_file": "spec.md",
-  "spec_status": "draft",
-  "repo_root": "../..",
+  "_readme": "KaguyaNix core-spec 唯一事实源。术语、决策、代码契约、测试锚点与验收屏障以本文件为准；行为变更先在 spec.md §9 归因决策 ID，再同步本文件。本仓库测试为 bash 脚本、无 Python 函数锚点，故 test_anchors 为空集，bash 断言经 code_contracts（tests/*.sh）与 barriers 接入。",
+  "spec_file": "../spec.md",
+  "spec_status": "authoritative",
+  "repo_root": "../../../..",
   "required_sections": [
     "1. 背景与目标",
     "2. 术语表",
@@ -15,36 +15,1017 @@
     "9. 决策日志",
     "10. 验证"
   ],
-  "metadata_terms": ["状态:", "版本:", "受众:", "范围:", "治理:", "变更历史:"],
-  "vague_terms": ["可能", "大概", "尽量", "友好", "快速"],
+  "metadata_terms": [
+    "状态:",
+    "版本:",
+    "受众:",
+    "范围:",
+    "治理:",
+    "变更历史:"
+  ],
+  "vague_terms": [
+    "可能",
+    "大概",
+    "尽量",
+    "友好",
+    "快速",
+    "及时",
+    "合理",
+    "适当",
+    "若干"
+  ],
   "forbidden_patterns": [
     "（已被\\s*D\\d+\\s*取代）",
-    "补丁标记"
+    "(?<![A-Za-z0-9])W[0-8](?![A-Za-z0-9])",
+    "(?<![A-Za-z0-9])S[0-5](?![A-Za-z0-9])",
+    "第[一二三四五六七八九十0-9]+波次"
   ],
   "requirement_prefix": "REQ-",
-  "min_requirements": 1,
+  "min_requirements": 12,
   "decision_prefix": "D",
-  "latest_decision": 1,
+  "latest_decision": 16,
   "decisions": [
     {
       "decision_id": "D01",
-      "required_terms": ["spec"],
+      "required_terms": [
+        "叶子能力",
+        "聚合视图"
+      ],
       "obsolete_terms": [],
       "scoped_terms": [],
       "whitelist": [],
       "required_occurrences": [
         {
-          "pattern": "spec",
-          "count": {"min": 1},
-          "sections": ["1"],
-          "reason": "示例：术语 spec 必须在背景章节出现"
+          "pattern": "纯数据",
+          "count": {
+            "min": 3
+          },
+          "sections": [
+            "1",
+            "2",
+            "4"
+          ],
+          "reason": "view 纯数据约束须在目标、术语、契约三处出现"
+        },
+        {
+          "pattern": "唯一.{0,8}实现单元",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "2"
+          ],
+          "reason": "术语表定义 cap 为唯一实现单元"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D02",
+      "required_terms": [
+        "两阶段构建",
+        "buildPlan",
+        "冻结"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "阶段一",
+          "count": {
+            "min": 3
+          },
+          "sections": [
+            "*"
+          ],
+          "reason": "阶段一职责多处规定"
+        },
+        {
+          "pattern": "阶段二",
+          "count": {
+            "min": 3
+          },
+          "sections": [
+            "*"
+          ],
+          "reason": "阶段二职责多处规定"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D03",
+      "required_terms": [
+        "systems/shared/users",
+        "caps/",
+        "views/"
+      ],
+      "obsolete_terms": [
+        "systemConfig",
+        "profiles",
+        "per-system"
+      ],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "systems/<host>/users/<name>/meta\\.nix",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "2"
+          ],
+          "reason": "用户实例术语锚定目录契约"
+        },
+        {
+          "pattern": "聚合名称只允许出现在",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "目录身份分层在契约章节规定"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D04",
+      "required_terms": [
+        "支持表",
+        "x86_64",
+        "aarch64"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "support\\.platform",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "支持表字段在契约中出现"
+        },
+        {
+          "pattern": "不支持任何构建目标",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "7"
+          ],
+          "reason": "缺省支持表的边界行为必须成文"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D05",
+      "required_terms": [
+        "错误码",
+        "zh-CN",
+        "en-US"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "cap\\.unsupportedPlatform",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "5"
+          ],
+          "reason": "错误模型表覆盖平台不支持错误"
+        },
+        {
+          "pattern": "fallbackRenderer",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "5",
+            "7"
+          ],
+          "reason": "未知错误码回退行为成文"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D06",
+      "required_terms": [
+        "stateVersion",
+        "homeDirectory",
+        "extraGroups",
+        "admin"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "24\\.05",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "3",
+            "4"
+          ],
+          "reason": "stateVersion 缺省值量化"
+        },
+        {
+          "pattern": "bash、fish、zsh",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "shell 枚举量化"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D07",
+      "required_terms": [
+        "requires",
+        "conflicts",
+        "includes"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "依赖先于",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "3",
+            "4"
+          ],
+          "reason": "解析顺序契约成文"
+        },
+        {
+          "pattern": "解析终态",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "3",
+            "4"
+          ],
+          "reason": "冲突检测针对终态集合"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D08",
+      "required_terms": [
+        "nix-darwin",
+        "home-manager",
+        "specialArgs",
+        "nix-flatpak"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "nixpkgs-darwin",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "Darwin 通道使用独立 nixpkgs 输入"
+        },
+        {
+          "pattern": "useGlobalPkgs",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "home-manager 全局 pkgs 接线成文"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D09",
+      "required_terms": [
+        "lib.kaguya",
+        "nixosConfigurations",
+        "darwinConfigurations"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "buildPlanFromMeta",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "公开接口含 buildPlanFromMeta"
+        },
+        {
+          "pattern": "resolveViews",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "公开接口含 resolveViews"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D10",
+      "required_terms": [
+        "optionPath",
+        "overrides"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "optionPath.{0,40}enable",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "启用注入语义成文"
+        },
+        {
+          "pattern": "后写胜出",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "覆写合并优先级契约"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D11",
+      "required_terms": [
+        "enable = false"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "enable = false",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "3",
+            "4",
+            "7"
+          ],
+          "reason": "禁用语义在状态机、契约、边界三处一致"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D12",
+      "required_terms": [
+        "deploy-rs",
+        "builtins.currentSystem"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "magicRollback",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "部署回滚缺省值成文"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D13",
+      "required_terms": [
+        "packages",
+        "overlay"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "必须导出",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4",
+            "5"
+          ],
+          "reason": "包定义失败契约成文"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D14",
+      "required_terms": [
+        "tests/"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "framework-smoke\\.sh",
+          "count": {
+            "min": 2
+          },
+          "sections": [
+            "7",
+            "8",
+            "10"
+          ],
+          "reason": "锚点清单与屏障表引用框架烟雾测试"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D15",
+      "required_terms": [
+        "决策日志"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "原地合并或删除",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "9"
+          ],
+          "reason": "被取代条款处置规则在决策章节重申"
+        }
+      ],
+      "forbidden_occurrences": []
+    },
+    {
+      "decision_id": "D16",
+      "required_terms": [
+        "kaguya upgrade",
+        "clean-garbage"
+      ],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "kaguya upgrade",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "框架升级工具契约入 REQ-023"
+        },
+        {
+          "pattern": "eval-time",
+          "count": {
+            "min": 1
+          },
+          "sections": [
+            "4"
+          ],
+          "reason": "make 薄封装入口全集在 REQ-021 列出"
         }
       ],
       "forbidden_occurrences": []
     }
   ],
-  "code_contracts": [],
-  "obsolete_code_contracts": [],
+  "code_contracts": [
+    {
+      "pattern": "buildPlanFromMeta",
+      "source_globs": [
+        "lib/capGraph.nix",
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "阶段一入口在能力图定义并被构建入口调用"
+    },
+    {
+      "pattern": "validPlatforms = \\[",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": 1,
+      "reason": "平台枚举 linux/darwin 的定义位置"
+    },
+    {
+      "pattern": "validArches = \\[",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": 1,
+      "reason": "架构枚举 x86_64/aarch64 的定义位置"
+    },
+    {
+      "pattern": "validShells = \\[",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": 1,
+      "reason": "shell 枚举的定义位置"
+    },
+    {
+      "pattern": "setAttrByPath",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": 1,
+      "reason": "启用注入 = setAttrByPath (optionPath ++ [\"enable\"]) true"
+    },
+    {
+      "pattern": "\"24\\.05\"",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "stateVersion 缺省值"
+    },
+    {
+      "pattern": "errors\\.throwError locale",
+      "source_globs": [
+        "lib/capGraph.nix"
+      ],
+      "count": {
+        "min": 15
+      },
+      "reason": "第一阶段全部失败路径经 throwError 本地化抛出"
+    },
+    {
+      "pattern": "fallbackRenderer",
+      "source_globs": [
+        "lib/errors.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "未知错误码回退渲染器"
+    },
+    {
+      "pattern": "darwinSystem",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "Darwin builder 选择"
+    },
+    {
+      "pattern": "nixosSystem",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "Linux builder 选择"
+    },
+    {
+      "pattern": "nix-flatpak",
+      "source_globs": [
+        "parts/systems.nix",
+        "flake.nix"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "Linux 平台模块含 nix-flatpak"
+    },
+    {
+      "pattern": "useGlobalPkgs",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "home-manager 全局 pkgs 接线"
+    },
+    {
+      "pattern": "kaguya\\.buildPlan",
+      "source_globs": [
+        "parts/systems.nix",
+        "tests/*.sh"
+      ],
+      "count": {
+        "min": 3
+      },
+      "reason": "buildPlan 经 option 暴露并被测试断言"
+    },
+    {
+      "pattern": "kaguyaBuildPlan",
+      "source_globs": [
+        "parts/systems.nix",
+        "tests/*.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "buildPlan 经 specialArgs 与 home-manager extraSpecialArgs 两处注入"
+    },
+    {
+      "pattern": "lib\\.kaguya",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "flake 公开接口 lib.kaguya"
+    },
+    {
+      "pattern": "resolveViews",
+      "source_globs": [
+        "lib/capGraph.nix",
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 3
+      },
+      "reason": "视图展开入口定义、内部调用与导出"
+    },
+    {
+      "pattern": "environment\\.shells",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": 1,
+      "reason": "用户 shell 包注册到 environment.shells"
+    },
+    {
+      "pattern": "programs\\.fish\\.enable",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": 1,
+      "reason": "存在 fish 用户时启用 fish"
+    },
+    {
+      "pattern": "shared/users/\\$\\{userName\\}/default\\.nix",
+      "source_globs": [
+        "parts/systems.nix"
+      ],
+      "count": 1,
+      "reason": "共享身份默认值自动导入"
+    },
+    {
+      "pattern": "builtins\\.currentSystem",
+      "source_globs": [
+        "parts/deploy.nix"
+      ],
+      "count": {
+        "min": 1
+      },
+      "reason": "deploy-rs activate 库按当前系统选择"
+    },
+    {
+      "pattern": "must export 'package' attribute",
+      "source_globs": [
+        "lib/packages.nix"
+      ],
+      "count": 1,
+      "reason": "包定义必须导出 package 属性"
+    },
+    {
+      "pattern": "loadPackages",
+      "source_globs": [
+        "lib/packages.nix",
+        "parts/systems.nix"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "包扫描入口定义并被调用"
+    },
+    {
+      "pattern": "未知 cap",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/framework-smoke.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "cap.unknown 中文消息定义并被烟雾测试断言"
+    },
+    {
+      "pattern": "未知 view",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/view-graph.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "view.unknown 中文消息定义并被视图测试断言"
+    },
+    {
+      "pattern": "knownSha256Hashes",
+      "source_globs": [
+        "tests/darwin-etc-compat.sh"
+      ],
+      "count": {
+        "min": 3
+      },
+      "reason": "Darwin /etc 兼容哈希屏障"
+    },
+    {
+      "pattern": "resolveViews",
+      "source_globs": [
+        "tests/view-graph.sh"
+      ],
+      "count": {
+        "min": 4
+      },
+      "reason": "视图图测试直接驱动公开解析接口"
+    },
+    {
+      "pattern": "依赖循环",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "cap.cycle 中文消息定义并被错误路径屏障断言"
+    },
+    {
+      "pattern": "不支持当前平台",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 4
+      },
+      "reason": "cap/view/hardware 三命名空间平台不支持消息与屏障断言"
+    },
+    {
+      "pattern": "缺少必填字段",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "node.missingField 消息与屏障断言"
+    },
+    {
+      "pattern": "类型错误",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "node.invalidType 消息与屏障断言"
+    },
+    {
+      "pattern": "取值非法",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "node.invalidEnum 消息与屏障断言"
+    },
+    {
+      "pattern": "未知硬件配置",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "hardware.unknown 消息与屏障断言"
+    },
+    {
+      "pattern": "Kaguya error",
+      "source_globs": [
+        "lib/errors.nix",
+        "tests/error-paths.sh"
+      ],
+      "count": {
+        "min": 2
+      },
+      "reason": "fallbackRenderer 输出前缀与屏障断言"
+    }
+  ],
+  "obsolete_code_contracts": [
+    {
+      "pattern": "systemConfig",
+      "source_globs": [
+        "lib/*.nix",
+        "parts/*.nix",
+        "parts/patch/*.nix",
+        "caps/**/*.nix",
+        "views/**/*.nix",
+        "systems/**/*.nix",
+        "hardware/**/*.nix",
+        "deploy/*"
+      ],
+      "count": {
+        "min": 0,
+        "max": 0
+      },
+      "reason": "旧 systemConfig 注入通道必须为零命中"
+    },
+    {
+      "pattern": "per-system",
+      "source_globs": [
+        "lib/*.nix",
+        "parts/*.nix",
+        "parts/patch/*.nix",
+        "caps/**/*.nix",
+        "views/**/*.nix",
+        "systems/**/*.nix",
+        "hardware/**/*.nix",
+        "deploy/*"
+      ],
+      "count": {
+        "min": 0,
+        "max": 0
+      },
+      "reason": "禁止旧 per-system 目录模型的连字符形态零命中；flake-parts 的 perSystem 属性（parts/deploy.nix deployChecks，见 REQ-020）为合法机制，不属本守卫范围"
+    },
+    {
+      "pattern": "identity/rikki",
+      "source_globs": [
+        "caps/**/*.nix",
+        "systems/**/*.nix",
+        "views/**/*.nix"
+      ],
+      "count": {
+        "min": 0,
+        "max": 0
+      },
+      "reason": "身份不得建模为 cap"
+    },
+    {
+      "pattern": "software/common|business/common|lifetime/common",
+      "source_globs": [
+        "caps/**/*.nix",
+        "systems/**/*.nix",
+        "views/**/*.nix"
+      ],
+      "count": {
+        "min": 0,
+        "max": 0
+      },
+      "reason": "旧聚合 cap 不得回流"
+    }
+  ],
   "test_anchors": [],
-  "barriers": []
+  "barriers": [
+    {
+      "name": "框架烟雾：buildPlan 暴露与错误本地化",
+      "command": [
+        "bash",
+        "tests/framework-smoke.sh"
+      ]
+    },
+    {
+      "name": "视图图解析：展开/未知/循环/平台",
+      "command": [
+        "bash",
+        "tests/view-graph.sh"
+      ]
+    },
+    {
+      "name": "软件能力：caps 终态与 home.packages",
+      "command": [
+        "bash",
+        "tests/software-capabilities.sh"
+      ]
+    },
+    {
+      "name": "Darwin /etc 兼容哈希",
+      "command": [
+        "bash",
+        "tests/darwin-etc-compat.sh"
+      ]
+    },
+    {
+      "name": "宿主机用户布局",
+      "command": [
+        "bash",
+        "tests/host-user-layout.sh"
+      ]
+    },
+    {
+      "name": "迁移等价：数据与身份落位",
+      "command": [
+        "bash",
+        "tests/migration-equivalence.sh"
+      ]
+    },
+    {
+      "name": "旧架构清理：文档与旧目录",
+      "command": [
+        "bash",
+        "tests/cleanup-check.sh"
+      ]
+    },
+    {
+      "name": "叶子能力审计：caps 无聚合残留",
+      "command": [
+        "bash",
+        "tests/module-leaf-audit.sh"
+      ]
+    },
+    {
+      "name": "身份放置：共享身份非 cap",
+      "command": [
+        "bash",
+        "tests/identity-placement.sh"
+      ]
+    },
+    {
+      "name": "Makefile 冒烟：入口命令契约",
+      "command": [
+        "bash",
+        "tests/makefile-smoke.sh"
+      ]
+    },
+    {
+      "name": "部署冒烟：activate 架构不硬编码",
+      "command": [
+        "bash",
+        "tests/deploy-smoke.sh"
+      ]
+    },
+    {
+      "name": "错误路径与解析语义",
+      "command": [
+        "bash",
+        "tests/error-paths.sh"
+      ]
+    }
+  ]
 }

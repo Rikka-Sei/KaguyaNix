@@ -192,3 +192,4 @@ views/<domain>/<name>/
 - `./tests/deploy-smoke.sh` 通过
 - `./tests/software-capabilities.sh` 通过
 - `./tests/darwin-etc-compat.sh` 通过
+- `./tests/error-paths.sh` 通过
