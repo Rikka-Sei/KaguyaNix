@@ -1,0 +1,50 @@
+{
+  "_readme": "core-spec 审计清单模板。复制到 docs/specs/<spec-name>/tools/audit_manifest.json 后填写；本文件是规范与验证的唯一事实源，必须先于 spec 正文写。所有键值均可按需增删，但 schema 由同目录 audit_spec.py 校验。",
+  "spec_file": "spec.md",
+  "spec_status": "draft",
+  "repo_root": "../..",
+  "required_sections": [
+    "1. 背景与目标",
+    "2. 术语表",
+    "3. 系统模型与状态机",
+    "4. 功能需求与接口契约",
+    "5. 错误模型",
+    "6. 非功能需求（NFR）",
+    "7. 异常与边界条件",
+    "8. 验收标准",
+    "9. 决策日志",
+    "10. 验证"
+  ],
+  "metadata_terms": ["状态:", "版本:", "受众:", "范围:", "治理:", "变更历史:"],
+  "vague_terms": ["可能", "大概", "尽量", "友好", "快速"],
+  "forbidden_patterns": [
+    "（已被\\s*D\\d+\\s*取代）",
+    "补丁标记"
+  ],
+  "requirement_prefix": "REQ-",
+  "min_requirements": 1,
+  "decision_prefix": "D",
+  "latest_decision": 1,
+  "decisions": [
+    {
+      "decision_id": "D01",
+      "required_terms": ["spec"],
+      "obsolete_terms": [],
+      "scoped_terms": [],
+      "whitelist": [],
+      "required_occurrences": [
+        {
+          "pattern": "spec",
+          "count": {"min": 1},
+          "sections": ["1"],
+          "reason": "示例：术语 spec 必须在背景章节出现"
+        }
+      ],
+      "forbidden_occurrences": []
+    }
+  ],
+  "code_contracts": [],
+  "obsolete_code_contracts": [],
+  "test_anchors": [],
+  "barriers": []
+}
