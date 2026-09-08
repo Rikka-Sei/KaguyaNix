@@ -273,7 +273,7 @@ stateDiagram-v2
 
 - REQ-023 框架升级工具（P2，D16）
   **作为** 框架维护者，**我希望** 将框架代码同步到下游仓库并保留用户数据，**以便** 下游仓库复用框架演进。
-  契约：`make kaguya upgrade <path>` 前置校验三项：目标路径存在、目标为 git 仓库、目标 `git status --short` 输出为空；任一不满足即非零退出并输出修复指引。通过校验后交互确认（读入单字符，仅 Y/y 继续，其余取消退出）。执行语义：目标仓库中保留 `*.md`、`*.lock`、`*.code-workspace`、`users/`、`systems/`、`packages/`、`modules/`、`hardware/`、`deploy/`、`.git`、`.gitignore`；其余条目删除后从源仓库复制（复制侧跳过同一保留集合与 `.DS_Store`）；`systems/`、`packages/`、`modules/`、`hardware/`、`deploy/` 五目录先备份至 `/tmp/kaguya_upgrade_backup_<时间戳>`，清理复制完成后从备份恢复。结束输出目标仓库 `git status` 摘要（至多 30 行）与备份位置。
+  契约：`make kaguya upgrade <path>` 前置校验三项：目标路径存在、目标为 git 仓库、目标 `git status --short` 输出为空；任一不满足即非零退出并输出修复指引。通过校验后交互确认（读入单字符，仅 Y/y 继续，其余取消退出）。执行语义：清理与复制两阶段均以 `*` 通配遍历，点文件（含 `.git`、`.gitignore`）不被通配匹配，`.git` 与目标 `.gitignore` 因此不被删除；目标仓库中保留 `*.md`、`*.lock`、`*.code-workspace`、`users/`、`systems/`、`packages/`、`modules/`、`hardware/`、`deploy/` 及全部点文件，其余可见条目删除；复制阶段从源仓库复制除保留集合外的全部可见条目，随后在源仓库存在 `.gitignore` 时以源版本覆盖目标 `.gitignore`（下游自定义的 `.gitignore` 不被保留）。`systems/`、`packages/`、`modules/`、`hardware/`、`deploy/` 五目录先备份至 `/tmp/kaguya_upgrade_backup_<时间戳>`，清理复制完成后从备份恢复。结束输出目标仓库 `git status` 摘要（至多 30 行）与备份位置。
   Given 目标仓库存在未提交更改；When 执行升级；Then 非零退出并列出未提交文件清单（锚点：人工对照；无自动化锚点）。
 
 - REQ-022 目录身份治理（P0，D03）
@@ -378,7 +378,7 @@ stateDiagram-v2
 | D11 | 用户禁用语义：enable = false 解析输入为空、不生成任何模块 | §3.3、§4（REQ-010）、§7（E14） | 审计器 D11 规则 |
 | D12 | 部署模型：deploy/*.nix 生成 deploy-rs 节点，激活库按 builtins.currentSystem 选择，回滚缺省全开 | §4（REQ-020） | 审计器 D12 规则；`tests/deploy-smoke.sh` |
 | D13 | 包扫描模型：packages/ 目录自动 overlay 与模块，包定义必须导出 package 属性 | §4（REQ-019）、§5 | 审计器 D13 规则；`lib/packages.nix` 契约 |
-| D14 | 验证屏障：tests/ 下 12 个脚本构成验收屏障，AGENTS.md 列出的 8 个为最低集 | §8、§10 | 审计器 D14 规则；`python tools/barriers.py` |
+| D14 | 验证屏障：tests/ 下 12 个脚本构成验收屏障，AGENTS.md 列出的 9 个为最低集 | §8、§10 | 审计器 D14 规则；`python tools/barriers.py` |
 | D15 | 治理：行为变更决策先行、被取代条款原地合并或删除、问题登记入 issues/、快照冻结不改 | 头部治理、§9、`issues/`、`history/` | 审计器 D15 规则与 forbidden_patterns |
 | D16 | Makefile 入口全集与框架升级工具：update/format/clean-garbage/eval-time/deploy-list/deploy 为确定性薄封装；kaguya upgrade 的保留/删除/备份/确认语义契约化 | §4（REQ-021、REQ-023） | 审计器 D16 规则；`tests/makefile-smoke.sh`（入口子集） |
 
