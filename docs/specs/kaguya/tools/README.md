@@ -11,10 +11,12 @@
 
 ## 标准验证顺序
 
+全部命令在**仓库根目录**执行（本仓库无 `python` 二进制，解释器用 `python3`；脚本内部以自身路径与 manifest 的 `repo_root` 解析仓库根，故 cwd 不影响结果）：
+
 ```bash
-python tools/test_audit_spec.py   # 先证明审计器可信
-python tools/audit_spec.py        # 再审计 spec
-python tools/barriers.py          # 最后跑验收屏障（draft 可为空）
+python3 docs/specs/kaguya/tools/test_audit_spec.py   # 先证明审计器可信
+python3 docs/specs/kaguya/tools/audit_spec.py        # 再审计 spec
+python3 docs/specs/kaguya/tools/barriers.py          # 最后跑验收屏障（draft 可为空）
 ```
 
 ## 状态约定

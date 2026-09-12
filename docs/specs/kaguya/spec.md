@@ -4,7 +4,7 @@
 **版本:** 1.1（决策基线：D01–D16）
 **受众:** 框架开发读全文；cap 与 view 作者读 §2、§4、§5、§7；运维读 §4（REQ-020、REQ-021）与 §10。
 **范围:** 规定 KaguyaNix 框架的能力图解析、两阶段构建、目录身份分层、错误模型与验收屏障的行为契约；宿主机业务声明内容与单个 cap 的实现选择不在范围内（见 §1.3）。
-**治理:** 行为变更必须先在 §9 决策日志新增或归因决策 ID，同步 `tools/audit_manifest.json`，依次运行 `python tools/test_audit_spec.py`、`python tools/audit_spec.py`、`python tools/barriers.py` 全部 PASS 后再进入 plan 与代码；被取代条款原地合并或删除，不留修订标注；spec 与代码同批提交。
+**治理:** 行为变更必须先在 §9 决策日志新增或归因决策 ID，同步 `docs/specs/kaguya/tools/audit_manifest.json`，在仓库根目录依次运行 `python3 docs/specs/kaguya/tools/test_audit_spec.py`、`python3 docs/specs/kaguya/tools/audit_spec.py`、`python3 docs/specs/kaguya/tools/barriers.py` 全部 PASS 后再进入 plan 与代码；被取代条款原地合并或删除，不留修订标注；spec 与代码同批提交。
 **变更历史:** 见 `history/`、`issues/` 与 §9 决策日志。
 
 ---
@@ -354,11 +354,11 @@ stateDiagram-v2
 
 ## 8. 验收标准
 
-- AC-001 结构审计通过：`python tools/test_audit_spec.py` 与 `python tools/audit_spec.py` 退出码为 0，映射 GOAL-1（REQ 全集）。
+- AC-001 结构审计通过：`python3 docs/specs/kaguya/tools/test_audit_spec.py` 与 `python3 docs/specs/kaguya/tools/audit_spec.py`（均在仓库根目录执行）退出码为 0，映射 GOAL-1（REQ 全集）。
 - AC-002 决策与证据归因：manifest 声明的 D01–D16 全部在 §9 有行，全部代码契约在 `repo_root` 内命中、旧契约零命中，映射 GOAL-2（REQ 全集）。
 - AC-003 错误模型完整：§5 表覆盖 `lib/errors.nix` 全部已注册错误码，每个错误码含产生条件与定位字段，映射 GOAL-3（REQ-017）。
 - AC-004 异常路径可观察：§7 每行给出系统行为与可观察结果，自动化锚点与人工对照范围分离标注，映射 GOAL-3（REQ-005 至 REQ-008）。
-- AC-005 屏障全绿：`python tools/barriers.py` 依次执行 `tests/framework-smoke.sh` 等 12 个脚本全部退出码 0，映射 GOAL-4（D14 全集）。
+- AC-005 屏障全绿：在仓库根目录执行 `python3 docs/specs/kaguya/tools/barriers.py`，依次执行 `tests/framework-smoke.sh` 等 12 个脚本全部退出码 0，映射 GOAL-4（D14 全集）。
 - AC-006 公开接口稳定：`tests/view-graph.sh` 直接驱动 `lib.kaguya.resolveViews` 的 4 个用例全绿，映射 REQ-018。
 
 ## 9. 决策日志
@@ -378,14 +378,14 @@ stateDiagram-v2
 | D11 | 用户禁用语义：enable = false 解析输入为空、不生成任何模块 | §3.3、§4（REQ-010）、§7（E14） | 审计器 D11 规则 |
 | D12 | 部署模型：deploy/*.nix 生成 deploy-rs 节点，激活库按 builtins.currentSystem 选择，回滚缺省全开 | §4（REQ-020） | 审计器 D12 规则；`tests/deploy-smoke.sh` |
 | D13 | 包扫描模型：packages/ 目录自动 overlay 与模块，包定义必须导出 package 属性 | §4（REQ-019）、§5 | 审计器 D13 规则；`lib/packages.nix` 契约 |
-| D14 | 验证屏障：tests/ 下 12 个脚本构成验收屏障，AGENTS.md 列出的 9 个为最低集 | §8、§10 | 审计器 D14 规则；`python tools/barriers.py` |
+| D14 | 验证屏障：tests/ 下 12 个脚本构成验收屏障，AGENTS.md 列出的 9 个为最低集 | §8、§10 | 审计器 D14 规则；`python3 docs/specs/kaguya/tools/barriers.py` |
 | D15 | 治理：行为变更决策先行、被取代条款原地合并或删除、问题登记入 issues/、快照冻结不改 | 头部治理、§9、`issues/`、`history/` | 审计器 D15 规则与 forbidden_patterns |
 | D16 | Makefile 入口全集与框架升级工具：update/format/clean-garbage/eval-time/deploy-list/deploy 为确定性薄封装；kaguya upgrade 的保留/删除/备份/确认语义契约化 | §4（REQ-021、REQ-023） | 审计器 D16 规则；`tests/makefile-smoke.sh`（入口子集） |
 
 ## 10. 验证
 
-- 结构审计：`python tools/test_audit_spec.py && python tools/audit_spec.py`
-- 验收屏障：`python tools/barriers.py`（依次执行下表 12 个脚本）
+- 结构审计：在仓库根目录执行 `python3 docs/specs/kaguya/tools/test_audit_spec.py && python3 docs/specs/kaguya/tools/audit_spec.py`
+- 验收屏障：在仓库根目录执行 `python3 docs/specs/kaguya/tools/barriers.py`（依次执行下表 12 个脚本）
 - 测试锚点清单（bash 断言型，与 manifest 的 `code_contracts` 中 `tests/*.sh` 条目一一对应；本仓库无 Python 函数锚点，故 manifest `test_anchors` 为空集）：
 
 | 屏障脚本 | 覆盖契约 | 对应条目 |
@@ -412,4 +412,4 @@ stateDiagram-v2
 | 身份建模回流（identity 形式） | caps 目录无 identity、共享身份文件在位 | `tests/identity-placement.sh` |
 | Darwin /etc 声明完整性 | 三类 shell 配置哈希在 knownSha256Hashes | `tests/darwin-etc-compat.sh` |
 
-- 2026-09-08 基线证据：`tools/test_audit_spec.py`、`tools/audit_spec.py`、`tools/barriers.py`（12 屏障）在仓库根目录全部退出码 0；屏障合计 12/12 PASS。
+- 2026-09-13 基线证据（仓库根目录实跑复验）：`python3 docs/specs/kaguya/tools/test_audit_spec.py`（13 用例全绿）、`python3 docs/specs/kaguya/tools/audit_spec.py`、`python3 docs/specs/kaguya/tools/barriers.py`（12 屏障）全部退出码 0；屏障合计 12/12 PASS。此前 2026-09-08 记录的三条命令均以 cwd 依赖的 `tools/...` 相对形式书写、且用不存在的 `python` 解释器，不能照抄复现，本行取代该记录。
