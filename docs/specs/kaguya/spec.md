@@ -259,7 +259,7 @@ stateDiagram-v2
 - REQ-019 自定义包扫描（P1，D13）
   **作为** 包作者，**我希望** `packages/` 目录条目自动成为 overlay 与模块，**以便** 无需手工注册。
   契约：`packages/` 下每个条目（目录或 `.nix` 文件）以去后缀名为包名；overlay 求值其 `package` 属性，缺失时抛出含 `must export 'package' attribute` 的错误，即包定义必须导出 `package` 属性；模块侧收集各包 `options` 与 `config`：`config` 经 `mkMerge` 合并，`options` 以属性集折叠合并（同名 option 声明由后写包覆盖先写包，不触发模块系统冲突报错）。overlay 注入全部宿主机（REQ-013 第一项）。
-  Given `packages/` 下存在导出 `package` 属性的条目；When flake 求值；Then 该条目名在 `pkgs` 中可用（锚点：`lib/packages.nix` 的 overlay 生成契约；`packages/` 当前为空目录，无运行时条目）。
+  Given `packages/` 下存在导出 `package` 属性的条目；When flake 求值；Then 该条目名在 `pkgs` 中可用（锚点：`lib/packages.nix` 的 overlay 生成契约；`packages/` 当前不存在，扫描守卫将其视为空集，无运行时条目）。
 
 - REQ-020 部署目标生成（P1，D12）
   **作为** 运维，**我希望** `deploy/` 下声明式生成 deploy-rs 节点，**以便** 远程部署与本地构建同源。

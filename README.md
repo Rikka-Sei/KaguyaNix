@@ -61,7 +61,6 @@ KaguyaNix 采用"能力图 + 两阶段构建"模型：
 │   └── gaming/base/
 │       ├── system.nix
 │       └── user.nix
-├── packages/
 ├── deploy/
 ├── lib/
 └── parts/
